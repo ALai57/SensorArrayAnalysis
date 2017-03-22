@@ -1,0 +1,33 @@
+
+Steps in analysis:
+
+FIRST, convert files to MAT format.
+1) Convert .smr file to .mat file
+	Open the script 'DataOrganization\Convert_Spike2_To_MAT.s2s' in Spike2.
+	Run the script.
+		- Select the .smr file you want to export
+		- That's all! You will get a .mat file as an output when the file is done running
+
+2) Convert .hpf files to .mat files
+  2a) Convert .hpf files to .csv files using the Delsys File Conversion Utility
+  2b) Convert CSV files to .mat files using 'DataOrganization\RUN_Convert_CSVfiles_To_MATLAB_Tables.m'
+
+
+SECOND, manually edit files to eliminate any bad trials.
+EG. If there are any "bad trials", trials in which a trigger was sent, but the trial is bad, you need to find these and eliminate them
+
+1) Delete bad Sensor Array files 	
+        1a) Delete the bad .hpf files from the .hpf directory.
+        1b) Delete the bad .csv files from the 'array' directory
+        1c) Delete the bad .mat files from the 'array' directory
+
+2) Delete bad Single Differential Files
+        2a) Open the .MAT file that was converted from the SMR file.
+	2b) Manually edit the values in the variable 'Memory.values' (This variable has all the triggers sent to the Spike 2 program. You need to eliminate all the bad triggers)
+
+
+THIRD, once only good trials are left, segment the Single Differential file into .mat trials
+ 
+1) Run the file 'DataOrganization\RUN_Segment_SMRMAT_To_MATLAB_Tables.mat' to segment the big file into smaller ones.
+
+2) Copy the segmented files into a new folder '\singlediff'

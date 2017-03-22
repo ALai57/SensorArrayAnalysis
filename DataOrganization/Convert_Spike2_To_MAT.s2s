@@ -1,0 +1,29 @@
+
+var fh%;
+
+'Choose file to export to MAT format
+fh% := FileOpen("", 0);
+Window(10,10,80,80);
+WindowVisible(1);
+var fname$ := FileName$();
+var fbase$ := FileName$(1)+FileName$(2)+FileName$(3);
+
+var v12% := View();
+var ch1%; 'MemChan created channel
+FrontView(v12%);
+ch1% := MemChan(3); 'Add new Event+ channel
+ChanShow(ch1%); 'Make it visible
+MemImport(ch1%, 7, 0.0, MaxTime(),2,0.01,3); 'Level rising
+ChanHide(31);
+ChanHide(7);
+ChanHide(6);
+ChanHide(5);
+ChanHide(4);
+ChanHide(3);
+var mt := MaxTime();
+ExportChanList(1); 'Initialise the channel list
+ExportChanList(0, mt, ch1%,12,11,10,9,8,2,1);
+
+FileSaveAs(fbase$+".mat",100,0,"",0,
+"UseSName=0|UseCName=1|WaveTimes=0|BinFreq=0|BinTimes=0|WaveData=2|MarkAs=1|TMarkAs=2|RMarkAs=2|RMarkData=2|WaveMarkAs=2|WaveMarkData=2|Compat=0|WaveAll=1|WaveSameN=0"); 'Export (string args)
+PrintLog("File exported to %s_1.mat", fbase$);
