@@ -1,12 +1,12 @@
 
-%     dataFolder = 'C:\Users\Andrew\Box Sync\BicepsSensorArray\Data\Control';
-%     dataFolder = 'C:\Users\Andrew\Box Sync\BicepsSensorArray\Data\Stroke';
+%     dataFolder = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control';
+%     dataFolder = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke';
 
 function generateReport_ForceTraces_And_EMG(dataFolder)
 
-    analyses{1} = @(selection,subjFolder)print_Subject_FileSummary(selection,subjFolder);
-    analyses{2} = @(selection,subjFolder)print_Subject_ForceSummary(selection,subjFolder);
-    analyses{3} = @(selection,subjFolder)print_Subject_EMGSummary(selection,subjFolder);
+%     analyses{1} = @(selection,subjFolder)print_Subject_FileSummary(selection,subjFolder);
+%     analyses{2} = @(selection,subjFolder)print_Subject_ForceSummary(selection,subjFolder);
+    analyses{1} = @(selection,subjFolder)print_Subject_EMGSummary(selection,subjFolder);
 
     report_BySubject(dataFolder, @reportDescription, analyses)
 end
