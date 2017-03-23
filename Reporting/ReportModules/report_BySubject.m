@@ -35,6 +35,8 @@ function report_BySubject(dataFolder, reportDescription, analyses)
         for n=1:length(subjs)   %Loop over all subjects
             subjFolder = [dataFolder '\' subjs(n).name];
             
+            if ~isdir(subjFolder); continue; end
+                
             selection.TypeText(['Data from subject folder: ' subjFolder char(13)]); 
             
             for i=1:length(analyses) % Perform each analysis requested
