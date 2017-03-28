@@ -17,5 +17,8 @@ signal_Old(inzero,:) = [];
 t_Old = t_Old-t_Old(1);
 t_New = [0:dt_new:t_Old(end)]'; %new template time is shortened too
 
-signal_New = zeros(length(t_New), 1); 
-signal_New = interp1(t_Old,signal_Old,t_New,'spline'); % always 4 chs
+signal_New = zeros(length(t_New), 1);
+
+for n=1:size(signal_Old,2)
+    signal_New(:,n) = interp1(t_Old,signal_Old(:,n),t_New,'spline'); % always 4 chs
+end

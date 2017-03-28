@@ -27,14 +27,17 @@ function append_DecompositionResults_ToSensorArrayFile(subjFolder,options)
             continue; 
         end
 
-        DelsysDecomp = get_DecompositionInfo(tbl_Decomp(ind,:),subjFolder);
+        Array = get_DecompositionInfo(tbl_Decomp(ind,:),subjFolder);
           
         %Resave
-        save(fName_Array,'DelsysDecomp','-append');
+%         save(fName_Array,'Array','-append');
+        load(fName_Array,'tbl');
+        save(fName_Array,'tbl','Array');
         fprintf(fid,'Saving complete. %d decomposition files combined with %s.\n',length(ind),fName_Array);
+        
     end
     fclose(fid);
-   
+    fprintf('Subject folder complete: %s.\n',subjFolder);
 end
 
 function fid = open_LogFile(subjArrayFolder)
@@ -44,9 +47,9 @@ function fid = open_LogFile(subjArrayFolder)
     fprintf(fid,'This log details which files were combined\n\n\n');
 end
 
-function Delsys = get_DecompositionInfo(tbl_Decomp,subjFolder)
+function Array = get_DecompositionInfo(tbl_Decomp,subjFolder)
         
-    tbl_Decomp.Array = categorical(tbl_Decomp.Array);
+    tbl_Decomp.Array    = categorical(tbl_Decomp.Array);
     tbl_Decomp.FileType = categorical(tbl_Decomp.FileType);
     
     arrays = unique(tbl_Decomp.Array);
@@ -59,8 +62,8 @@ function Delsys = get_DecompositionInfo(tbl_Decomp,subjFolder)
         
         ind_array = tbl_Decomp.Array == arrays(j);
         
-        i_f = ind_array & ind_firings;
-        i_m = ind_array & ind_MUAPs;
+        i_f = ind_array & ind_firings; %Index of the MU_FiringTimes.txt file
+        i_m = ind_array & ind_MUAPs;   %Index of the MUAPs.txt file
         
         fName_MUAPs = [subjFolder '\decomp\' tbl_Decomp.Files{i_m}];
         x=importdata(fName_MUAPs);
@@ -71,7 +74,7 @@ function Delsys = get_DecompositionInfo(tbl_Decomp,subjFolder)
         for k=1:max(x.data(:,1))
             ind_MU = x.data(:,1)==k;
 
-            Delsys(k).Templates = table(x.data(ind_MU,2),...
+            Array(j).Decomp(k).Templates = table(x.data(ind_MU,2),...
                                         x.data(ind_MU,3),...
                                         x.data(ind_MU,4),...
                                         x.data(ind_MU,5),...
@@ -87,9 +90,16 @@ function Delsys = get_DecompositionInfo(tbl_Decomp,subjFolder)
         for k=1:size(y.data,2)
             theData = y.data(:,k);
             theData(isnan(theData))=[];
-            Delsys(k).FiringTimes = theData;
+            Array(j).Decomp(k).FiringTimes = theData;
         end
 
+        Array(j).Number = arrays(j);
+        if arrays(j)==categorical({'1'})
+            Array(j).Location = 'Medial';
+        elseif arrays(j)==categorical({'2'})
+            Array(j).Location = 'Lateral';
+        end
+        % ADD IN ARRAY CHANNELS>.....
     end
 end
         
