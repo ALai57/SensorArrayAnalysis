@@ -2,6 +2,19 @@
 
 function dataTbl = build_2Array_DataTable(arrayFile,singlediffFile,trial_Information,MVC,options)
 
+%     matObj = matfile(char(arrayFile.FullFile));
+%     fileInfo = whos(matObj,'Array');
+    
+    %%%%%%%%%%%%%%%%% CHECK THAT SINGLE DIFF FILES ARE EQUAL TO ARRAY FILES%%%%%%%%%%%%%
+    
+%     if isempty(fileInfo)
+%         dataTbl = get_BasicTrialInformation(arrayFile,singlediffFile);
+%         dataTbl = append_No_DecompositionResults(dataTbl);
+%         dataTbl = repmat(dataTbl,size(trial_Information,1),1);
+%         dataTbl = [dataTbl, get_ForceTrace_Info(trial_Information,MVC)]; % RampStart, PlateauStart, MaxForce_N,TargetForce_N,TargetForce_MVC
+%         return;
+%     end
+
     load(char(arrayFile.FullFile));
 
     dataTbl = [];
@@ -12,7 +25,7 @@ function dataTbl = build_2Array_DataTable(arrayFile,singlediffFile,trial_Informa
             tmp = append_No_DecompositionResults(tmp,k);
             tmp = repmat(tmp,size(trial_Information,1),1);
             tmp = [tmp, get_ForceTrace_Info(trial_Information,MVC)];
-            dataTbl = [dataTbl;tmp]; 
+            dataTbl = [dataTbl;tmp]; % RampStart, PlateauStart, MaxForce_N,TargetForce_N,TargetForce_MVC
         else
         
             Array(k).EMGfile = arrayFile.FullFile;
@@ -31,6 +44,8 @@ function dataTbl = build_2Array_DataTable(arrayFile,singlediffFile,trial_Informa
             dataTbl = [dataTbl; tmp];
         end
     end
+        
+
     
 end
 
@@ -91,7 +106,7 @@ function trialInfo_tbl = get_BasicTrialInformation(arrayFile,singlediffFile)
     trialInfo_tbl.Experiment  = arrayFile.Experiment;
     trialInfo_tbl.TargetForce = arrayFile.TargetForce;
     trialInfo_tbl.ID          = arrayFile.ID;
-    trialInfo_tbl.TrialName   = {[arrayFile.TargetForce{1} '_Rep_' arrayFile.ID{1}]};
+    trialInfo_tbl.TrialName   = arrayFile.Experiment;
     trialInfo_tbl.SensorArrayFile         = arrayFile.Files;
     trialInfo_tbl.SingleDifferentialFile  = singlediffFile.Files;
 end
@@ -161,3 +176,16 @@ function STA = get_STA(Decomp,EMG,arrayNumber)
     [STA, ~, ~] = calculate_STA(Decomp.FiringTimes, EMG(:,columnInd), Delsys_Template_20k);
 
 end
+
+
+
+
+%     TargetForce_N   = sqrt(MVC*MVC')*TargetForce_MVC/100;
+%     MaxForce_N      = MVC;
+        
+%         %Force info
+%         dataTbl.RampStart       = {[]};
+%         dataTbl.PlateauStart    = {[]};
+%         dataTbl.MaxForce_N      = {[]};
+%         dataTbl.TargetForce_N   = {[]};
+%         dataTbl.TargetForce_MVC = {[]};

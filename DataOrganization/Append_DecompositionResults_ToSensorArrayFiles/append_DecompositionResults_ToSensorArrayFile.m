@@ -12,11 +12,8 @@ function append_DecompositionResults_ToSensorArrayFile(subjFolder,options)
     
     tbl_SensorArray = get_SensorArrayFileInfo_FromSubjectFolder(subjFolder,options);
     tbl_SensorArray = append_FileID_Tag(tbl_SensorArray,options);
-%     tbl_Decomp      = get_DecompFileInfo_FromSubjectFolder(subjFolder,options);
-    decompWorkspace = get_SubjectDecompWorkspace(subjFolder);
-    tbl_Decomp      = get_DecompOutputs_FromFolder(decompWorkspace);
-    tbl_Decomp.Properties.VariableNames{1} = 'Files';
-    tbl_Decomp      = parse_FileNameTable(tbl_Decomp,options.Decomp); 
+    
+    tbl_Decomp      = get_DecompExports_FromSubjectFolder(subjFolder,options); 
     tbl_Decomp      = append_FileID_Tag(tbl_Decomp,options);
     
     fprintf(fid,'%d Sensor Array files found.\n',size(tbl_SensorArray,1));
@@ -29,12 +26,12 @@ function append_DecompositionResults_ToSensorArrayFile(subjFolder,options)
         ind = find(ind);
         
         if isempty(ind) 
-            fprintf(fid,'Skipped %s. No decomposition files found.\n',fName_Array);
-            continue; 
+            Array = create_DefaultArray(options);
+            fprintf(fid,'No decomposition files found for %s. Saving empty file.\n',fName_Array);     
+        else
+            Array = get_DecompositionInfo(tbl_Decomp(ind,:),subjFolder,options);
         end
-
-        Array = get_DecompositionInfo(tbl_Decomp(ind,:),subjFolder);
-          
+        
         %Resave
 %         save(fName_Array,'Array','-append');
         load(fName_Array,'tbl');
@@ -46,6 +43,17 @@ function append_DecompositionResults_ToSensorArrayFile(subjFolder,options)
     fprintf('Subject folder complete: %s.\n',subjFolder);
 end
 
+function Array = create_DefaultArray(options)
+    
+    nArrays = length(options.Array.Number);
+    
+    for n=1:nArrays
+       Array(n).Decomp   = {};
+       Array(n).Number   = categorical(options.Array.Number(n));
+       Array(n).Location = options.Array.Names{n}; 
+    end
+end
+
 function fid = open_LogFile(subjArrayFolder)
     fid = fopen([subjArrayFolder '\Combine_SensorArrayFile_And_Decomposition.txt'],'wt');
     fprintf(fid,'LOG\n\n%s\n\n',date());
@@ -53,16 +61,18 @@ function fid = open_LogFile(subjArrayFolder)
     fprintf(fid,'This log details which files were combined\n\n\n');
 end
 
-function Array = get_DecompositionInfo(tbl_Decomp,subjFolder)
+function Array = get_DecompositionInfo(tbl_Decomp,subjFolder,options)
         
     tbl_Decomp.Array    = categorical(tbl_Decomp.Array);
     tbl_Decomp.FileType = categorical(tbl_Decomp.FileType);
     
-    arrays = unique(tbl_Decomp.Array);
+    arrays = unique(options.Array.Number); % GET THIS FROM OPTIONS %%%%%%%%%%%%%%%%%%% ARRAY 1 and 2....
     arrays = categorical(arrays);
     
     ind_firings = tbl_Decomp.FileType == 'MUFiringTimes';
     ind_MUAPs   = tbl_Decomp.FileType == 'MUAPs';
+    
+    Array = create_DefaultArray(options);
     
     for j=1:length(arrays)
         
@@ -71,10 +81,14 @@ function Array = get_DecompositionInfo(tbl_Decomp,subjFolder)
         i_f = ind_array & ind_firings; %Index of the MU_FiringTimes.txt file
         i_m = ind_array & ind_MUAPs;   %Index of the MUAPs.txt file
         
-        fName_MUAPs = [subjFolder '\decomp\' tbl_Decomp.Files{i_m}];
+        if ~sum(i_f) || ~sum(i_m)
+           continue; 
+        end
+        
+        fName_MUAPs = [subjFolder '\decomp\' tbl_Decomp.ExportFiles{i_m}];
         x=importdata(fName_MUAPs);
 
-        fName_Firings = [subjFolder '\decomp\' tbl_Decomp.Files{i_f}];
+        fName_Firings = [subjFolder '\decomp\' tbl_Decomp.ExportFiles{i_f}];
         y=importdata(fName_Firings);
         
         for k=1:max(x.data(:,1))
@@ -99,52 +113,23 @@ function Array = get_DecompositionInfo(tbl_Decomp,subjFolder)
             Array(j).Decomp(k).FiringTimes = theData;
         end
 
-        Array(j).Number = arrays(j);
-        if arrays(j)==categorical({'1'})
-            Array(j).Location = 'Medial';
-        elseif arrays(j)==categorical({'2'})
-            Array(j).Location = 'Lateral';
-        end
+%         Array(j).Number = arrays(j);
+%         if arrays(j)==categorical({'1'})
+%             Array(j).Location = 'Medial';
+%         elseif arrays(j)==categorical({'2'})
+%             Array(j).Location = 'Lateral';
+%         end
         % ADD IN ARRAY CHANNELS>.....
     end
 end
         
-% function  tbl_Decomp = get_DecompFileInfo_FromSubjectFolder(subjFolder,options)
-%     decompFolder  = [subjFolder '\decomp'];
-%     options.Trial = options.Decomp;
-%     tbl_Decomp = extract_FileInformation_FromFolder(decompFolder,'.txt',options);
-%     tbl_Decomp = split_FileID_FromSensorArrayDecomp(tbl_Decomp);
-%     tbl_Decomp = append_File_MatchTag(tbl_Decomp,options);
-% end
-% 
-% function tbl_SensorArray = get_SensorArrayFileInfo_FromSubjectFolder(subjFolder,options)
-%     arrayFolder   = [subjFolder '\array'];
-%     options.Trial = options.SensorArray;
-%     tbl_SensorArray = extract_FileInformation_FromFolder(arrayFolder,'.mat',options);
-%     tbl_SensorArray = append_File_MatchTag(tbl_SensorArray,options);
-% end
 
-% function tbl = append_File_MatchTag(tbl,options)
-% 
-%     cIndex = find_TableColumns(tbl,options.MatchFilesBy);
-%     
-%     for n=1:size(tbl,1)
-%         cNames  = tbl(n,cIndex); 
-%         cNames  = cNames{1,:};
-%         cTag{n,1} = [cNames{:}];
-%     end
-%     
-%     tmp = table(categorical(cTag),'VariableNames',{'File_MatchTag'});
-%     tbl = [tbl,tmp];
-%     
-% end
-% 
-% function cIndex = find_TableColumns(tbl,target)
-% 
-%     tblColumns = categorical(tbl.Properties.VariableNames);
-%     target     = categorical(target);
-%     for n=1:length(target)
-%         cIndex(n) = find(tblColumns==target(n));
-%     end
-% 
-% end
+
+
+%     tbl_Decomp      = get_DecompFileInfo_FromSubjectFolder(subjFolder,options);
+%     decompWorkspace = get_SubjectDecompWorkspace(subjFolder);
+%     tbl_Decomp      = get_DecompOutputs_FromFolder(decompWorkspace);
+%     tbl_Decomp.Properties.VariableNames{1} = 'Files';
+%     tbl_Decomp      = parse_FileNameTable(tbl_Decomp,options.Decomp); 
+%     tbl_Decomp      = append_FileID_Tag(tbl_Decomp,options);
+
