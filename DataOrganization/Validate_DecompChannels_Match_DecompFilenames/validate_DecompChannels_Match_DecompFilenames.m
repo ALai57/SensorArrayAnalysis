@@ -53,7 +53,8 @@ function tbl = validate_ChannelAndFilenameMatch_ForSubject(contents,fid)
     decompWorkspace = get_DecompWorkspaceName(contents);
     
     try   
-        tbl = get_DecompFileInfo_FromFolder(decompWorkspace);
+%         tbl = get_DecompFileInfo_FromFolder(decompWorkspace);
+        tbl = get_DecompOutputs_FromFolder(decompWorkspace);
         
         fprintf(fid,'SID: %s. ',contents.name); 
         check_decompLabel_Matches_DecompFilename(tbl,fid)

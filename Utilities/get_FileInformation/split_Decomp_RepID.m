@@ -1,6 +1,6 @@
 
 
-function tbl = split_FileID_FromSensorArrayDecomp(tbl)
+function tbl = split_Decomp_RepID(tbl)
     
     for n=1:size(tbl,1)
        ID = tbl.ID{n}; 

@@ -4,14 +4,16 @@
 % 
 %     options.SensorArray.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'}; 
 %     options.Decomp.FileNameConvention  = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'}; 
-%     options.MatchFilesBy = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID'};
+%     options.FileID_Tag = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID'};
    
 function append_DecompositionResults_ToSensorArrayFile(subjFolder,options)
     
     fid = open_LogFile([subjFolder '\array']);
     
-    tbl_SensorArray = get_SensorArrayFileInfo(subjFolder,options);
-    tbl_Decomp      = get_DecompFileInfo(subjFolder,options);
+    tbl_SensorArray = get_SensorArrayFileInfo_FromSubjectFolder(subjFolder,options);
+    tbl_SensorArray = append_File_MatchTag(tbl_SensorArray,options);
+    tbl_Decomp      = get_DecompFileInfo_FromSubjectFolder(subjFolder,options);
+    tbl_Decomp      = append_File_MatchTag(tbl_Decomp,options);
     
     fprintf(fid,'%d Sensor Array files found.\n',size(tbl_SensorArray,1));
     fprintf(fid,'%d Decomposition files found.\n\n\n',size(tbl_Decomp,1));
@@ -19,7 +21,7 @@ function append_DecompositionResults_ToSensorArrayFile(subjFolder,options)
     for i=1:size(tbl_SensorArray,1)
         
         fName_Array = [subjFolder '\array\' tbl_SensorArray.Files{i}];
-        ind = tbl_Decomp.File_MatchTag == tbl_SensorArray.File_MatchTag(i);
+        ind = tbl_Decomp.FileID_Tag == tbl_SensorArray.FileID_Tag(i);
         ind = find(ind);
         
         if isempty(ind) 
@@ -103,42 +105,42 @@ function Array = get_DecompositionInfo(tbl_Decomp,subjFolder)
     end
 end
         
-function  tbl_Decomp = get_DecompFileInfo(subjFolder,options)
-    decompFolder = [subjFolder '\decomp'];
-    options.Trial = options.Decomp;
-    tbl_Decomp = extract_FileInformation_FromFolder(decompFolder,'.txt',options);
-    tbl_Decomp = split_FileID_FromSensorArrayDecomp(tbl_Decomp);
-    tbl_Decomp      = append_File_MatchTag(tbl_Decomp,options);
-end
+% function  tbl_Decomp = get_DecompFileInfo_FromSubjectFolder(subjFolder,options)
+%     decompFolder  = [subjFolder '\decomp'];
+%     options.Trial = options.Decomp;
+%     tbl_Decomp = extract_FileInformation_FromFolder(decompFolder,'.txt',options);
+%     tbl_Decomp = split_FileID_FromSensorArrayDecomp(tbl_Decomp);
+%     tbl_Decomp = append_File_MatchTag(tbl_Decomp,options);
+% end
+% 
+% function tbl_SensorArray = get_SensorArrayFileInfo_FromSubjectFolder(subjFolder,options)
+%     arrayFolder   = [subjFolder '\array'];
+%     options.Trial = options.SensorArray;
+%     tbl_SensorArray = extract_FileInformation_FromFolder(arrayFolder,'.mat',options);
+%     tbl_SensorArray = append_File_MatchTag(tbl_SensorArray,options);
+% end
 
-function tbl_SensorArray = get_SensorArrayFileInfo(subjFolder,options)
-    arrayFolder = [subjFolder '\array'];
-    options.Trial = options.SensorArray;
-    tbl_SensorArray = extract_FileInformation_FromFolder(arrayFolder,'.mat',options);
-    tbl_SensorArray = append_File_MatchTag(tbl_SensorArray,options);
-end
-
-function tbl = append_File_MatchTag(tbl,options)
-
-    cIndex = find_TableColumns(tbl,options.MatchFilesBy);
-    
-    for n=1:size(tbl,1)
-        cNames  = tbl(n,cIndex); 
-        cNames  = cNames{1,:};
-        cTag{n,1} = [cNames{:}];
-    end
-    
-    tmp = table(categorical(cTag),'VariableNames',{'File_MatchTag'});
-    tbl = [tbl,tmp];
-    
-end
-
-function cIndex = find_TableColumns(tbl,target)
-
-    tblColumns = categorical(tbl.Properties.VariableNames);
-    target     = categorical(target);
-    for n=1:length(target)
-        cIndex(n) = find(tblColumns==target(n));
-    end
-
-end
+% function tbl = append_File_MatchTag(tbl,options)
+% 
+%     cIndex = find_TableColumns(tbl,options.MatchFilesBy);
+%     
+%     for n=1:size(tbl,1)
+%         cNames  = tbl(n,cIndex); 
+%         cNames  = cNames{1,:};
+%         cTag{n,1} = [cNames{:}];
+%     end
+%     
+%     tmp = table(categorical(cTag),'VariableNames',{'File_MatchTag'});
+%     tbl = [tbl,tmp];
+%     
+% end
+% 
+% function cIndex = find_TableColumns(tbl,target)
+% 
+%     tblColumns = categorical(tbl.Properties.VariableNames);
+%     target     = categorical(target);
+%     for n=1:length(target)
+%         cIndex(n) = find(tblColumns==target(n));
+%     end
+% 
+% end
