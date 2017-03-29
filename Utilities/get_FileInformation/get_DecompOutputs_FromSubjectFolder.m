@@ -1,10 +1,16 @@
 
 % decompWorkspace = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\BA\decomp\BicepsStroke_BA_Workspace';
 
-function tbl = get_DecompOutputs_FromFolder(decompWorkspace)
-    tbl = get_Basic_DecompOutputInfo(decompWorkspace);
-    tbl = append_DecompLabels(tbl);
-    tbl = append_DecompChannels(tbl,decompWorkspace);      
+function decompOutput_tbl = get_DecompOutputs_FromSubjectFolder(subjDir,options)
+
+    decompWorkspace  = get_SubjectDecompWorkspace(subjDir);
+    decompOutput_tbl = get_Basic_DecompOutputInfo(decompWorkspace);
+    decompOutput_tbl = parse_FileNameTable(decompOutput_tbl,options.DecompOutput);
+    decompOutput_tbl = split_Decomp_RepID(decompOutput_tbl);
+%     decompOutput_tbl = append_DecompLabels(decompOutput_tbl);
+%     decompOutput_tbl = append_DecompChannels(decompOutput_tbl,decompWorkspace);
+    
+    decompOutput_tbl.Properties.VariableNames{1} = 'OutputFiles';
 end
 
 function tbl = get_Basic_DecompOutputInfo(decompWorkspace)
@@ -17,7 +23,7 @@ function tbl = get_Basic_DecompOutputInfo(decompWorkspace)
         StoredFileFolder(j,1) = {strtrim(x.StoredFileFolder(j,:))}; 
     end
     
-    tbl = table(FileLabel,StoredFileName,StoredFileFolder,'VariableNames',{'OutputFiles','StoredFileName','StoredFileFolder'});
+    tbl = table(FileLabel,StoredFileName,StoredFileFolder,'VariableNames',{'Files','StoredFileName','StoredFileFolder'});
    
 end
 

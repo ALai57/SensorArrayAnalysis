@@ -11,9 +11,13 @@ function append_DecompositionResults_ToSensorArrayFile(subjFolder,options)
     fid = open_LogFile([subjFolder '\array']);
     
     tbl_SensorArray = get_SensorArrayFileInfo_FromSubjectFolder(subjFolder,options);
-    tbl_SensorArray = append_File_MatchTag(tbl_SensorArray,options);
-    tbl_Decomp      = get_DecompFileInfo_FromSubjectFolder(subjFolder,options);
-    tbl_Decomp      = append_File_MatchTag(tbl_Decomp,options);
+    tbl_SensorArray = append_FileID_Tag(tbl_SensorArray,options);
+%     tbl_Decomp      = get_DecompFileInfo_FromSubjectFolder(subjFolder,options);
+    decompWorkspace = get_SubjectDecompWorkspace(subjFolder);
+    tbl_Decomp      = get_DecompOutputs_FromFolder(decompWorkspace);
+    tbl_Decomp.Properties.VariableNames{1} = 'Files';
+    tbl_Decomp      = parse_FileNameTable(tbl_Decomp,options.Decomp); 
+    tbl_Decomp      = append_FileID_Tag(tbl_Decomp,options);
     
     fprintf(fid,'%d Sensor Array files found.\n',size(tbl_SensorArray,1));
     fprintf(fid,'%d Decomposition files found.\n\n\n',size(tbl_Decomp,1));
