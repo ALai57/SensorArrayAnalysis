@@ -77,7 +77,7 @@ function dataTbl = append_No_DecompositionResults(dataTbl,arrayNumber,decompChan
 
         %Decomp info
         dataTbl.ArrayNumber     = categorical({num2str(arrayNumber)});
-        dataTbl.DecompChannels  = {decompChannels};
+        dataTbl.DecompChannels  = decompChannels;
         dataTbl.MU              = NaN;
         dataTbl.FiringTimes     = {[]};
         dataTbl.Delsys_Template = {[]};

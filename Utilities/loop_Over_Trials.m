@@ -9,7 +9,7 @@
 %                                                                                                                                       MVC,...
 %                                                                                                                                       options );
 % subj_Dir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\WT';                                                                                                                                  
-                                                                                                                                  
+%                                                                                                                                   
 
 function analysis = loop_Over_Trials(subj_Dir, options)
 

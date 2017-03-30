@@ -102,46 +102,39 @@ function Array = get_DecompositionInfo(tbl_Decomp,tbl_DecompValidation,subjFolde
         fName_Firings = [subjFolder '\decomp\' tbl_Decomp.ExportFiles{i_f}];
         y=importdata(fName_Firings);
         
-        pass = check_ForEqualNumberOfMUs(x,y); %Check for equal number of MU templates and Firing times
+        check_ForEqualNumberOfMUs(x,y) %Check for equal number of MU templates and Firing times
          
-        if pass
-            for k=1:max(x.data(:,1))
-                ind_MU = x.data(:,1)==k;
+        for k=1:max(x.data(:,1))
+            ind_MU = x.data(:,1)==k;
 
-                Array(j).Decomp(k).Templates = table(x.data(ind_MU,2),...
-                                            x.data(ind_MU,3),...
-                                            x.data(ind_MU,4),...
-                                            x.data(ind_MU,5),...
-                                            x.data(ind_MU,6),...
-                                            'VariableNames',...
-                                                {'Time',...
-                                                 'Ch1',...
-                                                 'Ch2',...
-                                                 'Ch3',...
-                                                 'Ch4'}   );
-            end
-
-            for k=1:size(y.data,2)
-                theData = y.data(:,k);
-                theData(isnan(theData))=[];
-                Array(j).Decomp(k).FiringTimes = theData;
-            end
-        else
-            Array(j).Decomp.Templates   = {'MUFiringTimes.txt does not match MUAPs.txt'};
-            Array(j).Decomp.FiringTimes = {'MUFiringTimes.txt does not match MUAPs.txt'};
+            Array(j).Decomp(k).Templates = table(x.data(ind_MU,2),...
+                                        x.data(ind_MU,3),...
+                                        x.data(ind_MU,4),...
+                                        x.data(ind_MU,5),...
+                                        x.data(ind_MU,6),...
+                                        'VariableNames',...
+                                            {'Time',...
+                                             'Ch1',...
+                                             'Ch2',...
+                                             'Ch3',...
+                                             'Ch4'}   );
         end
+
+        for k=1:size(y.data,2)
+            theData = y.data(:,k);
+            theData(isnan(theData))=[];
+            Array(j).Decomp(k).FiringTimes = theData;
+        end
+
     end
 end
         
-function pass = check_ForEqualNumberOfMUs(x,y) 
+function check_ForEqualNumberOfMUs(x,y) 
     nX = length(unique(x.data(:,1))); %MUAPs.txt
     nY = size(y.data,2);              %MUFiringTimes.txt
 
     if nX~=nY
-        pass = 0;
-%        error('Not the same number of Motor Units in "MUFiringTimes.txt" and "MUAPS.txt" files. Re-export data to .txt files.') 
-    else
-        pass = 1;
+       error('Not the same number of Motor Units in "MUFiringTimes.txt" and "MUAPS.txt" files. Re-export data to .txt files.') 
     end
 end
 
