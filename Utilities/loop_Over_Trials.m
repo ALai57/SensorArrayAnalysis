@@ -1,4 +1,15 @@
 
+% 
+% options.SensorArray.FileNameConvention         = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'}; 
+% options.SingleDifferential.FileNameConvention  = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'}; 
+% 
+% options.Trial_Analyses{1}                      = @(arrayFile,singlediffFile,trial_Information,MVC,options)build_2Array_DataTable(arrayFile,...
+%                                                                                                                                       singlediffFile,...
+%                                                                                                                                       trial_Information,...
+%                                                                                                                                       MVC,...
+%                                                                                                                                       options );
+% subj_Dir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\WT';                                                                                                                                  
+                                                                                                                                  
 
 function analysis = loop_Over_Trials(subj_Dir, options)
 

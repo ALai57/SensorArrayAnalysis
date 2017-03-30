@@ -13,23 +13,33 @@ function append_DecompositionResults_ToSensorArrayFile(subjFolder,options)
     tbl_SensorArray = get_SensorArrayFileInfo_FromSubjectFolder(subjFolder,options);
     tbl_SensorArray = append_FileID_Tag(tbl_SensorArray,options);
     
-    tbl_Decomp      = get_DecompExports_FromSubjectFolder(subjFolder,options); 
-    tbl_Decomp      = append_FileID_Tag(tbl_Decomp,options);
+    tbl_DecompExports      = get_DecompExports_FromSubjectFolder(subjFolder,options); 
+    tbl_DecompExports      = append_FileID_Tag(tbl_DecompExports,options);
     
+    tbl_DecompOutputs      = get_DecompOutputs_FromSubjectFolder(subjFolder,options); 
+    tbl_DecompOutputs      = append_FileID_Tag(tbl_DecompOutputs,options);
+    
+    tbl_DecompValidation = validate_Decomp(subjFolder,options);
+    
+    if ~isequal(tbl_DecompValidation.SensorArray_FileID_Tag,tbl_SensorArray.FileID_Tag)
+        error('Decompositions not valid - Sensor Array File IDs not the same as validation File IDs')    
+    end
+        
     fprintf(fid,'%d Sensor Array files found.\n',size(tbl_SensorArray,1));
-    fprintf(fid,'%d Decomposition files found.\n\n\n',size(tbl_Decomp,1));
+    fprintf(fid,'%d Decomposition files found.\n\n\n',size(tbl_DecompExports,1));
     
     for i=1:size(tbl_SensorArray,1)
         
         fName_Array = [subjFolder '\array\' tbl_SensorArray.Files{i}];
-        ind = tbl_Decomp.FileID_Tag == tbl_SensorArray.FileID_Tag(i);
+        ind = tbl_DecompExports.FileID_Tag == tbl_SensorArray.FileID_Tag(i);
         ind = find(ind);
         
+        ind2 = tbl_DecompValidation.SensorArray_FileID_Tag == tbl_SensorArray.FileID_Tag(i);
         if isempty(ind) 
-            Array = create_DefaultArray(options);
+            Array = create_DefaultArray(tbl_DecompValidation(ind2,:),options);
             fprintf(fid,'No decomposition files found for %s. Saving empty file.\n',fName_Array);     
         else
-            Array = get_DecompositionInfo(tbl_Decomp(ind,:),subjFolder,options);
+            Array = get_DecompositionInfo(tbl_DecompExports(ind,:),tbl_DecompValidation(ind2,:),subjFolder,options);
         end
         
         %Resave
@@ -43,14 +53,15 @@ function append_DecompositionResults_ToSensorArrayFile(subjFolder,options)
     fprintf('Subject folder complete: %s.\n',subjFolder);
 end
 
-function Array = create_DefaultArray(options)
+function Array = create_DefaultArray(decompValidation,options)
     
     nArrays = length(options.Array.Number);
     
     for n=1:nArrays
-       Array(n).Decomp   = {};
-       Array(n).Number   = categorical(options.Array.Number(n));
-       Array(n).Location = options.Array.Names{n}; 
+       Array(n).Decomp         = {};
+       Array(n).DecompChannels = decompValidation.(['DecompInputChannels_' num2str(n)]);
+       Array(n).Number         = categorical(options.Array.Number(n));
+       Array(n).Location       = options.Array.Names{n}; 
     end
 end
 
@@ -61,7 +72,7 @@ function fid = open_LogFile(subjArrayFolder)
     fprintf(fid,'This log details which files were combined\n\n\n');
 end
 
-function Array = get_DecompositionInfo(tbl_Decomp,subjFolder,options)
+function Array = get_DecompositionInfo(tbl_Decomp,tbl_DecompValidation,subjFolder,options)
         
     tbl_Decomp.Array    = categorical(tbl_Decomp.Array);
     tbl_Decomp.FileType = categorical(tbl_Decomp.FileType);
@@ -72,7 +83,7 @@ function Array = get_DecompositionInfo(tbl_Decomp,subjFolder,options)
     ind_firings = tbl_Decomp.FileType == 'MUFiringTimes';
     ind_MUAPs   = tbl_Decomp.FileType == 'MUAPs';
     
-    Array = create_DefaultArray(options);
+    Array = create_DefaultArray(tbl_DecompValidation,options);
     
     for j=1:length(arrays)
         
@@ -80,6 +91,8 @@ function Array = get_DecompositionInfo(tbl_Decomp,subjFolder,options)
         
         i_f = ind_array & ind_firings; %Index of the MU_FiringTimes.txt file
         i_m = ind_array & ind_MUAPs;   %Index of the MUAPs.txt file
+%         
+%         Array(j).DecompChannels = tbl_DecompValidation.(['DecompInputChannels_' num2str(j)]);
         
         if ~sum(i_f) || ~sum(i_m)
            continue; 
@@ -113,13 +126,6 @@ function Array = get_DecompositionInfo(tbl_Decomp,subjFolder,options)
             Array(j).Decomp(k).FiringTimes = theData;
         end
 
-%         Array(j).Number = arrays(j);
-%         if arrays(j)==categorical({'1'})
-%             Array(j).Location = 'Medial';
-%         elseif arrays(j)==categorical({'2'})
-%             Array(j).Location = 'Lateral';
-%         end
-        % ADD IN ARRAY CHANNELS>.....
     end
 end
         

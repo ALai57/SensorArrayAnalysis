@@ -1,4 +1,6 @@
 
+% VERIFY FORCE MATCH FROM ARRY AND SINGLE DIFF
+% ADD DECOMP CHANNELS
 
 function dataTbl = build_2Array_DataTable(arrayFile,singlediffFile,trial_Information,MVC,options)
 
@@ -9,7 +11,7 @@ function dataTbl = build_2Array_DataTable(arrayFile,singlediffFile,trial_Informa
         
         if isempty(Array(k).Decomp)
             tmp = get_BasicTrialInformation(arrayFile,singlediffFile);
-            tmp = append_No_DecompositionResults(tmp,k);
+            tmp = append_No_DecompositionResults(tmp,k,Array(k).DecompChannels);
             tmp = repmat(tmp,size(trial_Information,1),1);
             tmp = [tmp, get_ForceTrace_Info(trial_Information,MVC)];
             dataTbl = [dataTbl;tmp]; 
@@ -71,10 +73,11 @@ function ForceTrace_tbl = get_ForceTrace_Info(trial_Information,MVC) % RampStart
     
 end
 
-function dataTbl = append_No_DecompositionResults(dataTbl,arrayNumber)
+function dataTbl = append_No_DecompositionResults(dataTbl,arrayNumber,decompChannels)
 
         %Decomp info
         dataTbl.ArrayNumber     = categorical({num2str(arrayNumber)});
+        dataTbl.DecompChannels  = {decompChannels};
         dataTbl.MU              = NaN;
         dataTbl.FiringTimes     = {[]};
         dataTbl.Delsys_Template = {[]};
@@ -100,6 +103,7 @@ function MU_tbl = get_Decomposition_Info(Array)
 
     nMU      = length(Array.Decomp);
     ArrayNum = Array.Number;
+    DecompChannels = Array.DecompChannels;
     
     c = cell(nMU,1);
     z = zeros(nMU,1);
@@ -109,7 +113,7 @@ function MU_tbl = get_Decomposition_Info(Array)
         MU_tbl.Delsys_Template{n,1}  = Array.Decomp(n).Templates;
     end 
     
-    temp = table(repmat(ArrayNum,nMU,1),'VariableNames',{'ArrayNumber'});
+    temp = table(repmat(ArrayNum,nMU,1),repmat(DecompChannels,nMU,1),'VariableNames',{'ArrayNumber','DecompChannels'});
     
     MU_tbl = [temp,MU_tbl];
 end
