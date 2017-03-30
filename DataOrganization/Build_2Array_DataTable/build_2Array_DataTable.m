@@ -11,7 +11,7 @@ function dataTbl = build_2Array_DataTable(arrayFile,singlediffFile,trial_Informa
         
         if isempty(Array(k).Decomp)
             tmp = get_BasicTrialInformation(arrayFile,singlediffFile);
-            tmp = append_No_DecompositionResults(tmp,k,Array(k).DecompChannels);
+            tmp = append_No_DecompositionResults(tmp,Array(k));
             tmp = repmat(tmp,size(trial_Information,1),1);
             tmp = [tmp, get_ForceTrace_Info(trial_Information,MVC)];
             dataTbl = [dataTbl;tmp]; 
@@ -33,6 +33,16 @@ function dataTbl = build_2Array_DataTable(arrayFile,singlediffFile,trial_Informa
             dataTbl = [dataTbl; tmp];
         end
     end
+    
+    
+    dataTbl.SID           = categorical(dataTbl.SID);
+    dataTbl.ArmType       = categorical(dataTbl.ArmType);
+    dataTbl.ArmSide       = categorical(dataTbl.ArmSide);
+    dataTbl.Experiment    = categorical(dataTbl.Experiment);
+    dataTbl.TargetForce   = categorical(dataTbl.TargetForce);
+    dataTbl.ArrayLocation = categorical(dataTbl.ArrayLocation);
+    dataTbl.ID            = categorical(dataTbl.ID);
+    dataTbl.TrialName     = categorical(dataTbl.TrialName);
     
 end
 
@@ -73,11 +83,14 @@ function ForceTrace_tbl = get_ForceTrace_Info(trial_Information,MVC) % RampStart
     
 end
 
-function dataTbl = append_No_DecompositionResults(dataTbl,arrayNumber,decompChannels)
+function dataTbl = append_No_DecompositionResults(dataTbl,Array)
 
+        
+    
         %Decomp info
-        dataTbl.ArrayNumber     = categorical({num2str(arrayNumber)});
-        dataTbl.DecompChannels  = decompChannels;
+        dataTbl.ArrayNumber     = Array.Number;
+        dataTbl.ArrayLocation   = {Array.Location};
+        dataTbl.DecompChannels  = Array.DecompChannels;
         dataTbl.MU              = NaN;
         dataTbl.FiringTimes     = {[]};
         dataTbl.Delsys_Template = {[]};
@@ -103,7 +116,9 @@ function MU_tbl = get_Decomposition_Info(Array)
 
     nMU      = length(Array.Decomp);
     ArrayNum = Array.Number;
+    ArrayLoc = {Array.Location};
     DecompChannels = Array.DecompChannels;
+    
     
     c = cell(nMU,1);
     z = zeros(nMU,1);
@@ -113,7 +128,7 @@ function MU_tbl = get_Decomposition_Info(Array)
         MU_tbl.Delsys_Template{n,1}  = Array.Decomp(n).Templates;
     end 
     
-    temp = table(repmat(ArrayNum,nMU,1),repmat(DecompChannels,nMU,1),'VariableNames',{'ArrayNumber','DecompChannels'});
+    temp = table(repmat(ArrayNum,nMU,1),repmat(ArrayLoc,nMU,1),repmat(DecompChannels,nMU,1),'VariableNames',{'ArrayNumber','ArrayLocation','DecompChannels'});
     
     MU_tbl = [temp,MU_tbl];
 end

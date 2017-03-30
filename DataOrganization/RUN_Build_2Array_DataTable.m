@@ -13,4 +13,5 @@ options.Trial_Analyses{1}                      = @(arrayFile,singlediffFile,tria
                                                                                                                                       MVC,...
                                                                                                                                       options );
                                                                                                                                   
-analysis = loop_Over_SubjectType(dataDirs,options); 
+analysis  = loop_Over_SubjectType(dataDirs,options); 
+MU_Data = convert_Build_2Array_DataTable_StructToTable(analysis);
