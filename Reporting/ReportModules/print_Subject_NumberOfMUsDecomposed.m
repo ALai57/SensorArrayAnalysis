@@ -6,7 +6,6 @@
 function print_Subject_NumberOfMUsDecomposed(selection,subjData)
     
     nArrays = 2;
-
     
     decompData = [];
     
@@ -30,25 +29,35 @@ function print_Subject_NumberOfMUsDecomposed(selection,subjData)
         end
     end
     
+     % Plot. 
+     % Insert breaks
+    
     figure; hold on;
     arrayLoc = unique(decompData.ArrayLocation);
     for n=1:length(arrayLoc)
         ind = decompData.ArrayLocation == arrayLoc(n);
-        plot(decompData.TargetForce_N(ind),decompData.nMU(ind),'o');
-        xlabel('Force (N)'); ylabel('Number of MUs');
+        plot(decompData.TargetForce_N(ind),decompData.nMU(ind),'o','linewidth',2);
+        
     end
     ind = decompData.TargetForce == '100%MVC';
+    ind = find(ind);
     MVC = decompData.TargetForce_N(ind(1));
     ylim([0 60])
     yL = get(gca,'ylim');
     xL = get(gca,'xlim');
     xlim([0 xL(2)]);
     plot([MVC, MVC],yL,'k','linewidth',4);
-    legend([char(arrayLoc(1)) ' Array'],[char(arrayLoc(2)) ' Array'],'MVC')
-    title('Number of Decomposed MUs vs. Target Force')
-    % Plot.
-%     print_TableToWord(selection,tbl_Out);
-    selection.TypeText(['Array = Sensor Array. SD = Single Differential. ' char(13)]); 
+    hL = legend([char(arrayLoc(1)) ' Array'],[char(arrayLoc(2)) ' Array'],'MVC');
+    set(hL,'position',[0.1450    0.7492    0.2661    0.1690])
+    legend boxoff
+    set(gca,'fontsize',12)
+    SID = char(subjData.SID(1));
+    xlabel('Steady Force (N)'); ylabel('Number of MUs');
+    title(['Subject: ' SID],'fontsize',16);
+    
+    print_FigureToWord(selection,['Subject = ' SID char(13)],'WithMeta')
+    close(gcf);
+    selection.InsertBreak;
 end
 
 function trialData = get_TrialData(subjData,trialName)

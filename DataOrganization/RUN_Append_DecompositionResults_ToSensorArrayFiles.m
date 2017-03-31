@@ -1,9 +1,23 @@
 
 
-options.SensorArray.FileNameConvention  = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'}; 
-options.DecompExport.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'};
-options.DecompOutput.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID'};
-options.FileID_Tag = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID'};
+% options.DecompInput.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID'}; 
+% options.SensorArray.FileNameConvention  = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'}; 
+% options.DecompExport.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'};
+% options.DecompOutput.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID'};
+
+options.DecompInput.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID'}; 
+options.DecompOutput.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID'}; 
+options.DecompExport.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'}; 
+options.SensorArray.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'}; 
+
+ID_Tag = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID'};
+options.DecompInput.FileID_Tag   = ID_Tag;
+options.DecompOutput.FileID_Tag  = ID_Tag;
+options.DecompExport.FileID_Tag  = ID_Tag;
+options.SensorArray.FileID_Tag   = ID_Tag;
+
+options.FileID_Tag = ID_Tag;
+options.NumberOfArrays = 2;
 options.Array.Number = {'1','2'};
 options.Array.Names  = {'Medial','Lateral'};
 

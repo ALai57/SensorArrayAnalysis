@@ -1,10 +1,11 @@
 
-function generateReport_NumberOfMUsDecomposed(dataFolder)
-
+function generateReport_NumberOfMUsDecomposed(MU_Data)
 
     analyses{1} = @(selection,subjData)print_Subject_NumberOfMUsDecomposed(selection,subjData);
 
-    report_BySubject(dataFolder, @reportDescription, analyses)
+    report_BySubject_Table(MU_Data, @reportDescription, analyses)
+    
+    %%% INCLUDE ABILITY TO PRINT OPTIONS RIGHT UP FRONT.
 end
 
 
@@ -25,5 +26,5 @@ function reportDescription(selection)
 %     selection.TypeText(['- After the summary table, Force traces from all trials are plotted.' char(13)]) 
 %     selection.TypeText(['- Only force traces from SensorArray.mat files are included.' char(13)]) 
 %     selection.TypeText(['- Force traces from SingleDifferential.mat files are not included.' char(13)']) 
-    
+    selection.InsertBreak;
 end
