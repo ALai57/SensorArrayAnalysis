@@ -22,3 +22,11 @@ subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\JC
 subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\JF'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
 subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\PT'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
 subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\WT'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
+
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\AC'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\AL'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\BA'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\GR'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\HS'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\MS'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\ZR'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];

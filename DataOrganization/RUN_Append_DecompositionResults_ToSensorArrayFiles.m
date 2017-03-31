@@ -1,9 +1,7 @@
 
 
-% options.DecompInput.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID'}; 
-% options.SensorArray.FileNameConvention  = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'}; 
-% options.DecompExport.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'};
-% options.DecompOutput.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID'};
+
+%%%% PICK UP HERE AND EDIT THE SUBJECT WORKSPACES FOR THE NEW FILES.
 
 options.DecompInput.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID'}; 
 options.DecompOutput.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID'}; 
@@ -67,6 +65,3 @@ append_DecompositionResults_ToSensorArrayFile('C:\Users\Andrew\Lai_SMULab\Projec
 append_DecompositionResults_ToSensorArrayFile('C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\WT',options)
 
 
-%%%% PICK UP HERE AND MAKE SURE THAT ALL THE ARRAY FILES THAT ARE NOT
-%%%% DECOMPOSED ALSO HAVE A DESCRIPTION OF THEIR FILE INPUTS (ie CHANNEL
-%%%% NUMBERS)
