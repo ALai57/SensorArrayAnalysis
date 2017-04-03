@@ -20,33 +20,26 @@
 % analyses{2} = @(selection,subjFolder)print_Subject_ForceSummary(selection,subjFolder);
 % analyses{3} = @(selection,subjFolder)print_Subject_EMGSummary(selection,subjFolder);
 
-function report_BySubject_Table(MU_Data, reportDescription, analyses)
+function report_BySubject_Table(selection, MU_Data, analyses)
 
-    [serverHandle, selection] = open_ConnectionToWord();
+%     [serverHandle, selection] = open_ConnectionToWord();
     
-    try
-        subjs = unique(MU_Data.SID);
+    subjs = unique(MU_Data.SID);
 
-        if ~isempty(reportDescription)
-            reportDescription(selection)
-        end
-            
-        for n=1:length(subjs)   %Loop over all subjects
-            
-            selection.TypeText(['Data from subject : ' char(subjs(n)) char(13)]); 
-            
-            ind = MU_Data.SID == subjs(n);
-            subj_MU_Data = MU_Data(ind,:);
-            
-            for i=1:length(analyses) % Perform each analysis requested
-               analyses{i}(selection,subj_MU_Data); 
-            end
+    for n=1:length(subjs)   %Loop over all subjects
 
+        selection.TypeText(['Data from subject : ' char(subjs(n)) char(13)]); 
+
+        ind = MU_Data.SID == subjs(n);
+        subj_MU_Data = MU_Data(ind,:);
+
+        for i=1:length(analyses) % Perform each analysis requested
+           analyses{i}(selection,subj_MU_Data); 
         end
-        display('Done creating report.')
-    catch
-        delete(serverHandle)
+
     end
+    display('Done analyzing subjects.')
+
 end
 
 

@@ -1,6 +1,13 @@
 
-%validate decomp export
-
+% % This function validates that the decomposition was done correctly
+%  
+%  % The file checks that
+%     % 1) All trials were set up for decomposition
+%     % 2) The correct EMG channels were decomposed
+%     % 3) Decomposition outputs were obtained from Delsys dEMG
+%     % 4) Decompositions were exported
+    
+    
 function decompValidation = validate_Decomp(subjDir,options)
         
     decompInput_tbl = get_DecompInputs_FromSubjectFolder(subjDir,options.DecompInput);
@@ -59,6 +66,10 @@ function tmp = process_DecomposedFiles(tbl_FileID,targetName,varName,tmp,options
             if ~isempty(arrayData{i})
                 tmp.([varName '_' num2str(i)]) = arrayData(i);
             end
+        end
+    elseif size(tbl_FileID,1)>1
+        for i=1:size(tbl_FileID.(targetName),1)
+            tmp.([varName '_' num2str(i)]) = tbl_FileID.(targetName)(i);
         end
     else
         for i=1:size(tbl_FileID.(targetName),2)

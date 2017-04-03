@@ -1,16 +1,20 @@
 
 
-% dataDirs(1)  =  {'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control'};
+%
 
+% dataDirs(1)  =  {'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control'};
+% 
 % options.SensorArray.FileNameConvention         = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'}; 
 % options.SingleDifferential.FileNameConvention  = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'}; 
-
+% 
 % options.Subject_Analyses{1}                    = @(subj_Dir, options)loop_Over_Trials(subj_Dir,options);
 % options.Trial_Analyses{1}                      = @(arrayFile,singlediffFile,trial_Information,MVC,options)build_2Array_DataTable(arrayFile,...
 %                                                                                                                                       singlediffFile,...
 %                                                                                                                                       trial_Information,...
 %                                                                                                                                       MVC,...
 %                                                                                                                                       options );
+% [4,5,8,9,10,12,13] = new Control subjects
+%  [1,2,3,6,7,11,14] = old Control subjects
 
 function analysis = loop_Over_SubjectType(dataDirs,options)
 
@@ -19,7 +23,7 @@ function analysis = loop_Over_SubjectType(dataDirs,options)
         
         SIDs = get_subFolders(dataDirs{status});
 
-        for subj=[4,5,8,9,10,12,13]%1:length(SIDs) %Loop through each subject
+        for subj=1:length(SIDs) %Loop through each subject
 
             SID            = SIDs{subj};
             subj_Dir       = [dataDirs{status} '\' SID];

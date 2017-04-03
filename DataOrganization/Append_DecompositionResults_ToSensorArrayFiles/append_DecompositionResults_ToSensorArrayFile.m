@@ -1,10 +1,19 @@
-
-%Select subject folder
-%     subjFolder = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\AC';
+% % This script sets up a program that appends the Delsys decomposition data to the sensor array data files
 % 
-%     options.SensorArray.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'}; 
-%     options.Decomp.FileNameConvention  = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'}; 
-%     options.FileID_Tag = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID'};
+%     % Inputs: 
+%         % options
+%         % subjectFolder
+%     
+%     % Output:
+%         % An extra 'Array' struct appended to each SensorArray.mat file
+%         % The Array struct contains MUFiringTimes, MUAPs, and Array info
+%     
+%     
+% % options
+%     % .X.FileNameConvention = the naming convention used for each file type
+%     % .X.FileID_Tag = the way to identify files that come from the same trial
+%     % .Array = Information about the sensor arrays used in the experiment
+
    
 function append_DecompositionResults_ToSensorArrayFile(subjFolder,options)
     

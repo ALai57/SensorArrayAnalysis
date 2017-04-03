@@ -1,5 +1,13 @@
 
- 
+%  % This script sets up a validation for Delsys dEMG decomp
+%  % The script checks that the decomposition was done correctly
+%  
+%  % The file checks that
+%     % 1) All trials were set up for decomposition
+%     % 2) The correct EMG channels were decomposed
+%     % 3) Decomposition outputs were obtained from Delsys dEMG
+%     % 4) Decompositions were exported
+    
 options.DecompInput.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID'}; 
 options.DecompOutput.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID'}; 
 options.DecompExport.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'}; 
@@ -30,3 +38,4 @@ subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\GR
 subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\HS'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
 subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\MS'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
 subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\ZR'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
+

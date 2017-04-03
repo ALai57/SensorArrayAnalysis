@@ -4,15 +4,19 @@
 
 function generateReport_ForceTraces_FromSensorArrayFiles(dataFolder)
 
-
     analyses{1} = @(selection,subjFolder)print_Subject_FileSummary(selection,subjFolder);
     analyses{2} = @(selection,subjFolder)print_Subject_ForceSummary_SensorArrayFiles(selection,subjFolder);
-
-    report_BySubject(dataFolder, @reportDescription, analyses)
+    
+    [serverHandle, selection] = open_ConnectionToWord();
+    
+    report_Description(selection)
+    report_BySubject(dataFolder, analyses)
+    
+    delete(serverHandle)
 end
 
 
-function reportDescription(selection)
+function report_Description(selection)
     selection.Font.Size = 56;
     selection.Font.Bold = 1;
     selection.TypeText(['MATLAB REPORT:' char(13)]);

@@ -10,7 +10,8 @@ function print_Subject_NumberOfMUsDecomposed(selection,subjData)
     decompData = [];
     
     % For each trial
-    trials     = unique(subjData.TrialName);  
+    trials = unique(subjData.SensorArrayFile);  
+    
     for n=1:length(trials)
         trialData = get_TrialData(subjData,trials(n));
         
@@ -61,7 +62,7 @@ function print_Subject_NumberOfMUsDecomposed(selection,subjData)
 end
 
 function trialData = get_TrialData(subjData,trialName)
-    ind       = subjData.TrialName == trialName;      
+    ind       = subjData.SensorArrayFile == categorical(trialName);      
     trialData = subjData(ind,:);
 end
 
@@ -69,17 +70,3 @@ function arrayData = get_ArrayData(trialData,array)
     ind       = trialData.ArrayNumber == categorical(array);      
     arrayData = trialData(ind,:);
 end
-
-
-
-% figure; 
-% arrayLoc = unique(decompData.ArrayLocation);
-% for n=1:length(arrayLoc)
-%     ind = decompData.ArrayLocation == arrayLoc(n);
-%     subplot(2,1,1); hold on;
-%     plot(decompData.TargetForce_MVC(ind),decompData.nMU(ind),'o');
-%     xlabel('Force (%MVC)'); ylabel('Number of MUs');
-%     subplot(2,1,2); hold on;
-%     plot(decompData.TargetForce_N(ind),decompData.nMU(ind),'o');
-%     xlabel('Force (N)'); ylabel('Number of MUs');
-% end
