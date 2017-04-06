@@ -49,4 +49,15 @@ append_DecompositionResults_ToSensorArrayFile('C:\Users\Andrew\Lai_SMULab\Projec
 append_DecompositionResults_ToSensorArrayFile('C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\MS',options)
 append_DecompositionResults_ToSensorArrayFile('C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\ZR',options)
 
+%%%%%%%%%%%%% PICK UP HERE AND RUN APPEND CODE FOR STROKE SURVIVORS.
 
+append_DecompositionResults_ToSensorArrayFile('C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\EW',options)
+append_DecompositionResults_ToSensorArrayFile('C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\JD',options)
+append_DecompositionResults_ToSensorArrayFile('C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\JL',options)
+append_DecompositionResults_ToSensorArrayFile('C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\JR',options)
+append_DecompositionResults_ToSensorArrayFile('C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\KB',options)
+append_DecompositionResults_ToSensorArrayFile('C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\KP',options)
+append_DecompositionResults_ToSensorArrayFile('C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\MM',options)
+append_DecompositionResults_ToSensorArrayFile('C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\NG',options)
+append_DecompositionResults_ToSensorArrayFile('C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\NT',options)
+append_DecompositionResults_ToSensorArrayFile('C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\WS',options)

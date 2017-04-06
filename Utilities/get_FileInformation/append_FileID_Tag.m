@@ -6,8 +6,10 @@ function tbl = append_FileID_Tag(tbl,options)
     
     for n=1:size(tbl,1)
         cNames  = tbl(n,cIndex); 
-        cNames  = cNames{1,:};
-        cTag{n,1} = [cNames{:}];
+%         cNames  = cNames{1,:};
+%         cTag{n,1} = [cNames{:}];      
+        cNames    = char(cNames{1,:});
+        cTag{n,1} = [cNames(:)]';
     end
     
     tmp = table(categorical(cTag),'VariableNames',{'FileID_Tag'});

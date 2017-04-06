@@ -14,7 +14,6 @@ function generateReport_NumberOfMUsDecomposed(MU_Data)
     delete(serverHandle)
 end
 
-
 function report_Description(selection)
     selection.Font.Size = 56;
     selection.Font.Bold = 1;

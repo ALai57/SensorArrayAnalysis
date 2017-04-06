@@ -71,12 +71,21 @@ function ForceTrace_tbl = get_ForceTrace_Info(trial_Information,MVC) % RampStart
         targetForce = parse_TargetForce(trial_Information);
         ind_type = targetForce.ForceType == '%MVC';
         ind = ind_type & ind_arm;
-        MVC_Force = norm(MVC{ind_MVC,:},2);
-        ForceTrace_tbl.TargetForce_MVC(ind)  = targetForce.Force(ind);
-        ForceTrace_tbl.TargetForce_N(ind)    = targetForce.Force(ind)*MVC_Force/100;
-        ForceTrace_tbl.TargetForce_N(~ind)   = targetForce.Force(~ind);
-        ForceTrace_tbl.TargetForce_MVC(~ind) = targetForce.Force(~ind)/MVC_Force*100;
- 
+        
+        if arms(n)== categorical({'UNAFF'}) & ~isequal(trial_Information.TargetForce,{'100%MVC'})  % ADJUST FOR UNAFFECTED ARM TRIALS
+            MVC_Force_Aff   = norm(MVC{~ind_MVC,:},2);
+            MVC_Force_Unaff = norm(MVC{ind_MVC ,:},2);
+            ForceTrace_tbl.TargetForce_MVC(ind)  = targetForce.Force(ind)*MVC_Force_Aff/MVC_Force_Unaff;
+            ForceTrace_tbl.TargetForce_N(ind)    = targetForce.Force(ind)*MVC_Force_Aff/100;
+            ForceTrace_tbl.TargetForce_N(~ind)   = targetForce.Force(~ind)*MVC_Force_Aff/MVC_Force_Unaff;
+            ForceTrace_tbl.TargetForce_MVC(~ind) = targetForce.Force(~ind)*MVC_Force_Aff/100;
+        else
+            MVC_Force = norm(MVC{ind_MVC,:},2);
+            ForceTrace_tbl.TargetForce_MVC(ind)  = targetForce.Force(ind);
+            ForceTrace_tbl.TargetForce_N(ind)    = targetForce.Force(ind)*MVC_Force/100;
+            ForceTrace_tbl.TargetForce_N(~ind)   = targetForce.Force(~ind);
+            ForceTrace_tbl.TargetForce_MVC(~ind) = targetForce.Force(~ind)/MVC_Force*100;
+        end
     end
     ForceTrace_tbl.RampStart    = trial_Information.RampStart;
     ForceTrace_tbl.PlateauStart = trial_Information.PlateauStart;

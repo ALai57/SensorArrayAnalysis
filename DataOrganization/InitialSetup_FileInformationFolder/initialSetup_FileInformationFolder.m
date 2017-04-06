@@ -1,6 +1,6 @@
 
 
-function initialSetup_FileInformationFolder(subj_Dir, options)
+function out=initialSetup_FileInformationFolder(subj_Dir, options)
 
     [~,SID,~] = fileparts(subj_Dir);
     info_Dir  = [subj_Dir '\trial_information'];
@@ -22,7 +22,7 @@ function initialSetup_FileInformationFolder(subj_Dir, options)
         return;
     end
 
-    
+    out = 'Complete';
     
 end
 
@@ -44,10 +44,11 @@ function [MVC,forceMatching_Info] = create_Empty_FileInformation(subj_Dir,option
     forceMatching_Info               = arrayFiles;
     forceMatching_Info.RampStart     = repmat(3.5,size(forceMatching_Info,1),1);
     
-    for n=1:size(arrayFiles.TargetForce)
+    for n=1:size(arrayFiles.TargetForce,1)
         TF(n,1) = sscanf(arrayFiles.TargetForce{n}, '%g*');
         if TF(n,1) == 100
            forceMatching_Info.RampStart(n) = 0;
+           plateauDelay(n,1) = 0;
            continue; 
         end
         if ~isempty(strfind(arrayFiles.TargetForce{n},'MVC'))

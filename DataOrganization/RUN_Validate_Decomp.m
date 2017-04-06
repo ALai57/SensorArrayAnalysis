@@ -39,3 +39,17 @@ subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\HS
 subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\MS'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
 subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\ZR'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
 
+
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\EW'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\JD'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\JL'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\JR'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\KB'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\KP'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\MM'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\NG'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\NT'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\WS'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
+
+
+
