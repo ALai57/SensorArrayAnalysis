@@ -25,12 +25,18 @@ function print_Subject_NumberOfMUsDecomposed(selection,subjData)
     trialData{1} = @(arrayData_tbl,options)get_NumberOfMUsDecomposed(arrayData_tbl,options);
     data         = get_Data_FromTrial(subjData,trialData,options);
 
-    options.Plot = get_Plot_Options();
+    options.Plot = get_Plot_Options_AbsoluteUnits();
     create_Figure_FromTable(data, options)
-    
     SID = data.SID(1);
     print_FigureToWord(selection,['Subject = ' SID char(13)],'WithMeta')
     close(gcf);
+    
+    options.Plot = get_Plot_Options_PctMVC();
+    create_Figure_FromTable(data, options);
+    SID = data.SID(1);
+    print_FigureToWord(selection,['Subject = ' SID char(13)],'WithMeta')
+    close(gcf);
+    
     selection.InsertBreak;
 end
 
@@ -45,7 +51,7 @@ function arrayData = get_ArrayData(trialData,array)
 end
 
 
-function PlotOptions = get_Plot_Options()
+function PlotOptions = get_Plot_Options_AbsoluteUnits()
 
     PlotOptions.SubplotBy       = {'ArmType'}; 
     PlotOptions.GroupBy         = {'ArrayNumber'};
@@ -55,9 +61,29 @@ function PlotOptions = get_Plot_Options()
     PlotOptions.LineStyle       = 'none';
     PlotOptions.Marker          = 'o';
     PlotOptions.FontSize        = 12;
-
     PlotOptions.XVar            = {'TargetForce_N'};
     PlotOptions.XLabel          = 'Target Force (N)';
+    PlotOptions.XLim            = [];
+    PlotOptions.YVar            = {'nMU'};
+    PlotOptions.YLabel          = 'Number of Motor Units';
+    PlotOptions.YLim            = [0 60];
+    PlotOptions.Title           = @(inputdata,options)[char(inputdata.SID(1)) ': ' char(inputdata.(options.Plot.SubplotBy{1})(1))] ;  
+    PlotOptions.TitleSize       = 16; 
+end
+
+
+function PlotOptions = get_Plot_Options_PctMVC()
+
+    PlotOptions.SubplotBy       = {'ArmType'}; 
+    PlotOptions.GroupBy         = {'ArrayNumber'};
+    PlotOptions.AdditionalPlots = [];
+    PlotOptions.LegendLocation  = [0.1450    0.7492    0.2661    0.1690];
+    PlotOptions.LineWidth       = 2;
+    PlotOptions.LineStyle       = 'none';
+    PlotOptions.Marker          = 'o';
+    PlotOptions.FontSize        = 12;
+    PlotOptions.XVar            = {'TargetForce_MVC'};
+    PlotOptions.XLabel          = 'TargetForce (%MVC)';
     PlotOptions.XLim            = [0 100];
     PlotOptions.YVar            = {'nMU'};
     PlotOptions.YLabel          = 'Number of Motor Units';
@@ -65,6 +91,8 @@ function PlotOptions = get_Plot_Options()
     PlotOptions.Title           = @(inputdata,options)[char(inputdata.SID(1)) ': ' char(inputdata.(options.Plot.SubplotBy{1})(1))] ;  
     PlotOptions.TitleSize       = 16; 
 end
+
+
 
 
 

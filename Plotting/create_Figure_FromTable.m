@@ -92,8 +92,15 @@ function format_Plot(options)
     set(gca,'fontsize' ,options.Plot.FontSize)
     xlabel(options.Plot.XLabel);
     ylabel(options.Plot.YLabel);
-    xlim(options.Plot.XLim);
-    ylim(options.Plot.YLim);
+    
+    if ~isempty(options.Plot.XLim)
+        xlim(options.Plot.XLim);
+    end
+    if ~isempty(options.Plot.YLim)
+        ylim(options.Plot.YLim);
+    end
+%     xlim(options.Plot.XLim);
+%     ylim(options.Plot.YLim);
 end
 
 function format_DataSeries(hP,options)

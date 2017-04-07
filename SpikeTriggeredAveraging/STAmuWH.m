@@ -7,8 +7,12 @@ function [STA_Template, STA_Amplitude, STA_Duration] = STAmuWH(FiringTimes, EMGt
     WinPost  = options.Window.Post;
     dt       = EMGtime(2)-EMGtime(1);
     
+    IndPrior = round(abs(WinPrior) / dt); % points prior to time of firing
+    IndPost  = round(abs(WinPost)  / dt);
+    
     if isempty(FiringTimes) % If there are no firing events, exit
-        STA_Template  = zeros(1 + round((abs(WinPrior) + abs(WinPost))/dt), 4); 
+%         STA_Template  = zeros(1 + round((abs(WinPrior) + abs(WinPost))/dt), 4); 
+        STA_Template  = zeros(IndPrior + IndPost + 1, 4);
         STA_Amplitude = zeros(4,1);
         STA_Duration  = zeros(4,1); 
         PeakN = zeros(4,1);
@@ -21,8 +25,8 @@ function [STA_Template, STA_Amplitude, STA_Duration] = STAmuWH(FiringTimes, EMGt
     FiringTimes = remove_Low_ISI(FiringTimes, MinISI, weights, dt);
     
     % do STA
-    IndPrior = round(abs(WinPrior) / dt); % points prior to time of firing
-    IndPost  = round(abs(WinPost)  / dt); % points post time of firing
+%     IndPrior = round(abs(WinPrior) / dt); % points prior to time of firing
+%     IndPost  = round(abs(WinPost)  / dt); % points post time of firing
     STA_Template = zeros(IndPrior + IndPost + 1, nChannels);
 
     for j=1:length(FiringTimes) % Loop over all valid MU events 

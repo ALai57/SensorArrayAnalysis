@@ -1,17 +1,14 @@
 
-function [STA_Template,Amp,Duration] = calculate_STA(FiringTimes, EMG, Templates)
+function [STA_Template,Amp,Duration] = calculate_STA_Fast(FiringTimes, EMG4, EMGtime,Templates)
     
     DelTime = Templates.Time;
-    
-    EMGtime = EMG.Time;   %~0.1 s
-    EMG4    = EMG{:,2:5}; %~0.1 s
     
     delsys_dt = DelTime(2)-DelTime(1);
     EMG_dt    = EMGtime(2)-EMGtime(1);
     
     %Remove NaNs
     DelTime(isnan(Templates.Ch1)) = [];
-    
+
     options.Window.Prior  = (length(DelTime)-1)*(delsys_dt/2)/1000; 
     options.Window.Post   = (length(DelTime)-1)*(delsys_dt/2)/1000-EMG_dt;
     

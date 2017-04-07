@@ -27,6 +27,9 @@ function print_All_NumberOfMUsDecomposed(selection, allData)
     options.Plot = get_Plot_Options();
     print_MultipleFigures_FromTable(selection, data, options);
     
+    options.Plot.XVar   = {'TargetForce_MVC'};
+    options.Plot.XLabel = 'TargetForce (%MVC)';
+    print_MultipleFigures_FromTable(selection, data, options);
 end
 
 function PlotOptions = get_Plot_Options()
