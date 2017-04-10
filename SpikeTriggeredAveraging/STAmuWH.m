@@ -25,21 +25,27 @@ function [STA_Template, STA_Amplitude, STA_Duration] = STAmuWH(FiringTimes, EMGt
     FiringTimes = remove_Low_ISI(FiringTimes, MinISI, weights, dt);
     
     % do STA
-%     IndPrior = round(abs(WinPrior) / dt); % points prior to time of firing
-%     IndPost  = round(abs(WinPost)  / dt); % points post time of firing
     STA_Template = zeros(IndPrior + IndPost + 1, nChannels);
 
     for j=1:length(FiringTimes) % Loop over all valid MU events 
-        try
-            ind = find_FiringTimeIndex(FiringTimes(j),EMGtime);
-            STAwindow = [(ind - IndPrior) : (ind + IndPost)];
-            STA_Template = STA_Template + EMG4(STAwindow,:) * weights(j);
-        catch
-            continue 
-        end
+        ind = find_FiringTimeIndex(FiringTimes(j),EMGtime);
+        STAwindow = [ind - IndPrior : ind + IndPost];
+        STA_Template = STA_Template + EMG4(STAwindow,:) * weights(j);
     end
     
-    STA_Template = STA_Template ./ sum(weights);
+    STA_Template = STA_Template / sum(weights);
+    
+%     figure; hold on;
+%     for j=1:length(FiringTimes) % Loop over all valid MU events 
+%         try
+%             ind = find_FiringTimeIndex(FiringTimes(j),EMGtime);
+%             STAwindow = [round(ind - IndPrior) : round(ind + IndPost)];
+%             plot(EMG4(STAwindow,1));
+%         catch
+%             continue 
+%         end
+%     end
+%     plot(STA_Template(:,1),'k','linewidth',3);
     
     %Apply hanning window to smooth the edge.
     HannW = hann(length(STA_Template));
@@ -55,7 +61,7 @@ function ind = find_FiringTimeIndex(FiringTimes,time)
 
     dt = time(2)-time(1);
     ind = FiringTimes/(dt) - time(1)/dt + 1; %Factor of 1000 because delsys reports in ms
-
+    ind = round(ind);
 end
 
 function FiringTimes = remove_Low_ISI(FiringTimes, MinISI, weights, dt)

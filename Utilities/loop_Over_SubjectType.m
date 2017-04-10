@@ -23,7 +23,7 @@ function analysis = loop_Over_SubjectType(dataDirs,options)
         
         SIDs = get_subFolders(dataDirs{status});
 
-        for subj=[2,3,4,5,6,7,8,10]%:length(SIDs) %Loop through each subject
+        for subj=1:length(SIDs) %Loop through each subject
 
             SID            = SIDs{subj};
             subj_Dir       = [dataDirs{status} '\' SID];

@@ -7,7 +7,7 @@ function PtP = calculate_STA_Window_PtP(STA_Out)
     PtP = cell(size(STA_Out,1),1);
     for n=1:size(STA_Out,1)
         try
-           STA = STA_Out.STA_Window{n}{1};
+           STA = STA_Out.STA_Window{n};
            PtP{n} = squeeze(max(STA)-min(STA));
         catch
             continue;

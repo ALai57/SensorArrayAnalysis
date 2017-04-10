@@ -1,7 +1,7 @@
 
 
-%%%% RUN TEST LOOP FOR BUILDING TABLE
-dataDirs(1)  =  {'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke'};
+%%%% RUN LOOP FOR BUILDING TABLE
+dataDirs(1)  =  {'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control'};
 
 options.SensorArray.FileNameConvention         = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'}; 
 options.SingleDifferential.FileNameConvention  = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'}; 
@@ -15,3 +15,5 @@ options.Trial_Analyses{1}                      = @(arrayFile,singlediffFile,tria
                                                                                                                                   
 analysis  = loop_Over_SubjectType(dataDirs,options); 
 MU_Data = convert_Build_2Array_DataTable_StructToTable(analysis);
+
+%%%% AFTER THIS, STA WINDOW ON CONTROLS

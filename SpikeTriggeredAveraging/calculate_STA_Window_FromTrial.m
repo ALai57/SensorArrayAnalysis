@@ -22,12 +22,12 @@ function STA_Out = calculate_STA_Window_FromTrial(trialData,options)
 
         for j=1:nMU     
             if isnan(arrayData.MU(1))
-                STA_Out.STA_Window_PtP{ind(j)}  = [];
+                STA_Out.STA_Window{ind(j)}  = [];
                 STA_Out.STA_Window_nObs{ind(j)} = [];
             else   
                 try
                     [STA,nObs] = calc_STA_Window_PtP(arrayData(j,:),EMG4,EMGtime,options);
-                    STA_Out.STA_Window_PtP{ind(j)}  = STA; 
+                    STA_Out.STA_Window{ind(j)}  = STA; 
                     STA_Out.STA_Window_nObs{ind(j)} = nObs;
                 catch 
                     p=1;

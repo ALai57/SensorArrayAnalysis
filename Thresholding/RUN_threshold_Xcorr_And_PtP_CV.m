@@ -2,17 +2,50 @@
 
 %% Thresholding using PtP amplitude CV
 
-load('C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_All_Window_4_6_2017.mat')
-
+options.STA_Window.File                 = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_Control_Window_4_8_2017.mat';
 options.STA_Window.Threshold.Type       = 'PeakToPeakCV';
 options.STA_Window.Threshold.Channels   = 'AllChannelsMeetThreshold';
-options.STA_Window.Threshold.Value       = 0.9;
+options.STA_Window.Threshold.Value      = 0.2;
+options.STA.File                        = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_AllControl.mat';
+options.FileID_Tag                      = {'SensorArrayFile','ArrayNumber','MU'}; 
 
-% PtP Amplitude CV threshold
-PtP         = calculate_STA_Window_PtP(STA_Out);
-valid_PtP   = threshold_STA_Window_PtP(PtP, options.STA_Window);
+%calculate
+PtP_Out = get_Threshold_STA_PtP(options);
 
-clear STA_Out;
+load(options.STA.File,'MU_Data')
+PtP_Out = append_FileID_Tag(PtP_Out,options);
+MU_Data = append_FileID_Tag(MU_Data,options);
+
+if isequal(PtP_Out.FileID_Tag,MU_Data.FileID_Tag)
+   MU_Data = [MU_Data,PtP_Out(:,4:7)]; 
+   clear PtP_Out
+end
+
+
+% PLOT STA AMPLITUDE OVER TIME
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 %% Thresholding using cross correlation between Delsys and STA
 

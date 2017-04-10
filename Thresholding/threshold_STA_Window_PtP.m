@@ -3,25 +3,27 @@
 % options.STA_Window.Threshold.Channels   = 'AllChannelsMeetThreshold';
 % options.STA_Window.Threshold.Value       = 0.2;
 
-function valid_PtP = threshold_STA_Window_PtP(PtP,options)
+function [valid_PtP, PtP_Out] = threshold_STA_Window_PtP(PtP,options)
 
     valid_PtP = false(size(PtP,1),1);
-    
-    for n=1:size(PtP,1)
 
        switch options.Threshold.Type
            case 'PeakToPeakCV'
-               valid_PtP(n) = PtP_CV_Threshold(PtP{n},options); 
+               
+                PtP_Out = zeros(size(PtP,1),4);
+                for n=1:size(PtP,1)
+                    [valid_PtP(n) PtP_Out(n,:)] = PtP_CV_Threshold(PtP{n},options); 
+                end
        end
-    end
 
 end
 
 
-function v = PtP_CV_Threshold(PtP,options)
+function [v,PtP_CV] = PtP_CV_Threshold(PtP,options)
     
     if isempty(PtP)
         v = false;
+        PtP_CV = [-1,-1,-1,-1];
     else
         ind_empty = PtP(1,:)==0;
         PtP(:,ind_empty) = [];
