@@ -7,7 +7,8 @@ function print_Subject_PtP_Duration_Over_Time(selection,subjData)
     PtP_CV    = [];
     for n=1:size(subjData,1)
         try
-        PtP_data = [PtP_data; subjData.PtP_Duration{n}];
+            PtP_data = [PtP_data; subjData.PtP_Duration{n}];
+            PtP_CV   = [PtP_CV  ; subjData.PtP_Duration_CV(n,:)];
         catch 
             a=1;
         end
@@ -28,6 +29,7 @@ function print_Subject_PtP_Duration_Over_Time(selection,subjData)
     
     subplot(2,1,2)
     PtP_CV(PtP_CV == -1) = [];
+    edges = [0:0.05:1.5];
     [n0, x0] = hist(PtP_CV(:),edges);
     bar(x0,n0/sum(n0),1);
     xlabel('Coefficient of Variation')

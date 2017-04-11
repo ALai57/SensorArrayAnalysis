@@ -33,12 +33,15 @@ function print_OptionsAndAnalyses(selection, options, analysis)
 end
 
 function options = get_Options()
-    options.STA.File                        = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_AllControl.mat';
-    options.STA_Window.File                 = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_Window_Control_4_10_2017.mat';
-    options.STA_Window.Threshold.Type       = 'PeakToPeakCV';
-    options.STA_Window.Threshold.Channels   = 'AllChannelsMeetThreshold';
-    options.STA_Window.Threshold.Value      = 0.6;
-    options.FileID_Tag                      = {'SensorArrayFile','ArrayNumber','MU'}; 
+    options.STA.File                           = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_AllControl.mat';
+    options.STA_Window.File                    = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_Window_Control_4_10_2017.mat';
+    options.STA_Window.Threshold.Type          = 'Amplitude';
+    options.STA_Window.Threshold.Statistic     = 'CV';
+    options.STA_Window.Threshold.Channels      = 'AllChannelsMeetThreshold';
+    options.STA_Window.Threshold.Value         = 0.6;
+    options.STA_Window.PtPAmplitude.Statistic  = 'CV';
+    options.STA_Window.PtPDuration.Statistic   = 'CV';
+    options.FileID_Tag                         = {'SensorArrayFile','ArrayNumber','MU'}; 
 end
 
 function MU_Data = append_PtP_Duration_ToSTATable(options)

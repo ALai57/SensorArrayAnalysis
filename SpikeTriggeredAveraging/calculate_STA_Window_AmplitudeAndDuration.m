@@ -2,7 +2,7 @@
 
 % load('C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_All_Window_4_6_2017.mat')
 
-function [PtP_Amp, PtP_Duration] = calculate_STA_Window_PtP(STA_Out)
+function [PtP_Amp, PtP_Duration] = calculate_STA_Window_AmplitudeAndDuration(STA_Out)
 
     samplingRate = 20000;
 
