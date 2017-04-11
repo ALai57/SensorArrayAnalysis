@@ -1,10 +1,12 @@
 
-function generateReport_STA_Amplitude_Over_Time()
+%%%%%% Calculate MU Duration CV %%%%%%%%
+%%%%%%% PRINT MU Duration CV too %%%%%%%%
+function generateReport_STA_Duration_Over_Time()
 
     options = get_Options();
-    MU_Data = append_PtP_Threshold_ToSTATable(options);
+    MU_Data = append_PtP_Duration_ToSTATable(options);
 
-    analysis.IndividualSubject{1} = @(selection,subjData)print_Subject_PtP_Amplitude_Over_Time(selection,subjData);
+    analysis.IndividualSubject{1} = @(selection,subjData)print_Subject_PtP_Duration_Over_Time(selection,subjData);
     
     [serverHandle, selection] = open_ConnectionToWord();
     
@@ -39,7 +41,7 @@ function options = get_Options()
     options.FileID_Tag                      = {'SensorArrayFile','ArrayNumber','MU'}; 
 end
 
-function MU_Data = append_PtP_Threshold_ToSTATable(options)
+function MU_Data = append_PtP_Duration_ToSTATable(options)
 
     PtP_Out = get_Threshold_STA_PtP(options);
 
@@ -48,7 +50,7 @@ function MU_Data = append_PtP_Threshold_ToSTATable(options)
     MU_Data = append_FileID_Tag(MU_Data,options);
 
     if isequal(PtP_Out.FileID_Tag,MU_Data.FileID_Tag)
-       MU_Data = [MU_Data,PtP_Out(:,4:7)]; 
+       MU_Data = [MU_Data,PtP_Out(:,4:8)]; 
        clear PtP_Out
     end
     
@@ -63,9 +65,9 @@ function report_Description(selection)
     selection.TypeText([date() char(13) char(13) char(13)]);
     selection.Font.Size = 16;
     selection.Font.Bold = 0;
-    selection.TypeText(['This report contains a summary of how motor unit amplitudes changed throughout different contractions.' char(13)])  
+    selection.TypeText(['This report contains a summary of how motor unit durations changed throughout different contractions.' char(13)])  
     selection.Font.Size = 12;
-    selection.TypeText('Motor unit amplitudes were calculated using a windowed STA algorithm (2 second windows, sliding every 0.5 seconds). Then the MU amplitude was calculated at each sliding window to see how MU amplitude changed over time.')
+    selection.TypeText('Motor unit durations were calculated using a windowed STA algorithm (2 second windows, sliding every 0.5 seconds). Then the MU duration was calculated at each sliding window to see how MU duration changed over time.')
 %     selection.TypeText(['- For each subject, a summary table of all trials is included.' char(13)]) 
 %     selection.TypeText(['- The summary table is printed for both SensorArray.mat and SingleDifferential.mat files.' char(13)]) 
 %     selection.TypeText(char(13)) 

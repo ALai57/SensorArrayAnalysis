@@ -52,7 +52,7 @@ end
 
 function EMG = load_SensorArray_Data(trial,options)
     SID      = char(trial.SID(1));
-    fullFile = [options.BaseDirectory '\Data\Control\' SID '\array\' char(trial.SensorArrayFile(1))];
+    fullFile = [options.BaseDirectory '\' SID '\array\' char(trial.SensorArrayFile(1))];
     EMG = load(fullFile,'tbl');
 end
 

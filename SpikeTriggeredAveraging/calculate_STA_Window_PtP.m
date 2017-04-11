@@ -2,13 +2,25 @@
 
 % load('C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_All_Window_4_6_2017.mat')
 
-function PtP = calculate_STA_Window_PtP(STA_Out)
+function [PtP_Amp, PtP_Duration] = calculate_STA_Window_PtP(STA_Out)
 
-    PtP = cell(size(STA_Out,1),1);
+    samplingRate = 20000;
+
+    PtP_Amp      = cell(size(STA_Out,1),1);
+    PtP_Duration = cell(size(STA_Out,1),1);
     for n=1:size(STA_Out,1)
         try
            STA = STA_Out.STA_Window{n};
-           PtP{n} = squeeze(max(STA)-min(STA));
+           PtP_Amp{n} = squeeze(max(STA)-min(STA));
+           
+           for j=1:size(STA,3)
+               for i=1:4
+                   ind1 = find( STA(:,1,j)== max(STA(:,1,j)) );
+                   ind2 = find (STA(:,1,j)== min(STA(:,1,j)) );
+                   PtP_Duration{n,1}(i,j) = abs(ind1-ind2)/samplingRate;
+               end
+           end
+
         catch
             continue;
         end
