@@ -2,15 +2,15 @@
 function generateReport_STA_Amplitude_Over_Time()
 
     options = get_Options();
-    MU_Data = append_PtP_Threshold_ToSTATable(options);
+    MU_Data = append_STA_Window_Statistics_ToSTATable([],options);
 
-    analysis.IndividualSubject{1} = @(selection,subjData)print_Subject_PtP_Amplitude_Over_Time(selection,subjData);
+    analysis.IndividualSubject{1} = @(selection,subjData,options)print_Subject_STA_Window_PtP_Amplitude(selection,subjData,[]);
     
     [serverHandle, selection] = open_ConnectionToWord();
     
     report_Description(selection);
     print_OptionsAndAnalyses(selection, options, analysis);
-    report_BySubject_Table(selection, MU_Data, analysis.IndividualSubject);
+    report_BySubject_Table(selection, MU_Data, analysis.IndividualSubject,options);
     
     delete(serverHandle)
 end
@@ -31,27 +31,15 @@ function print_OptionsAndAnalyses(selection, options, analysis)
 end
 
 function options = get_Options()
-    options.STA.File                        = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_AllControl.mat';
-    options.STA_Window.File                 = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_Window_Control_4_10_2017.mat';
-    options.STA_Window.Threshold.Type       = 'PeakToPeakCV';
-    options.STA_Window.Threshold.Channels   = 'AllChannelsMeetThreshold';
-    options.STA_Window.Threshold.Value      = 0.6;
-    options.FileID_Tag                      = {'SensorArrayFile','ArrayNumber','MU'}; 
-end
-
-function MU_Data = append_PtP_Threshold_ToSTATable(options)
-
-    PtP_Out = get_Threshold_STA_PtP(options);
-
-    load(options.STA.File,'MU_Data')
-    PtP_Out = append_FileID_Tag(PtP_Out,options);
-    MU_Data = append_FileID_Tag(MU_Data,options);
-
-    if isequal(PtP_Out.FileID_Tag,MU_Data.FileID_Tag)
-       MU_Data = [MU_Data,PtP_Out(:,4:7)]; 
-       clear PtP_Out
-    end
-    
+    options.STA.File                           = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_AllControl.mat';
+    options.STA_Window.File                    = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_Window_Control_4_10_2017.mat';
+    options.STA_Window.Threshold.Type          = 'Amplitude';
+    options.STA_Window.Threshold.Statistic     = 'CV';
+    options.STA_Window.Threshold.Channels      = 'AllChannelsMeetThreshold';
+    options.STA_Window.Threshold.Value         = 0.6;
+    options.STA_Window.PtPAmplitude.Statistic  = 'CV';
+    options.STA_Window.PtPDuration.Statistic   = 'CV';
+    options.FileID_Tag                         = {'SensorArrayFile','ArrayNumber','MU'}; 
 end
 
 function report_Description(selection)
@@ -74,3 +62,4 @@ function report_Description(selection)
 %     selection.TypeText(['- Force traces from SingleDifferential.mat files are not included.' char(13)']) 
     selection.InsertBreak;
 end
+

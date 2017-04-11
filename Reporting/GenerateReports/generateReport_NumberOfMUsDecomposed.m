@@ -1,15 +1,14 @@
 
 function generateReport_NumberOfMUsDecomposed(MU_Data)
 
-    subjectAnalyses{1} = @(selection,subjData)print_Subject_NumberOfMUsDecomposed(selection,subjData);
-    
+    subjectAnalyses{1} = @(selection,subjData,options)print_Subject_NumberOfMUsDecomposed(selection,subjData,[]);
+    options = 'Empty';
     [serverHandle, selection] = open_ConnectionToWord();
     
     report_Description(selection);
     print_All_NumberOfMUsDecomposed(selection, MU_Data);
-    report_BySubject_Table(selection, MU_Data, subjectAnalyses)
+    report_BySubject_Table(selection, MU_Data, subjectAnalyses, options)
     
-    %%% INCLUDE ABILITY TO PRINT OPTIONS RIGHT UP FRONT.
     %%% INCLUDE FORCE LEVELS TABLE....
     delete(serverHandle)
 end

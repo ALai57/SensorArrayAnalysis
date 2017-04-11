@@ -1,7 +1,7 @@
 
 
 
-function PtP_out = get_Threshold_STA_PtP(options)
+function PtP_out = get_STA_Window_PtP(options)
 
     load(options.STA_Window.File,'STA_Window');
 
@@ -21,13 +21,13 @@ function PtP_out = get_Threshold_STA_PtP(options)
                                  ['PtP_Amplitude_' ampStatistic],...
                                  'PtP_Duration',...
                                  ['PtP_Duration_' durationStatistic]});
-    
-    PtP_Valid = threshold_STA_Window_PtP(PtP_tbl, options.STA_Window.Threshold);
-    
-    type         = options.STA_Window.Threshold.Type;
-    stat         = options.STA_Window.Threshold.Statistic; 
-    variableName = ['PtP_' type '_' stat];
-    PtP_tbl  	 = [PtP_tbl, table(PtP_Valid,'VariableNames',{['Valid_' variableName]})];
-                             
+                            
     PtP_out = [STA_Window(:,[1:3,5]),PtP_tbl];
 end
+
+%     PtP_Valid = threshold_STA_Window_PtP(PtP_tbl, options.STA_Window.Threshold);
+%     
+%     type         = options.STA_Window.Threshold.Type;
+%     stat         = options.STA_Window.Threshold.Statistic; 
+%     variableName = ['PtP_' type '_' stat];
+%     PtP_tbl  	 = [PtP_tbl, table(PtP_Valid,'VariableNames',{['Valid_' variableName]})];

@@ -1,18 +1,17 @@
 
-%%%%%% Calculate MU Duration CV %%%%%%%%
-%%%%%%% PRINT MU Duration CV too %%%%%%%%
+
 function generateReport_STA_Duration_Over_Time()
 
     options = get_Options();
-    MU_Data = append_PtP_Duration_ToSTATable(options);
-
-    analysis.IndividualSubject{1} = @(selection,subjData)print_Subject_PtP_Duration_Over_Time(selection,subjData);
+    MU_Data = append_STA_Window_Statistics_ToSTATable([],options);
+%     PtP_Valid = threshold_STA_Window_PtP(MU_Data, options.STA_Window.Threshold);
+    analysis.IndividualSubject{1} = @(selection,subjData,options)print_Subject_STA_Window_PtP_Duration(selection,subjData,[]);
     
     [serverHandle, selection] = open_ConnectionToWord();
     
     report_Description(selection);
     print_OptionsAndAnalyses(selection, options, analysis);
-    report_BySubject_Table(selection, MU_Data, analysis.IndividualSubject);
+    report_BySubject_Table(selection, MU_Data, analysis.IndividualSubject,options);
     
     delete(serverHandle)
 end
@@ -42,21 +41,6 @@ function options = get_Options()
     options.STA_Window.PtPAmplitude.Statistic  = 'CV';
     options.STA_Window.PtPDuration.Statistic   = 'CV';
     options.FileID_Tag                         = {'SensorArrayFile','ArrayNumber','MU'}; 
-end
-
-function MU_Data = append_PtP_Duration_ToSTATable(options)
-
-    PtP_Out = get_Threshold_STA_PtP(options);
-
-    load(options.STA.File,'MU_Data')
-    PtP_Out = append_FileID_Tag(PtP_Out,options);
-    MU_Data = append_FileID_Tag(MU_Data,options);
-
-    if isequal(PtP_Out.FileID_Tag,MU_Data.FileID_Tag)
-       MU_Data = [MU_Data,PtP_Out(:,4:8)]; 
-       clear PtP_Out
-    end
-    
 end
 
 function report_Description(selection)

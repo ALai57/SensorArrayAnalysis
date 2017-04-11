@@ -1,5 +1,5 @@
 
-%%%% NEED OUTSIDE WRAPPER FUNCTION
+
 % options.Plot.PlotBy          = {'SID'};
 % options.Plot.SubplotBy       = {'ArmType'}; 
 % options.Plot.GroupBy         = {'ArrayNumber'};
@@ -117,7 +117,12 @@ end
 
 function setup_Legend(hA,groups,options)
     for n=1:length(groups)
-       legendEntries(n) = {char(groups(n))}; 
+       
+       if isnumeric(groups(n))
+            legendEntries(n) = {num2str(groups(n))};
+       else
+            legendEntries(n) = {char(groups(n))}; 
+       end
     end
     
     %%%% ADD EXTRA GROUP NAME    %hL = legend('MVC');

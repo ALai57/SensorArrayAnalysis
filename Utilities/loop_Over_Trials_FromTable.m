@@ -17,14 +17,9 @@ function [analysis_unwrap, ind_f] = loop_Over_Trials_FromTable(MU_Data,options)
     analysis_unwrap  = initialize_OutputArray(MU_Data,options);
     
     for n=1:length(trials)
-        
         tic;
         [trialData,ind_f{n}] = get_TrialData(MU_Data,trials(n));
-        
-        for k=1:length(options.Trial.Analysis)
-           analysis{n} = options.Trial.Analysis{k}(trialData,options); 
-        end
-
+        analysis{n} = options.Trial.Function{1}(trialData,options); 
         toc;
     end
     
@@ -62,73 +57,40 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
-% function analysis = loop_Over_Trials_FromTable(MU_Data,options)
+% function [analysis_unwrap, ind_f] = loop_Over_Trials_FromTable(MU_Data,options)
 % 
-%     filelist = categorical(MU_Data.SensorArrayFile);
-%     files    = unique(filelist);
-%     analysis = initialize_OutputArray(MU_Data);
-% 
-%     for n=1:length(files)
-% %         profile on;
+%     trialList = categorical(MU_Data.SensorArrayFile);
+%     trials    = unique(trialList);
+%     
+%     analysis         = cell(length(trials),1);
+%     analysis_unwrap  = initialize_OutputArray(MU_Data,options);
+%     
+%     for n=1:length(trials)
+%         
 %         tic;
-%         
-%         [trialData,ind_f] = get_TrialData(MU_Data,files(n));
-%         
+%         [trialData,ind_f{n}] = get_TrialData(MU_Data,trials(n));
 %         
 %         for k=1:length(options.Trial.Analysis)
-%            options.Trial.Analysis{k}(trialData,options) 
+%            analysis{n} = options.Trial.Analysis{k}(trialData,options); 
 %         end
-%         EMG               = load_EMG_Data(trialData,files(n),base);
 % 
-%         arrays = unique(trialData.ArrayNumber); %For each array
-%         for i=1:length(arrays)
-%             [arrayData,ind_a] = get_ArrayData(MU_Data,ind_f);
-%             columnInd         = get_Array_DataChannels(arrays(i));
-%             
-%             EMGtime = EMG.tbl{:,1};
-%             try
-%                 EMG4    = EMG.tbl{:,columnInd};
-%             catch
-%                 continue;
-%             end
-%             
-%             nMU = size(arrayData,1);
-%             ind = find(ind_a&ind_f);  
-%             
-%             for j=1:nMU     
-%                 if isnan(arrayData.MU(1))
-%                     analysis.STA_Window_PtP{ind(j)} = [];
-%                 else   
-%                     try
-%                         analysis.STA_Window_PtP{ind(j)} = {calc_STA_Window_PtP(arrayData(j,:),EMG4,EMGtime,options)}; 
-%                     catch 
-%                         p=1;
-%                     end
-%                 end    
-%             end
-%             
-%         end
 %         toc;
-% %         profile viewer;
 %     end
+%     
+% 
+%     for n=1:length(trials)
+%         for i=1:length(options.Trial.OutputVariable)
+%             varname = options.Trial.OutputVariable{i};
+%             analysis_unwrap.(varname)(ind_f{n}) = analysis{n}.(varname);
+%         end
+%     end
+%     
 % end
+
+
+
+
+
 
 
 

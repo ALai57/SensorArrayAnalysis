@@ -1,22 +1,23 @@
 
-% options.MU_Onset.Type = 'SteadyFiring';
-% options.MU_Onset.SteadyFiring.Number = 2;
-% options.MU_Onset.SteadyFiring.MaxInterval = 0.2;
 
-function MU_Onset = calculate_MU_Onset_FromTrial(trialData,options)
+%%%%%%%% ADD IN CODE TO MAKE SURE THAT FIRING TIEMS ARE CORRECT. SWITCH
+%%%%%%%% STATMENT / take in options and calculate FT based on a window.
+%%%%%%%% Prewindow = 2 after ramp.... etc.
 
-    EMG     = load_SensorArray_Data(trialData,options);
-    MU_Onset = initialize_OutputArray(trialData,options);
+function MU_MFR = calculate_MU_MeanFiringRate_FromTrial(trialData,options)
+
+    MU_MFR = initialize_OutputArray(trialData,options);
      
+    tStart = trialData.PlateauStart(1) + options.MFR.StartAfterPlateau(1);
+    tEnd   = tStart + options.MFR.Duration;
+    
     for i=1:size(trialData,1)
         
     
         FT = trialData.FiringTimes{i};
-        
-        Onset_Time{i,1}  = calculate_MU_OnsetTime(FT,options);
-        Onset_Force{i,1} = calculate_MU_OnsetForce(Onset_Time{i},EMG.tbl,options);
-       
-        
+        ind = FT > tStart & FT < tEnd;
+        MFR{i,1}  = sum(ind)/(tEnd-tStart);
+
 %         figure;
 %         F = calculate_ForceMagnitude_FromTable(EMG.tbl);
 %         plot(EMG.tbl.Time,F,'k'); hold on;
@@ -33,8 +34,7 @@ function MU_Onset = calculate_MU_Onset_FromTrial(trialData,options)
         
     end
     
-    MU_Onset.(options.Trial.OutputVariable{1}) = Onset_Time;
-    MU_Onset.(options.Trial.OutputVariable{2}) = Onset_Force;
+    MU_MFR.(options.Trial.OutputVariable{1}) = MFR;
 end
 
 function STA_Out = initialize_OutputArray(trialData,options)
@@ -48,11 +48,3 @@ function STA_Out = initialize_OutputArray(trialData,options)
     
     STA_Out   = [trialData(:,[8,10,13]),emptyCell]; 
 end
-
-function EMG = load_SensorArray_Data(trial,options)
-    SID      = char(trial.SID(1));
-    fullFile = [options.BaseDirectory '\' SID '\array\' char(trial.SensorArrayFile(1))];
-    EMG = load(fullFile,'tbl');
-end
-
-

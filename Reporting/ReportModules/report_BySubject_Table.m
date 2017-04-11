@@ -20,7 +20,7 @@
 % analyses{2} = @(selection,subjFolder)print_Subject_ForceSummary(selection,subjFolder);
 % analyses{3} = @(selection,subjFolder)print_Subject_EMGSummary(selection,subjFolder);
 
-function report_BySubject_Table(selection, MU_Data, analyses)
+function report_BySubject_Table(selection, MU_Data, analyses, options)
 
 %     [serverHandle, selection] = open_ConnectionToWord();
     
@@ -34,7 +34,7 @@ function report_BySubject_Table(selection, MU_Data, analyses)
         subj_MU_Data = MU_Data(ind,:);
 
         for i=1:length(analyses) % Perform each analysis requested
-           analyses{i}(selection,subj_MU_Data); 
+           analyses{i}(selection,subj_MU_Data,options); 
         end
 
     end
