@@ -1,33 +1,33 @@
 
-function print_Subject_MU_MeanFiringRate_vs_ThresholdForce(selection,subjData,options)
+
+function print_Subject_MU_Amplitude_vs_ThresholdForce(selection,subjData,options)
     
+    % Calculate MU Onset
     [MU_Onset, ~] = loop_Over_Trials_FromTable(subjData,options.Analysis(1));
     MU_Onset.MU_Onset_Time    = cell2mat(MU_Onset.MU_Onset_Time);
     MU_Onset.MU_Onset_Force_N = cell2mat(MU_Onset.MU_Onset_Force_N);
     
-    [MU_MeanFiringRate, ~] = loop_Over_Trials_FromTable(subjData,options.Analysis(2));
-    MU_MeanFiringRate.MeanFiringRate = cell2mat(MU_MeanFiringRate.MeanFiringRate);
+    % Calculate MU Amplitude
+    [MU_PtP_Amp, ~] = loop_Over_Trials_FromTable(subjData,options.Analysis(2));
+    MU_PtP_Amp.MU_Amplitude  = cell2mat(MU_PtP_Amp.MU_Amplitude);
+    MU_PtP_Amp.MU_Amplitude  = 1000*MU_PtP_Amp.MU_Amplitude;
     
+    % Merge tables
     subjData          = append_FileID_Tag(subjData,options);
     MU_Onset          = append_FileID_Tag(MU_Onset,options);
-    MU_MeanFiringRate = append_FileID_Tag(MU_MeanFiringRate,options);
+    MU_PtP_Amp        = append_FileID_Tag(MU_PtP_Amp,options);
     
-    if isequal(subjData.FileID_Tag,MU_Onset.FileID_Tag,MU_MeanFiringRate.FileID_Tag)
-    	subjData = [subjData, MU_Onset(:,[4,5]),MU_MeanFiringRate(:,4)];
+    if isequal(subjData.FileID_Tag,MU_Onset.FileID_Tag,MU_PtP_Amp.FileID_Tag)
+    	subjData = [subjData, MU_Onset(:,[4,5]),MU_PtP_Amp(:,4)];
     end
     
+    %Plot
     options.Plot = get_Plot_Options_AbsoluteUnits();
-    create_Figure_FromTable(subjData, options)
-    SID = data.SID(1);
+    create_Figure_FromTable(subjData, options);
+    SID = subjData.SID(1);
+    
     print_FigureToWord(selection,['Subject = ' SID char(13)],'WithMeta')
     close(gcf);
-    
-%     options.Plot = get_Plot_Options_PctMVC();
-%     create_Figure_FromTable(data, options);
-%     SID = data.SID(1);
-%     print_FigureToWord(selection,['Subject = ' SID char(13)],'WithMeta')
-%     close(gcf);
-    
     selection.InsertBreak;
 end
 
@@ -45,9 +45,9 @@ function PlotOptions = get_Plot_Options_AbsoluteUnits()
     PlotOptions.XVar            = {'MU_Onset_Force_N'};
     PlotOptions.XLabel          = 'MU Onset Force (N)';
     PlotOptions.XLim            = [];
-    PlotOptions.YVar            = {'MeanFiringRate'};
-    PlotOptions.YLabel          = 'Mean Firing Rate (pps)';
-    PlotOptions.YLim            = [0 40];
+    PlotOptions.YVar            = {'MU_Amplitude'};
+    PlotOptions.YLabel          = 'MU Amplitude (mV)';
+    PlotOptions.YLim            = [];
     PlotOptions.Title           = @(inputdata,options)[char(inputdata.SID(1)) ': ' char(inputdata.(options.Plot.SubplotBy{1})(1))] ;  
     PlotOptions.TitleSize       = 16; 
 end

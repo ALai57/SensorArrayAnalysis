@@ -3,12 +3,14 @@ function print_Subject_STA_Window_PtP_Amplitude(selection,subjData,options)
     
    
     % Get subject data 9 by x
-    PtP_data  = [];
-    PtP_CV    = [];
-    for n=1:size(subjData,1)
-        PtP_data = [PtP_data; subjData.PtP_Amplitude{n}];
-        PtP_CV   = [PtP_CV  ; subjData.PtP_Amplitude_CV(n,:)];
-    end
+%     PtP_data  = [];
+%     PtP_CV    = [];
+%     for n=1:size(subjData,1)
+%         PtP_data = [PtP_data; subjData.PtP_Amplitude{n}];
+%         PtP_CV   = [PtP_CV  ; subjData.PtP_Amplitude_CV(n,:)];
+%     end
+    [PtP_data,PtP_CV] = extract_PtP_Data(subjData);
+    
     
     clear n0 x0
     edges = [-1e-6:1e-6:3e-4]+1e-6;
@@ -40,6 +42,18 @@ function print_Subject_STA_Window_PtP_Amplitude(selection,subjData,options)
     
 end
 
+
+
+function [PtP_data,PtP_CV] = extract_PtP_Data(subjData)
+
+    % Get subject data 9 by x
+    PtP_data  = [];
+    PtP_CV    = [];
+    for n=1:size(subjData,1)
+        PtP_data = [PtP_data; subjData.PtP_Amplitude{n}];
+        PtP_CV   = [PtP_CV  ; subjData.PtP_Amplitude_CV(n,:)];
+    end
+end
 
 %     figure; hold on;
 %     for n=1:size(subjData,1)

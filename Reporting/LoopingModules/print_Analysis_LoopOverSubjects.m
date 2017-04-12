@@ -20,9 +20,7 @@
 % analyses{2} = @(selection,subjFolder)print_Subject_ForceSummary(selection,subjFolder);
 % analyses{3} = @(selection,subjFolder)print_Subject_EMGSummary(selection,subjFolder);
 
-function report_BySubject_Table(selection, MU_Data, analyses, options)
-
-%     [serverHandle, selection] = open_ConnectionToWord();
+function print_Analysis_LoopOverSubjects(selection, MU_Data, analyses, options)
     
     subjs = unique(MU_Data.SID);
 

@@ -3,6 +3,8 @@
 % options.MU_Onset.SteadyFiring.Number = 2;
 % options.MU_Onset.SteadyFiring.MaxInterval = 0.2;
 
+
+%%%%%%%%% CONSOLIDATE INTO ONE FUNCTION
 function MU_Onset = calculate_MU_Onset_FromTrial(trialData,options)
 
     EMG     = load_SensorArray_Data(trialData,options);
@@ -56,3 +58,54 @@ function EMG = load_SensorArray_Data(trial,options)
 end
 
 
+
+function Onset_Force  = calculate_MU_OnsetForce(onset_Time,EMG,options)
+
+    time = EMG.Time;
+    tmp  = abs(time-onset_Time);
+    ind  = find(tmp == min(tmp));
+    
+    dt = time(2)-time(1);
+    
+    i_Prior = ind-options.MU_Onset.ForcePrior/dt;
+    i_Post  = ind+options.MU_Onset.ForcePost/dt;
+    
+    F = calculate_ForceMagnitude_FromTable(EMG);
+    
+    if i_Prior < 1
+        i_Prior = 1; 
+    end
+    if i_Post > length(EMG.Time)
+        i_Post = length(EMG.Time); 
+    end
+    
+    Onset_Force = mean(F(i_Prior:i_Post));
+    
+end
+
+
+
+function Onset_Time  = calculate_MU_OnsetTime(FT,options)
+
+    switch options.MU_Onset.Type
+        case 'SteadyFiring'
+            Onset_Time = find_Onset_SteadyFiring(FT);
+    end
+    
+end
+
+function Onset_Time = find_Onset_SteadyFiring(FT)
+    
+    if isempty(FT)
+        Onset_Time = NaN;
+    else
+        ISI = diff(FT);
+
+        n = 1;
+        while (ISI (n) >= 0.2 || ISI (n+1) >= 0.2)
+            n = n +1;
+        end
+        Onset_Time = FT(n);
+    end
+    
+end

@@ -1,13 +1,16 @@
 
 function print_Subject_MU_MeanFiringRate_vs_ThresholdForce(selection,subjData,options)
     
+    % Calculate MU Onset
     [MU_Onset, ~] = loop_Over_Trials_FromTable(subjData,options.Analysis(1));
     MU_Onset.MU_Onset_Time    = cell2mat(MU_Onset.MU_Onset_Time);
     MU_Onset.MU_Onset_Force_N = cell2mat(MU_Onset.MU_Onset_Force_N);
     
+    % Calculate MU Mean firing rate
     [MU_MeanFiringRate, ~] = loop_Over_Trials_FromTable(subjData,options.Analysis(2));
     MU_MeanFiringRate.MeanFiringRate = cell2mat(MU_MeanFiringRate.MeanFiringRate);
     
+    % Merge data
     subjData          = append_FileID_Tag(subjData,options);
     MU_Onset          = append_FileID_Tag(MU_Onset,options);
     MU_MeanFiringRate = append_FileID_Tag(MU_MeanFiringRate,options);
@@ -16,12 +19,14 @@ function print_Subject_MU_MeanFiringRate_vs_ThresholdForce(selection,subjData,op
     	subjData = [subjData, MU_Onset(:,[4,5]),MU_MeanFiringRate(:,4)];
     end
     
+    %Plot
     options.Plot = get_Plot_Options_AbsoluteUnits();
     create_Figure_FromTable(subjData, options)
     SID = subjData.SID(1);
+    
+    %Finish
     print_FigureToWord(selection,['Subject = ' SID char(13)],'WithMeta')
     close(gcf);
-    
     selection.InsertBreak;
 end
 

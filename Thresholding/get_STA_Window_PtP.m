@@ -5,7 +5,9 @@ function PtP_out = get_STA_Window_PtP(options)
 
     load(options.STA_Window.File,'STA_Window');
 
-    [PtP_Amp  , PtP_Duration] = calculate_STA_Window_AmplitudeAndDuration(STA_Window);
+    options.STA.Amplitude.Statistic = 'All';
+    options.STA.Duration.Statistic = 'All';
+    [PtP_Amp  , PtP_Duration] = calculate_STA_AmplitudeAndDuration(STA_Window.STA_Window, options);
     PtP_Amp_Stat              = calculate_STA_Window_PtP_Statistic(PtP_Amp     , options.STA_Window.PtPAmplitude);
     PtP_Duration_Stat         = calculate_STA_Window_PtP_Statistic(PtP_Duration, options.STA_Window.PtPDuration);
 

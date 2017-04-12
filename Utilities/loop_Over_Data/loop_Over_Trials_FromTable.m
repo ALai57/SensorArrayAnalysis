@@ -27,7 +27,12 @@ function [analysis_unwrap, ind_f] = loop_Over_Trials_FromTable(MU_Data,options)
     for n=1:length(trials)
         for i=1:length(options.Trial.OutputVariable)
             varname = options.Trial.OutputVariable{i};
-            analysis_unwrap.(varname)(ind_f{n}) = analysis{n}.(varname);
+            switch class(analysis{n})
+                case 'table' 
+                    analysis_unwrap.(varname)(ind_f{n}) = analysis{n}.(varname);
+                case 'cell'
+                    analysis_unwrap.(varname)(ind_f{n}) = analysis{n};
+            end
         end
     end
     

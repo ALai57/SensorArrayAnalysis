@@ -10,12 +10,12 @@ function generateReport_ForceTraces_And_EMG(dataFolder)
 
     [serverHandle, selection] = open_ConnectionToWord();
     
-    report_Description(selection)
-    report_BySubject(dataFolder, analyses)
+    print_ReportDescription(selection)
+    print_Analysis_LoopOverSubjectDataFolders(dataFolder, analyses)
 end
 
 
-function report_Description(selection)
+function print_ReportDescription(selection)
     selection.Font.Size = 56;
     selection.Font.Bold = 1;
     selection.TypeText(['MATLAB REPORT:' char(13)]);

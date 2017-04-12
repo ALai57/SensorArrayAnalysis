@@ -2,21 +2,22 @@
 
 function generateReport_STA_Duration_Over_Time()
 
-    options = get_Options();
+    options  = get_Options();
+    analyses = get_Analyses();
+    
     MU_Data = append_STA_Window_Statistics_ToSTATable([],options);
-%     PtP_Valid = threshold_STA_Window_PtP(MU_Data, options.STA_Window.Threshold);
-    analysis.IndividualSubject{1} = @(selection,subjData,options)print_Subject_STA_Window_PtP_Duration(selection,subjData,[]);
+%     PtP_Valid = threshold_STA_Window_PtP(MU_Data, options.STA_Window.Threshold);    
     
     [serverHandle, selection] = open_ConnectionToWord();
-    
-    report_Description(selection);
-    print_OptionsAndAnalyses(selection, options, analysis);
-    report_BySubject_Table(selection, MU_Data, analysis.IndividualSubject,options);
+
+    print_ReportDescription(selection);
+    print_OptionsAndAnalyses(selection, options, analyses);
+    print_Analysis_LoopOverSubjects(selection, MU_Data, analyses.IndividualSubject,options);
     
     delete(serverHandle)
 end
 
-function print_OptionsAndAnalyses(selection, options, analysis)
+function print_OptionsAndAnalyses(selection, options, analyses)
 
     selection.TypeText(['STA Windowing options.' char(13)])  
     STA_Window_options = load(options.STA_Window.File,'options');
@@ -26,9 +27,13 @@ function print_OptionsAndAnalyses(selection, options, analysis)
     print_StructToWord(selection,options)
     
     selection.TypeText(['Analyses performed.' char(13)]) 
-    print_StructToWord(selection,analysis);
+    print_StructToWord(selection,analyses);
     
     selection.InsertBreak;
+end
+
+function analyses = get_Analyses()
+    analyses.IndividualSubject{1} = @(selection,subjData,options)print_Subject_STA_Window_PtP_Duration(selection,subjData,[]);
 end
 
 function options = get_Options()
@@ -43,7 +48,7 @@ function options = get_Options()
     options.FileID_Tag                         = {'SensorArrayFile','ArrayNumber','MU'}; 
 end
 
-function report_Description(selection)
+function print_ReportDescription(selection)
     selection.Font.Size = 56;
     selection.Font.Bold = 1;
     selection.TypeText(['MATLAB REPORT:' char(13)]);

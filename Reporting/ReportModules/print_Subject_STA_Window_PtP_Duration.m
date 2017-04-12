@@ -1,18 +1,8 @@
 
 function print_Subject_STA_Window_PtP_Duration(selection,subjData,options)
     
-   
-    % Get subject data 9 by x
-    PtP_data  = [];
-    PtP_CV    = [];
-    for n=1:size(subjData,1)
-        try
-            PtP_data = [PtP_data; subjData.PtP_Duration{n}];
-            PtP_CV   = [PtP_CV  ; subjData.PtP_Duration_CV(n,:)];
-        catch 
-            a=1;
-        end
-    end
+
+    [PtP_data,PtP_CV] = extract_PtP_Data(subjData);
     
     clear n0 x0
     edges = [-0.0001:0.0001:0.015]+0.0001;
@@ -38,10 +28,22 @@ function print_Subject_STA_Window_PtP_Duration(selection,subjData,options)
     set(gcf,'position',[1053         395         560         619]);
     
     
+    
     print_FigureToWord(selection,['Subject = ' SID char(13)],'WithMeta')
     close(gcf);
-    
     selection.InsertBreak;
+    
+end
+
+function [PtP_data,PtP_CV] = extract_PtP_Data(subjData)
+
+    % Get subject data 9 by x
+    PtP_data  = [];
+    PtP_CV    = [];
+    for n=1:size(subjData,1) % USE A TRY
+        PtP_data = [PtP_data; subjData.PtP_Duration{n}];
+        PtP_CV   = [PtP_CV  ; subjData.PtP_Duration_CV(n,:)];
+    end
     
 end
 
