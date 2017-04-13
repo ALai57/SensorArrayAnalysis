@@ -42,7 +42,7 @@
 % trialData{1} = @(arrayData_tbl,options)get_NumberOfMUsDecomposed(arrayData_tbl,options);
 % data         = get_Data_FromTrial(MU_Data,trialData,options);
 
-function create_Figure_FromTable(data, options)
+function create_BoxPlot_FromTable(data, options)
 
     figure; 
     
@@ -65,26 +65,33 @@ function create_Figure_FromTable(data, options)
             subplot_Data = data;
         end
 
-        [subplot_Data, options] = append_ColorData(subplot_Data,options);
-        cGroups = unique(subplot_Data.(options.Plot.ColorBy{1}));
-        groups  = unique(subplot_Data.(options.Plot.GroupBy{1})); 
+        
+        groups = unique(subplot_Data.(options.Plot.BoxPlotBy{1}));  
+        x = zeros(length(groups),1);
+        y = [];
         for n=1:length(groups)
-            [x,y,c] = get_XY_Data(subplot_Data,options,groups(n));
-            hP(n) = plot(x,y,'Color',c); 
-            format_DataSeries(hP(n),options)
+            [x(n),y{n}] = get_Data(subplot_Data,options,groups(n));
+            hP(n,:) = boxplot(y{n},'labels',{char(groups(n))},'position',x(n)); 
+            hold on;      
         end
-
+        
+        options.Plot.YMax = max(data.(options.Plot.YVar{1}));
+        options.Plot.YMin = min(data.(options.Plot.YVar{1}));
+        
+        format_Plot(options);
+        xlabel(options.Plot.BoxPlotBy{1});
+        format_DataSeries(hP,x,groups,options);
+        title({options.Plot.Title(subplot_Data,options)},'fontsize',options.Plot.TitleSize);
+        xlabel(options.Plot.XLabel);
+        
         if ~isempty(options.Plot.AdditionalPlots)
             ind = decompData.TargetForce == '100%MVC';
             ind = find(ind);
             MVC = decompData.TargetForce_N(ind(1));
             plot([MVC, MVC],yL,'k','linewidth',4);
         end
-        
-        format_Plot(options)
-        setup_Legend(hA(i),cGroups,options)
-%         title(options.Plot.Title,'fontsize',options.Plot.TitleSize);
-        title(options.Plot.Title(subplot_Data,options),'fontsize',options.Plot.TitleSize);
+       
+       
     end
  
 end
@@ -93,65 +100,78 @@ function format_Plot(options)
     set(gca,'fontsize' ,options.Plot.FontSize)
     xlabel(options.Plot.XLabel);
     ylabel(options.Plot.YLabel);
+end
+
+function format_DataSeries(hP,x,groups,options)
     
-    if ~isempty(options.Plot.XLim)
-        xlim(options.Plot.XLim);
+    for n=1:size(hP,1)
+        dx = options.Plot.Box.Width;
+        
+        if options.Plot.Box.Units == 'RelativeToMax'
+            set(hP(n,3),'XData',[x(n) x(n)] + [-dx dx]*max(x)*0.8 );
+            set(hP(n,4),'XData',[x(n) x(n)] + [-dx dx]*max(x)*0.8 );
+            set(hP(n,5),'XData',[x(n) x(n) x(n) x(n) x(n)] + [-dx -dx dx dx -dx]*max(x) );
+            set(hP(n,6),'XData',[x(n) x(n)] + [-dx dx]*max(x) );
+            xlim(options.Plot.XLim*max(x));
+        elseif options.Plot.BoxUnits == 'Absolute'
+            set(hP(n,3),'XData',[x(n) x(n)] + [-dx dx]*0.8 );
+            set(hP(n,4),'XData',[x(n) x(n)] + [-dx dx]*0.8 );
+            set(hP(n,5),'XData',[x(n) x(n) x(n) x(n) x(n)] + [-dx -dx dx dx -dx]);
+            set(hP(n,6),'XData',[x(n) x(n)] + [-dx dx]);
+            xlim(options.Plot.XLim);
+        end
+     
+        set(hP(n,1),'LineWidth',options.Plot.LineWidth);
+        set(hP(n,2),'LineWidth',options.Plot.LineWidth);
+        set(hP(n,3),'LineWidth',options.Plot.LineWidth);
+        set(hP(n,4),'LineWidth',options.Plot.LineWidth);
+        set(hP(n,5),'LineWidth',options.Plot.LineWidth);
+        set(hP(n,6),'LineWidth',options.Plot.LineWidth);
+        
+%         set(hP,'Marker'   ,options.Plot.Marker);
+%         set(hP,'LineStyle','none') 
     end
-    if ~isempty(options.Plot.YLim)
+    
+    if isempty(options.Plot.YLim)
+        ylim([0 options.Plot.YMax*1.05]);
+    else
         ylim(options.Plot.YLim);
     end
-%     xlim(options.Plot.XLim);
-%     ylim(options.Plot.YLim);
+    
+    ax1 = gca;
+    ax1_pos = ax1.Position; % position of first axes
+    axes(ax1); box off;
+    set(ax1,'position',ax1_pos.*[1,1,1,0.85])
+    ax1_pos = ax1.Position;
+    xL = get(ax1,'xlim');
+    [~, i] = sort(x);
+    set(ax1,'xtick',x(i));
+    labels = char(groups);
+    labels = cellstr(labels(:,1:3));
+    set(ax1,'xticklabel',labels(i));
+    
+    ax2 = axes('Position',ax1_pos,...
+    'XAxisLocation','top',...
+    'YAxisLocation','right',...
+    'Color','none');
+    set(ax2,'xlim',xL);
+    set(ax2,'yticklabel',[]);
+    set(ax2,'ytick',[]);
+    
+    
+    
 end
 
-function [subplot_Data, options] = append_ColorData(subplot_Data,options)
-
-    [c, ~, colorIndex]    = unique(subplot_Data.(options.Plot.ColorBy{1}));
-    
-    if isempty(options.Plot.Colors) && length(c)<7
-        colorOrder = get(gca,'colororder');
-    elseif isempty(options.Plot.Colors) && length(colorIndex)>=7
-        colorOrder = varycolor(length(colorIndex));
-    else
-        colorOrder = options.Plot.Colors;
-    end
-    
-    for n=1:length(colorIndex)
-        color(n,:) = colorOrder(colorIndex(n),:);
-    end
-    
-    subplot_Data.Color = color; 
-    options.Plot.Colors = colorOrder;
-end
-
-function format_DataSeries(hP,options)
-    set(hP,'LineWidth',options.Plot.LineWidth);
-    set(hP,'Marker'   ,options.Plot.Marker);
-    set(hP,'LineStyle',options.Plot.LineStyle);  
-end
-
-function [x,y,c] = get_XY_Data(data,options,group)
-    ind  = data.(options.Plot.GroupBy{1}) == group;
+function [x,y] = get_Data(data,options,group)
+    ind  = data.(options.Plot.BoxPlotBy{1}) == group;
     x    = data.(options.Plot.XVar{1})(ind);
     y    = data.(options.Plot.YVar{1})(ind);
-    
-    i = find(ind);
-    c    = data.Color(i(1),:);
+    x    = x(1);
 end
 
 function setup_Legend(hA,groups,options)
-
     for n=1:length(groups)
-        hF(n) = plot(0,0);
-        set(hF(n),'Color',options.Plot.Colors(n,:));
-        format_DataSeries(hF(n),options);
-%         set(hF(n),'Marker',options.Plot.Marker);
-%         set(hF(n),'LineStyle',options.Plot.LineStyle);
-%         set(hF(n),'LineWidth',
-        set(hF(n),'Visible','off');
-    end
-
-    for n=1:length(groups)
+       
        if isnumeric(groups(n))
             legendEntries(n) = {num2str(groups(n))};
        else
@@ -160,7 +180,7 @@ function setup_Legend(hA,groups,options)
     end
     
     %%%% ADD EXTRA GROUP NAME    %hL = legend('MVC');
-    hL = legend(hF,legendEntries);   
+    hL = legend(hA,legendEntries);   
     set(hL,'position',options.Plot.LegendLocation)
     legend boxoff
 end

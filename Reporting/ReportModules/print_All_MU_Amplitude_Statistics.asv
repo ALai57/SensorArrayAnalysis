@@ -1,0 +1,63 @@
+
+function print_All_MU_Amplitude_Statistics(selection,MU_Data,options)
+    
+    % Calculate MU Amplitude
+    [MU_PtP_Amp, ~] = loop_Over_Trials_FromTable(MU_Data,options.Analysis(1));
+    MU_PtP_Amp.MU_Amplitude  = cell2mat(MU_PtP_Amp.MU_Amplitude);
+    MU_PtP_Amp.MU_Amplitude  = 1000*MU_PtP_Amp.MU_Amplitude;
+    
+    % Merge tables
+    MU_Data           = append_FileID_Tag(MU_Data,options);
+    MU_PtP_Amp        = append_FileID_Tag(MU_PtP_Amp,options);
+    
+    if isequal(MU_Data.FileID_Tag,MU_PtP_Amp.FileID_Tag)
+    	MU_Data = [MU_Data, MU_PtP_Amp(:,4)];
+    end
+    
+    SID = MU_Data.SID(1); 
+    
+    MU_Median = varfun(@median,MU_Data,'InputVariables','MU_Amplitude','GroupingVariables',{'SID','ArmType','ArmSide','TargetForce','TargetForce_N','AgeCategory'});
+    ind = MU_Median.TargetForce == '100%MVC';
+    MU_Median(ind,:) = [];
+    MU_Median = sortrows(MU_Median,{'SID','TargetForce_N'},{'ascend','ascend'});
+    
+    %Plot    
+    options.Plot = get_Plot_Options_Median_AbsoluteUnits();
+    create_Figure_FromTable(MU_Median, options);  
+    print_FigureToWord(selection,['Subject = ' SID char(13)],'WithMeta')
+    close(gcf);
+    
+    selection.InsertBreak;
+end
+
+
+function PlotOptions = get_Plot_Options_Median_AbsoluteUnits()
+
+    PlotOptions.SubplotBy       = {'ArmType'}; 
+    PlotOptions.GroupBy         = {'SID'};
+    PlotOptions.ColorBy         = {'AgeCategory'};
+    PlotOptions.Colors          = [];
+    PlotOptions.AdditionalPlots = [];
+    PlotOptions.LegendLocation  = [0.6628    0.4147    0.2661    0.2869];   
+    PlotOptions.LineWidth       = 1.5;
+    PlotOptions.LineStyle       = '-';
+    PlotOptions.Marker          = 'o';
+    PlotOptions.FontSize        = 12;
+    PlotOptions.XVar            = {'TargetForce_N'};
+    PlotOptions.XLabel          = 'TargetForce_N';
+    PlotOptions.XLim            = [];
+    PlotOptions.YVar            = {'median_MU_Amplitude'};
+    PlotOptions.YLabel          = 'Median MU Amplitude (mV)';
+    PlotOptions.YLim            = [];
+    PlotOptions.Title           = @(inputdata,options)['All subjects: ' char(inputdata.(options.Plot.SubplotBy{1})(1))] ;  
+    PlotOptions.TitleSize       = 16; 
+end
+
+
+  
+%     MU_Median = varfun(@median,MU_Data,'InputVariables','MU_Amplitude','GroupingVariables',{'TargetForce','TargetForce_N'});  
+%     figure; 
+%     [n0,x0] = hist(MU_Data.MU_Amplitude);
+%     bar(x0,n0); hold on;
+%     plot(x0,n0,'-o')
+%    
