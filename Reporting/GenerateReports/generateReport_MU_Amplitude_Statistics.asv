@@ -7,6 +7,8 @@ function generateReport_MU_Amplitude_Statistics()
     %Thresholding module.
     MU_Data = threshold_MUs(options);
     
+%     load(options.STA.File,'MU_Data');
+    
     MU_Data = append_AgeCategory(MU_Data,options);
     MU_Data = append_ForceCategory(MU_Data,options);
     
@@ -31,7 +33,7 @@ function print_OptionsAndAnalyses(selection, options, report)
         selection.TypeText(['Thresholding and STA Windowing options.' char(13)])  
         STA_Window_options = load(options.STA_Window.File,'options');
         print_StructToWord(selection,STA_Window_options.options)
-%         print_StructToWord(selection,options.STA_Window)
+        print_StructToWord(selection,options.STA_Window)
     else
         options.STA_Window = 'ThresholdingOff';
     end

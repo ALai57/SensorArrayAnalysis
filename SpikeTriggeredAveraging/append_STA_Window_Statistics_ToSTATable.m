@@ -26,4 +26,5 @@ function MU_Data = append_STA_Window_Statistics_ToSTATable(MU_Data,options)
        clear PtP_Out
     end
     
+    MU_Data.FileID_Tag = [];
 end

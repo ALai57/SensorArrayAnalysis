@@ -7,6 +7,16 @@ function [PtP_Stat] = calculate_STA_Window_PtP_Statistic(PtP,options)
             for n=1:size(PtP,1)
                 PtP_Stat(n,:) = calculate_PtP_CV(PtP{n}); 
             end
+       case 'Max_CV'
+            PtP_Stat = zeros(size(PtP,1),1);
+            for n=1:size(PtP,1)
+                PtP_Stat(n,1) = max(calculate_PtP_CV(PtP{n})); 
+            end
+       case 'Mean_CV'
+            PtP_Stat = zeros(size(PtP,1),1);
+            for n=1:size(PtP,1)
+                PtP_Stat(n,1) = mean(calculate_PtP_CV(PtP{n})); 
+            end
    end
 
 end
