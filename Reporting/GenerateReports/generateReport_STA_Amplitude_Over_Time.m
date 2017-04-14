@@ -8,7 +8,7 @@ function generateReport_STA_Amplitude_Over_Time()
 
     [serverHandle, selection] = open_ConnectionToWord();
     print_ReportDescription(selection);
-    print_OptionsAndAnalyses(selection, options, analysis);
+    print_OptionsAndAnalyses(selection, options, analyses);
     print_Analysis_LoopOverSubjects(selection, MU_Data, analyses.IndividualSubject,options);
     
     delete(serverHandle)

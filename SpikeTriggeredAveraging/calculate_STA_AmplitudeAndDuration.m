@@ -2,7 +2,7 @@
 
 % load('C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_All_Window_4_6_2017.mat')
 
-function [PtP_Amp, PtP_Duration] = calculate_STA_AmplitudeAndDuration(STA_In,options)
+function PtP = calculate_STA_AmplitudeAndDuration(STA_In,options)
 
     if istable(STA_In)
        STA_In = STA_In.(options.STA.ColumnName{1}); 
@@ -30,6 +30,11 @@ function [PtP_Amp, PtP_Duration] = calculate_STA_AmplitudeAndDuration(STA_In,opt
     try
         PtP_Duration = calculate_Statistic(PtP_Duration,options.STA.Duration.Statistic);
     end
+    
+    z = zeros(length(PtP_Amp),1);
+    PtP = table(z,z,'VariableNames',{'MU_Amplitude','MU_Duration'});
+    PtP.MU_Amplitude = PtP_Amp;
+    PtP.MU_Duration  = PtP_Duration;
     
 end
 
@@ -78,36 +83,42 @@ function PtP_Duration = calculate_PtP_Duration(STA)
 end
 
 
-
-% function [PtP_Amp, PtP_Duration] = calculate_STA_Window_AmplitudeAndDuration(STA_In)
 % 
-%     samplingRate = 20000;
+% 
+% function [PtP_Amp, PtP_Duration] = calculate_STA_AmplitudeAndDuration(STA_In,options)
+% 
+%     if istable(STA_In)
+%        STA_In = STA_In.(options.STA.ColumnName{1}); 
+%     end
 % 
 %     PtP_Amp      = cell(size(STA_In,1),1);
 %     PtP_Duration = cell(size(STA_In,1),1);
 %     
 %     for n=1:size(STA_In,1)
 %         
-%         
-%         
 %         try
-%            STA = STA_In.STA_Window{n};
-%            PtP_Amp{n} = squeeze(max(STA)-min(STA));
+%            STA = STA_In{n}; 
 %            
-%            for j=1:size(STA,3)
-%                for i=1:4
-%                    ind1 = find( STA(:,1,j)== max(STA(:,1,j)) );
-%                    ind2 = find (STA(:,1,j)== min(STA(:,1,j)) );
-%                    PtP_Duration{n,1}(i,j) = abs(ind1-ind2)/samplingRate;
-%                end
-%            end
-% 
+%            PtP_Amp{n}      = calculate_PtP_Amplitude(STA);
+%            PtP_Duration{n} = calculate_PtP_Duration(STA);
+%          
 %         catch
 %             continue;
 %         end
-%     end   
+%     end  
+%     
+%     try
+%         PtP_Amp = calculate_Statistic(PtP_Amp     ,options.STA.Amplitude.Statistic);
+%     end
+%     try
+%         PtP_Duration = calculate_Statistic(PtP_Duration,options.STA.Duration.Statistic);
+%     end
 %     
 % end
+
+
+
+
 
 
 

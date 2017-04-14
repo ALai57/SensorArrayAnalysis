@@ -49,6 +49,10 @@ function create_Figure_FromTable(data, options)
     subplot_Var = get_Subplot_Variables(data, options);
     nSubplots   = length(subplot_Var);
     
+    try
+        data.FileID_Tag = [];
+    end
+    
     for i=1:nSubplots
         
         hA(i) = subplot(1,nSubplots,i); hold on;
@@ -213,6 +217,7 @@ function [subplot_Data, options] = append_GroupingInformation(subplot_Data,optio
     for n=1:nGroupVars
         opt_append.FileID_Tag(n) = options.Plot.GroupBy(n);
     end
+
     subplot_Data = append_FileID_Tag(subplot_Data, opt_append);
     ind = categorical(subplot_Data.Properties.VariableNames) == 'FileID_Tag';
     subplot_Data.Properties.VariableNames(ind) = {'PlotGroups'};

@@ -45,6 +45,8 @@ function PlotOptions = get_Plot_Options_AbsoluteUnits()
 
     PlotOptions.SubplotBy       = {'ArmType'}; 
     PlotOptions.GroupBy         = {'ArrayNumber'};
+    PlotOptions.ColorBy         = {'ArrayNumber'};
+    PlotOptions.Colors          = [];
     PlotOptions.AdditionalPlots = [];
     PlotOptions.LegendLocation  = [0.1450    0.7492    0.2661    0.1690];
     PlotOptions.LineWidth       = 2;
@@ -66,6 +68,8 @@ function PlotOptions = get_Plot_Options_PctMVC()
 
     PlotOptions.SubplotBy       = {'ArmType'}; 
     PlotOptions.GroupBy         = {'ArrayNumber'};
+    PlotOptions.ColorBy         = {'ArrayNumber'};
+    PlotOptions.Colors          = [];
     PlotOptions.AdditionalPlots = [];
     PlotOptions.LegendLocation  = [0.1450    0.7492    0.2661    0.1690];
     PlotOptions.LineWidth       = 2;
