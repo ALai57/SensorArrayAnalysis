@@ -9,12 +9,14 @@ function generateReport_MU_Amplitude_Statistics()
     load(options.STA.File,'MU_Data');
     
     MU_Data = append_AgeCategory(MU_Data,options);
-    
+    MU_Data = append_ForceCategory(MU_Data,options);
     
     [serverHandle, selection] = open_ConnectionToWord();
     print_ReportDescription(selection);
     print_OptionsAndAnalyses(selection, options, analyses);
-    print_All_MU_Amplitude_Statistics(selection, MU_Data, options)
+%     print_All_MU_Amplitude_Statistics_ByAge(selection, MU_Data, options)
+%     print_All_MU_Amplitude_Statistics_ByForceLevel(selection, MU_Data, options)
+    print_All_MU_Amplitude_Statistics_ByAgeAndForceLevel(selection, MU_Data,options)
     print_Analysis_LoopOverSubjects(selection, MU_Data, analyses.IndividualSubject,options);
     
     delete(serverHandle)
@@ -58,6 +60,9 @@ function options = get_Options()
     
     options.AgeRange.Threshold                 = [0,65; 65,Inf];
     options.AgeRange.Names                     = {'Young','Elderly'};
+    
+    options.ForceRange.Threshold                 = [0,30; 30,Inf];
+    options.ForceRange.Names                     = {'Under_30N','Above_30N'};
     
     % Set up PtP Amplitude calculation
     options.Analysis(1).Trial.Function          = {@(trial_Data,options)calculate_STA_AmplitudeAndDuration(trial_Data,options)};

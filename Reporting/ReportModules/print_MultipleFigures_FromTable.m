@@ -45,13 +45,16 @@
 function print_MultipleFigures_FromTable(selection, data, options)
     
     options.FileID_Tag = options.Plot.PlotBy;
-    data = append_FileID_Tag(data,options);
+    data = append_FileID_Tag(data,options); 
+    ind = categorical(data.Properties.VariableNames) == 'FileID_Tag';
+    data.Properties.VariableNames(ind) = {'PlotID_Tag'};
+
     
-    plot_ID = unique(data.FileID_Tag); 
+    plot_ID = unique(data.PlotID_Tag); 
     nPlots = length(plot_ID);
     
     for n=1:nPlots
-        ind_plot = data.FileID_Tag == plot_ID(n);
+        ind_plot = data.PlotID_Tag == plot_ID(n);
         plotData = data(ind_plot,:);
         create_Figure_FromTable(plotData, options)
         

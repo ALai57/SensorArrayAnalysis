@@ -1,5 +1,5 @@
 
-function print_All_MU_Amplitude_Statistics(selection,MU_Data,options)
+function print_All_MU_Amplitude_Statistics_ByAge(selection,MU_Data,options)
     
     % Calculate MU Amplitude
     [MU_PtP_Amp, ~] = loop_Over_Trials_FromTable(MU_Data,options.Analysis(1));
@@ -16,14 +16,24 @@ function print_All_MU_Amplitude_Statistics(selection,MU_Data,options)
     
     SID = MU_Data.SID(1); 
     
-    MU_Median = varfun(@median,MU_Data,'InputVariables','MU_Amplitude','GroupingVariables',{'SID','ArmType','ArmSide','TargetForce','TargetForce_N','AgeCategory'});
-    ind = MU_Median.TargetForce == '100%MVC';
-    MU_Median(ind,:) = [];
-    MU_Median = sortrows(MU_Median,{'SID','TargetForce_N'},{'ascend','ascend'});
+    ind = MU_Data.TargetForce == '100%MVC';
+    MU_Data(ind,:) = [];
     
-    %Plot    
+    % Median
+    MU_Median = varfun(@median,MU_Data,'InputVariables','MU_Amplitude','GroupingVariables',{'SID','ArmType','ArmSide','TargetForce','TargetForce_N','AgeCategory'});
+    MU_Median = sortrows(MU_Median,{'SID','TargetForce_N'},{'ascend','ascend'});
+     
     options.Plot = get_Plot_Options_Median_AbsoluteUnits();
     create_Figure_FromTable(MU_Median, options);  
+    print_FigureToWord(selection,['Subject = ' SID char(13)],'WithMeta')
+    close(gcf);
+    
+    % IQR
+    MU_IQR = varfun(@iqr,MU_Data,'InputVariables','MU_Amplitude','GroupingVariables',{'SID','ArmType','ArmSide','TargetForce','TargetForce_N','AgeCategory'});
+    MU_IQR = sortrows(MU_IQR,{'SID','TargetForce_N'},{'ascend','ascend'});
+       
+    options.Plot = get_Plot_Options_IQR_AbsoluteUnits();
+    create_Figure_FromTable(MU_IQR, options);  
     print_FigureToWord(selection,['Subject = ' SID char(13)],'WithMeta')
     close(gcf);
     
@@ -38,7 +48,7 @@ function PlotOptions = get_Plot_Options_Median_AbsoluteUnits()
     PlotOptions.ColorBy         = {'AgeCategory'};
     PlotOptions.Colors          = [];
     PlotOptions.AdditionalPlots = [];
-    PlotOptions.LegendLocation  = [0.6628    0.4147    0.2661    0.2869];   
+    PlotOptions.LegendLocation  = [0.1548    0.7837    0.1679    0.1012];   
     PlotOptions.LineWidth       = 1.5;
     PlotOptions.LineStyle       = '-';
     PlotOptions.Marker          = 'o';
@@ -54,6 +64,27 @@ function PlotOptions = get_Plot_Options_Median_AbsoluteUnits()
 end
 
 
+function PlotOptions = get_Plot_Options_IQR_AbsoluteUnits()
+
+    PlotOptions.SubplotBy       = {'ArmType'}; 
+    PlotOptions.GroupBy         = {'SID'};
+    PlotOptions.ColorBy         = {'AgeCategory'};
+    PlotOptions.Colors          = [];
+    PlotOptions.AdditionalPlots = [];
+    PlotOptions.LegendLocation  = [0.1548    0.7837    0.1679    0.1012];   
+    PlotOptions.LineWidth       = 1.5;
+    PlotOptions.LineStyle       = '-';
+    PlotOptions.Marker          = 'o';
+    PlotOptions.FontSize        = 12;
+    PlotOptions.XVar            = {'TargetForce_N'};
+    PlotOptions.XLabel          = 'TargetForce_N';
+    PlotOptions.XLim            = [];
+    PlotOptions.YVar            = {'iqr_MU_Amplitude'};
+    PlotOptions.YLabel          = 'IQR MU Amplitude (mV)';
+    PlotOptions.YLim            = [];
+    PlotOptions.Title           = @(inputdata,options)['All subjects: ' char(inputdata.(options.Plot.SubplotBy{1})(1))] ;  
+    PlotOptions.TitleSize       = 16; 
+end
   
 %     MU_Median = varfun(@median,MU_Data,'InputVariables','MU_Amplitude','GroupingVariables',{'TargetForce','TargetForce_N'});  
 %     figure; 

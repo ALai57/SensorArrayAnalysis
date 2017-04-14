@@ -46,31 +46,22 @@ function create_Figure_FromTable(data, options)
 
     figure; 
     
-    if ~isempty(options.Plot.SubplotBy)
-        subplot_ID = unique(data.(options.Plot.SubplotBy{1})); 
-    else
-        subplot_ID = {'All'};
-    end
-    
-    nSubplots = length(subplot_ID);
+    subplot_Var = get_Subplot_Variables(data, options);
+    nSubplots   = length(subplot_Var);
     
     for i=1:nSubplots
         
         hA(i) = subplot(1,nSubplots,i); hold on;
         
-        if ~isequal(subplot_ID,{'All'})
-            ind_subplot = data.(options.Plot.SubplotBy{1})==subplot_ID(i);
-            subplot_Data = data(ind_subplot,:);
-        else
-            subplot_Data = data;
-        end
-
+        subplot_Data            = get_Subplot_Data(data,options,subplot_Var(i));
         [subplot_Data, options] = append_ColorData(subplot_Data,options);
+        [subplot_Data, options] = append_GroupingInformation(subplot_Data,options);
+        
         cGroups = unique(subplot_Data.(options.Plot.ColorBy{1}));
-        groups  = unique(subplot_Data.(options.Plot.GroupBy{1})); 
-        for n=1:length(groups)
-            [x,y,c] = get_XY_Data(subplot_Data,options,groups(n));
-            hP(n) = plot(x,y,'Color',c); 
+        pgroups  = unique(subplot_Data.PlotGroups); 
+        for n=1:length(pgroups)
+            [x,y,c] = get_XY_Data(subplot_Data,options,pgroups(n));
+            hP(n)   = plot(x,y,'Color',c); 
             format_DataSeries(hP(n),options)
         end
 
@@ -82,17 +73,18 @@ function create_Figure_FromTable(data, options)
         end
         
         format_Plot(options)
-        setup_Legend(hA(i),cGroups,options)
-%         title(options.Plot.Title,'fontsize',options.Plot.TitleSize);
-        title(options.Plot.Title(subplot_Data,options),'fontsize',options.Plot.TitleSize);
+        if ~isempty(options.Plot.LegendLocation)
+            setup_Legend(hA(i),cGroups,options)
+        end
+        title(options.Plot.Title(subplot_Data,options),'fontsize',options.Plot.TitleSize,'interpreter','none');
     end
  
 end
 
 function format_Plot(options)
     set(gca,'fontsize' ,options.Plot.FontSize)
-    xlabel(options.Plot.XLabel);
-    ylabel(options.Plot.YLabel);
+    xlabel(options.Plot.XLabel,'interpreter','none');
+    ylabel(options.Plot.YLabel,'interpreter','none');
     
     if ~isempty(options.Plot.XLim)
         xlim(options.Plot.XLim);
@@ -104,24 +96,55 @@ function format_Plot(options)
 %     ylim(options.Plot.YLim);
 end
 
-function [subplot_Data, options] = append_ColorData(subplot_Data,options)
+% function [subplot_Data, options] = append_ColorData(subplot_Data,options)
+% 
+%     [c, ~, colorIndex]    = unique(subplot_Data.(options.Plot.ColorBy{1}));
+%     
+%     if isempty(options.Plot.Colors) && length(c)<7
+%         colorOrder = get(gca,'colororder');
+%     elseif isempty(options.Plot.Colors) && length(colorIndex)>=7
+%         colorOrder = varycolor(length(colorIndex));
+%     else
+%         colorOrder = options.Plot.Colors;
+%     end
+%     
+%     for n=1:length(colorIndex)
+%         color(n,:) = colorOrder(colorIndex(n),:);
+%     end
+%     
+%     subplot_Data.Color = color; 
+%     options.Plot.Colors = colorOrder;
+% end
 
-    [c, ~, colorIndex]    = unique(subplot_Data.(options.Plot.ColorBy{1}));
+function [subplot_Data, options] = append_ColorData(subplot_Data,options)
+    nColorVars = length(options.Plot.ColorBy);
+
+    for n=1:nColorVars
+        opt_append.FileID_Tag(n) = options.Plot.ColorBy(n);
+    end
+    subplot_Data = append_FileID_Tag(subplot_Data, opt_append);
+    ind = categorical(subplot_Data.Properties.VariableNames) == 'FileID_Tag';
+    subplot_Data.Properties.VariableNames(ind) = {'ColorGroups'};
     
+    c = unique(subplot_Data.ColorGroups);
     if isempty(options.Plot.Colors) && length(c)<7
         colorOrder = get(gca,'colororder');
-    elseif isempty(options.Plot.Colors) && length(colorIndex)>=7
-        colorOrder = varycolor(length(colorIndex));
+    elseif isempty(options.Plot.Colors) && length(c)>=7
+        colorOrder = varycolor(length(c));
     else
         colorOrder = options.Plot.Colors;
     end
     
-    for n=1:length(colorIndex)
-        color(n,:) = colorOrder(colorIndex(n),:);
+    cGroups = unique(subplot_Data.ColorGroups);
+    color = zeros(size(subplot_Data,1),3);
+    for n=1:length(cGroups)
+        ind = subplot_Data.ColorGroups == cGroups(n);
+        color(ind,:) = repmat(colorOrder(n,:),sum(ind),1);
     end
     
     subplot_Data.Color = color; 
     options.Plot.Colors = colorOrder;
+    
 end
 
 function format_DataSeries(hP,options)
@@ -131,11 +154,11 @@ function format_DataSeries(hP,options)
 end
 
 function [x,y,c] = get_XY_Data(data,options,group)
-    ind  = data.(options.Plot.GroupBy{1}) == group;
+    ind  = data.PlotGroups == group;
     x    = data.(options.Plot.XVar{1})(ind);
     y    = data.(options.Plot.YVar{1})(ind);
     
-    i = find(ind);
+    i    = find(ind);
     c    = data.Color(i(1),:);
 end
 
@@ -164,3 +187,38 @@ function setup_Legend(hA,groups,options)
     set(hL,'position',options.Plot.LegendLocation)
     legend boxoff
 end
+
+function subplot_Var = get_Subplot_Variables(data,options)
+    if ~isempty(options.Plot.SubplotBy)
+        subplot_Var = unique(data.(options.Plot.SubplotBy{1})); 
+    else
+        subplot_Var = {'All'};
+    end
+end
+
+function subplot_Data = get_Subplot_Data(data,options,subplot_Var)
+    if isequal(subplot_Var,{'All'})
+        subplot_Data = data;
+    else
+        ind_subplot = data.(options.Plot.SubplotBy{1})==subplot_Var;
+        subplot_Data = data(ind_subplot,:);
+    end
+end
+
+
+function [subplot_Data, options] = append_GroupingInformation(subplot_Data,options)
+
+    nGroupVars = length(options.Plot.GroupBy);
+
+    for n=1:nGroupVars
+        opt_append.FileID_Tag(n) = options.Plot.GroupBy(n);
+    end
+    subplot_Data = append_FileID_Tag(subplot_Data, opt_append);
+    ind = categorical(subplot_Data.Properties.VariableNames) == 'FileID_Tag';
+    subplot_Data.Properties.VariableNames(ind) = {'PlotGroups'};
+
+end
+
+    
+    
+    
