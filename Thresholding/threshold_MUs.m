@@ -8,7 +8,7 @@ function MU_Data = threshold_MUs(options)
         ind_Window = options.STA_Window.Threshold.Function{1}(MU_Data.(theField),options.STA_Window.Threshold.Value);
         % PRINT/REPORTING
     else 
-        MU_Data    = load(options.STA.File);
+        load(options.STA.File,'MU_Data');
         ind_Window = true(size(MU_Data,1),1);
     end
     

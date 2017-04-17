@@ -1,10 +1,10 @@
 
-function create_Histogram_FromTable(data, options)
+function create_Histogram_FromTable(allData, options)
 
     figure; 
     
     if ~isempty(options.Plot.SubplotBy)
-        subplot_ID = unique(data.(options.Plot.SubplotBy{1})); 
+        subplot_ID = unique(allData.(options.Plot.SubplotBy{1})); 
     else
         subplot_ID = {'All'};
     end
@@ -16,10 +16,10 @@ function create_Histogram_FromTable(data, options)
         hA(i) = subplot(1,nSubplots,i); hold on;
         
         if ~isequal(subplot_ID,{'All'})
-            ind_subplot = data.(options.Plot.SubplotBy{1})==subplot_ID(i);
-            subplot_Data = data(ind_subplot,:);
+            ind_subplot = allData.(options.Plot.SubplotBy{1})==subplot_ID(i);
+            subplot_Data = allData(ind_subplot,:);
         else
-            subplot_Data = data;
+            subplot_Data = allData;
         end
 
         

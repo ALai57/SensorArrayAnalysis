@@ -4,7 +4,6 @@ function generateReport_MU_Amplitude_Statistics()
     options  = get_Options();
     analyses = get_Analyses();
     
-    %Thresholding module.
     MU_Data = threshold_MUs(options);
     
     MU_Data = append_AgeCategory(MU_Data,options);
@@ -14,8 +13,8 @@ function generateReport_MU_Amplitude_Statistics()
     print_ReportDescription(selection);
     print_OptionsAndAnalyses(selection, options, analyses);
 %     print_All_MU_Amplitude_Statistics_ByAge(selection, MU_Data, options)
-%     print_All_MU_Amplitude_Statistics_ByForceLevel(selection, MU_Data, options)
-    print_All_MU_Amplitude_Statistics_ByAgeAndForceLevel(selection, MU_Data,options)
+    print_All_MU_Amplitude_Statistics_ByForceLevel(selection, MU_Data, options)
+%     print_All_MU_Amplitude_Statistics_ByAgeAndForceLevel(selection, MU_Data,options)
     print_Analysis_LoopOverSubjects(selection, MU_Data, analyses.IndividualSubject,options);
     
     delete(serverHandle)
@@ -46,15 +45,16 @@ function print_OptionsAndAnalyses(selection, options, report)
 end
 
 function options = get_Options()
-    options.STA.File                             = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_AllControl_4_12_2017.mat';
+%     options.STA.File                             = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_AllControl_4_12_2017.mat';
+    options.STA.File                             = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_Stroke_4_17_2017.mat';
     options.STA_Window.File                      = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_Window_Control_4_10_2017.mat';
-    options.STA_Window.Threshold.On              = 1;
+    options.STA_Window.Threshold.On              = 0;
     options.STA_Window.Threshold.Statistic       = 'PtP_Amplitude_Mean_CV';
     options.STA_Window.Threshold.Function        = {@(qty,thresh)lt(qty,thresh)};
     options.STA_Window.Threshold.Value           = 0.6;
     options.STA_Window.PtPAmplitude.Statistic    = 'Mean_CV';
     options.STA_Window.PtPDuration.Statistic     = 'Mean_CV';
-    options.STA_CrossCorrelation.Threshold.On    = 1;
+    options.STA_CrossCorrelation.Threshold.On    = 0;
     options.STA_CrossCorrelation.Threshold.Statistic = 'Mean_XC';
     options.STA_CrossCorrelation.Threshold.Function  = {@(qty,thresh)gt(qty,thresh)};
     options.STA_CrossCorrelation.Threshold.Value = 0.8;

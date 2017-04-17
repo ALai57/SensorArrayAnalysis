@@ -23,19 +23,25 @@ function print_All_MU_Amplitude_Statistics_ByForceLevel(selection,MU_Data,option
     MU_Median = varfun(@median,MU_Data,'InputVariables','MU_Amplitude','GroupingVariables',{'SID','ArmType','ArmSide','TargetForce','TargetForce_N','ForceCategory'});
     MU_Median = sortrows(MU_Median,{'SID','TargetForce_N'},{'ascend','ascend'});
      
-    options.Plot = get_Plot_Options_Median_AbsoluteUnits();
-    create_Figure_FromTable(MU_Median, options);  
-    print_FigureToWord(selection,['All Subjects included. Each colored line represents data from a single subject. Small forces and large forces are plotted on separate plots, for visualization.' char(13)],'WithMeta')
-    close(gcf);
-    
     % IQR
     MU_IQR = varfun(@iqr,MU_Data,'InputVariables','MU_Amplitude','GroupingVariables',{'SID','ArmType','ArmSide','TargetForce','TargetForce_N','ForceCategory'});
     MU_IQR = sortrows(MU_IQR,{'SID','TargetForce_N'},{'ascend','ascend'});
-       
-    options.Plot = get_Plot_Options_IQR_AbsoluteUnits();
-    create_Figure_FromTable(MU_IQR, options);  
-    print_FigureToWord(selection,['All Subjects included. Each colored line represents data from a single subject. Small forces and large forces are plotted on separate plots, for visualization.' char(13)],'WithMeta')
-    close(gcf);
+    
+    arms = unique(MU_IQR.ArmType);
+    
+    for n=1:length(arms)
+        ind_m = MU_Median.ArmType == arms(n);
+        options.Plot = get_Plot_Options_Median_AbsoluteUnits();
+        create_Figure_FromTable(MU_Median(ind_m,:), options);  
+        print_FigureToWord(selection,[char(arms(n)) ': All Subjects included. Each colored line represents data from a single subject. Small forces and large forces are plotted on separate plots, for visualization.' char(13)],'WithMeta')
+        close(gcf);
+
+        ind_i = MU_Median.ArmType == arms(n);
+        options.Plot = get_Plot_Options_IQR_AbsoluteUnits();
+        create_Figure_FromTable(MU_IQR(ind_i,:), options);  
+        print_FigureToWord(selection,[char(arms(n)) 'All Subjects included. Each colored line represents data from a single subject. Small forces and large forces are plotted on separate plots, for visualization.' char(13)],'WithMeta')
+        close(gcf);
+    end
     
     selection.InsertBreak;
 end

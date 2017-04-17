@@ -16,6 +16,7 @@
 % [4,5,8,9,10,12,13] = new Control subjects
 %  [1,2,3,6,7,11,14] = old Control subjects
 
+
 function analysis = loop_Over_SubjectType(dataDirs,options)
 
     analysis = cell(length(options.Subject_Analyses),1);
@@ -23,7 +24,7 @@ function analysis = loop_Over_SubjectType(dataDirs,options)
         
         SIDs = get_subFolders(dataDirs{status});
 
-        for subj=1:length(SIDs) %Loop through each subject
+        for subj=[1,9]%:length(SIDs) %Loop through each subject
 
             SID            = SIDs{subj};
             subj_Dir       = [dataDirs{status} '\' SID];

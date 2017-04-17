@@ -42,12 +42,12 @@
 % trialData{1} = @(arrayData_tbl,options)get_NumberOfMUsDecomposed(arrayData_tbl,options);
 % data         = get_Data_FromTrial(MU_Data,trialData,options);
 
-function create_BoxPlot_FromTable(data, options)
+function create_BoxPlot_FromTable(allData, options)
 
     figure; 
     
     if ~isempty(options.Plot.SubplotBy)
-        subplot_ID = unique(data.(options.Plot.SubplotBy{1})); 
+        subplot_ID = unique(allData.(options.Plot.SubplotBy{1})); 
     else
         subplot_ID = {'All'};
     end
@@ -59,24 +59,25 @@ function create_BoxPlot_FromTable(data, options)
         hA(i) = subplot(1,nSubplots,i); hold on;
         
         if ~isequal(subplot_ID,{'All'})
-            ind_subplot = data.(options.Plot.SubplotBy{1})==subplot_ID(i);
-            subplot_Data = data(ind_subplot,:);
+            ind_subplot = allData.(options.Plot.SubplotBy{1})==subplot_ID(i);
+            subplot_Data = allData(ind_subplot,:);
         else
-            subplot_Data = data;
+            subplot_Data = allData;
         end
 
         
         groups = unique(subplot_Data.(options.Plot.BoxPlotBy{1}));  
         x = zeros(length(groups),1);
         y = [];
+        clear hP;
         for n=1:length(groups)
             [x(n),y{n}] = get_Data(subplot_Data,options,groups(n));
             hP(n,:) = boxplot(y{n},'labels',{char(groups(n))},'position',x(n)); 
             hold on;      
         end
         
-        options.Plot.YMax = max(data.(options.Plot.YVar{1}));
-        options.Plot.YMin = min(data.(options.Plot.YVar{1}));
+        options.Plot.YMax = max(subplot_Data.(options.Plot.YVar{1}));
+        options.Plot.YMin = min(subplot_Data.(options.Plot.YVar{1}));
         
         format_Plot(options);
         xlabel(options.Plot.BoxPlotBy{1});

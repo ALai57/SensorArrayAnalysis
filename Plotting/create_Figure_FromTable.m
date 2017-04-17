@@ -135,6 +135,8 @@ function [subplot_Data, options] = append_ColorData(subplot_Data,options)
         colorOrder = get(gca,'colororder');
     elseif isempty(options.Plot.Colors) && length(c)>=7
         colorOrder = varycolor(length(c));
+    elseif length(options.Plot.Colors) < length(c)
+        colorOrder = varycolor(length(c));
     else
         colorOrder = options.Plot.Colors;
     end

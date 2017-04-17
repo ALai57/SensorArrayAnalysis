@@ -4,9 +4,9 @@
 
 
 
-options.BaseDirectory     = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\';
+options.BaseDirectory     = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\';
 
-options.Trial.Analysis{1} = @(trial_Data,options)calculate_STA_Window_FromTrial(trial_Data,options);
+options.Trial.Function{1} = @(trial_Data,options)calculate_STA_Window_FromTrial(trial_Data,options);
 options.Trial.OutputVariable = {'STA_Window','STA_Window_nObs'};
 
 options.STA.WindowStep   = 1; % window moving step (seconds)
