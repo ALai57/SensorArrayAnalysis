@@ -35,7 +35,11 @@ function create_SidewaysHistogram_FromTable(allData, options)
                     plot(0,0);
                 else
                     [n0, x0] = hist(y);
-                    nNorm = n0/max(n0)*0.9*(nXgroups(2)-nXgroups(1));
+                    try
+                        nNorm = n0/max(n0)*0.9*(nXgroups(2)-nXgroups(1));
+                    catch
+                        continue;
+                    end
                     hP(n) = plot(nNorm+x(1),x0,options.Plot.Colors{n},'linewidth',2); 
                     hF(n) = fill([nNorm,flip(nNorm*0)]+x(1),[x0,flip(x0)],options.Plot.Colors{n});
                     set(hF(n),'facealpha',.5)

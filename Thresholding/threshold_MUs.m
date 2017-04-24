@@ -21,5 +21,11 @@ function MU_Data = threshold_MUs(options)
         ind_XC = true(size(MU_Data,1),1);
     end
     
-    MU_Data = MU_Data(ind_Window & ind_XC,:);
+    if options.MUs.Threshold.On 
+        ind_MU = options.MUs.Threshold.Function{1}(MU_Data,options.MUs);
+    else
+        ind_MU = true(size(MU_Data,1),1);
+    end
+    
+    MU_Data = MU_Data(ind_Window & ind_XC & ind_MU,:);
 end

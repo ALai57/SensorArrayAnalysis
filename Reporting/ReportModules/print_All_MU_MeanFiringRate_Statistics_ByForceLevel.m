@@ -82,7 +82,7 @@ function PlotOptions = get_Plot_Options_IQR_AbsoluteUnits()
     PlotOptions.XLim            = [];
     PlotOptions.YVar            = {'iqr_MeanFiringRate'};
     PlotOptions.YLabel          = 'IQR Firing Rate (pps)';
-    PlotOptions.YLim            = [0 14];
+    PlotOptions.YLim            = [0 10];
     PlotOptions.Title           = @(inputdata,options)[char(inputdata.(options.Plot.SubplotBy{1})(1))] ;  
     PlotOptions.TitleSize       = 16; 
 end

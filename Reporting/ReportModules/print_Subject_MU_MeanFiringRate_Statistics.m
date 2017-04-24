@@ -22,14 +22,19 @@ function print_Subject_MU_MeanFiringRate_Statistics(selection,subjData,options)
     print_FigureToWord(selection,['Subject = ' SID char(13)],'WithMeta')
     close(gcf);
     
+    options.Plot = get_Plot_Options_Median_AbsoluteUnits();
+    create_BoxPlot_FromTable(subjData, options);  
+    print_FigureToWord(selection,['Subject = ' SID char(13)],'WithMeta')
+    close(gcf);
+    
     options.Plot = get_Plot_Options_SidewaysHistogram_AbsoluteUnits();
     create_SidewaysHistogram_FromTable(subjData, options);
     print_FigureToWord(selection,['Subject = ' SID char(13)],'WithMeta')
     close(gcf);
     
-    options.Plot = get_Plot_Options_Median_AbsoluteUnits();
-    create_BoxPlot_FromTable(subjData, options);  
-    print_FigureToWord(selection,['Subject = ' SID char(13)],'WithMeta')
+    options.Plot = get_Plot_Options_CombinedHistogram_AbsoluteUnits();
+    create_HistogramComparison_FromTable(subjData, options);
+    print_FigureToWord(selection,['Subject = ' SID char(13) '. Bottom plot is Mean with 95% CI'],'WithMeta')
     close(gcf);
     
     selection.InsertBreak;
@@ -52,6 +57,28 @@ function PlotOptions = get_Plot_Options_Histogram_AbsoluteUnits()
     PlotOptions.XLim            = [0 40];
     PlotOptions.YLabel          = 'Number of MUs with given firing rate';
     PlotOptions.YLim            = [];
+    PlotOptions.Title           = @(inputdata,options)[char(inputdata.SID(1)) ': ' char(inputdata.(options.Plot.SubplotBy{1})(1))] ;  
+    PlotOptions.TitleSize       = 16; 
+end
+
+
+function PlotOptions = get_Plot_Options_Median_AbsoluteUnits()
+
+    PlotOptions.SubplotBy       = {'ArmType'}; 
+    PlotOptions.BoxPlotBy       = {'TargetForce'};
+    PlotOptions.AdditionalPlots = [];
+    PlotOptions.LegendLocation  = [0.6628    0.4147    0.2661    0.2869];   
+    PlotOptions.LineWidth       = 2;
+    PlotOptions.LineStyle       = 'none';
+    PlotOptions.FontSize        = 12;
+    PlotOptions.XVar            = {'TargetForce_N'};
+    PlotOptions.XLabel          = 'Target Force (N)';
+    PlotOptions.XLim            = [0 1.2];
+    PlotOptions.YVar            = {'MeanFiringRate'};
+    PlotOptions.YLabel          = 'Mean Firing Rate (pps)';
+    PlotOptions.YLim            = [0 40];
+    PlotOptions.Box.Units       = 'RelativeToMax';
+    PlotOptions.Box.Width       = 0.03;
     PlotOptions.Title           = @(inputdata,options)[char(inputdata.SID(1)) ': ' char(inputdata.(options.Plot.SubplotBy{1})(1))] ;  
     PlotOptions.TitleSize       = 16; 
 end
@@ -80,24 +107,25 @@ end
 
 
 
-function PlotOptions = get_Plot_Options_Median_AbsoluteUnits()
+function PlotOptions = get_Plot_Options_CombinedHistogram_AbsoluteUnits()
 
-    PlotOptions.SubplotBy       = {'ArmType'}; 
-    PlotOptions.BoxPlotBy       = {'TargetForce'};
+    PlotOptions.SubplotBy       = []; 
+    PlotOptions.GroupBy         = {'SID'};
+    PlotOptions.CompareBy       = {'ArmType'};
+    PlotOptions.Colors          = {'r','b'};
     PlotOptions.AdditionalPlots = [];
-    PlotOptions.LegendLocation  = [0.6628    0.4147    0.2661    0.2869];   
+    PlotOptions.LegendLocation  = [0.7152    0.8236    0.1866    0.1012];   
     PlotOptions.LineWidth       = 2;
     PlotOptions.LineStyle       = 'none';
+    PlotOptions.Marker          = 'o';
     PlotOptions.FontSize        = 12;
-    PlotOptions.XVar            = {'TargetForce_N'};
-    PlotOptions.XLabel          = 'Target Force (N)';
-    PlotOptions.XLim            = [0 0.8];
-    PlotOptions.YVar            = {'MeanFiringRate'};
-    PlotOptions.YLabel          = 'Mean Firing Rate (pps)';
-    PlotOptions.YLim            = [0 40 ];
-    PlotOptions.Box.Units       = 'RelativeToMax';
-    PlotOptions.Box.Width       = 0.03;
-    PlotOptions.Title           = @(inputdata,options)[char(inputdata.SID(1)) ': ' char(inputdata.(options.Plot.SubplotBy{1})(1))] ;  
+    PlotOptions.XVar            = {'MeanFiringRate'};
+    PlotOptions.XLabel          = 'Mean Firing Rate (pps)';
+    PlotOptions.XLim            = [0 40];
+    PlotOptions.YLabel          = 'MUs';
+    PlotOptions.YLim            = [];
+    PlotOptions.CI.XLim         = [-5 5];
+    PlotOptions.CI.Statistic    = 'Mean';
+    PlotOptions.Title           = @(inputdata,options)[char(inputdata.SID(1))] ;  
     PlotOptions.TitleSize       = 16; 
 end
-
