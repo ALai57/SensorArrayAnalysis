@@ -82,48 +82,6 @@ function PtP_Duration = calculate_PtP_Duration(STA)
     
 end
 
-
-% 
-% 
-% function [PtP_Amp, PtP_Duration] = calculate_STA_AmplitudeAndDuration(STA_In,options)
-% 
-%     if istable(STA_In)
-%        STA_In = STA_In.(options.STA.ColumnName{1}); 
-%     end
-% 
-%     PtP_Amp      = cell(size(STA_In,1),1);
-%     PtP_Duration = cell(size(STA_In,1),1);
-%     
-%     for n=1:size(STA_In,1)
-%         
-%         try
-%            STA = STA_In{n}; 
-%            
-%            PtP_Amp{n}      = calculate_PtP_Amplitude(STA);
-%            PtP_Duration{n} = calculate_PtP_Duration(STA);
-%          
-%         catch
-%             continue;
-%         end
-%     end  
-%     
-%     try
-%         PtP_Amp = calculate_Statistic(PtP_Amp     ,options.STA.Amplitude.Statistic);
-%     end
-%     try
-%         PtP_Duration = calculate_Statistic(PtP_Duration,options.STA.Duration.Statistic);
-%     end
-%     
-% end
-
-
-
-
-
-
-
-
-
 % 
 % % Visualizing
 % maxSTA = max(STA);

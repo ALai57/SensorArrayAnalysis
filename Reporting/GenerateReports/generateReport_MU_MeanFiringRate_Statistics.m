@@ -24,26 +24,6 @@ function analyses = get_Analyses()
     analyses.IndividualSubject{1} = @(selection,subjData,options)print_Subject_MU_MeanFiringRate_Statistics(selection,subjData,options); 
 end
 
-function print_OptionsAndAnalyses(selection, options, report)
-
-    if options.STA_Window.Threshold.On 
-        selection.TypeText(['Thresholding and STA Windowing options.' char(13)])  
-        STA_Window_options = load(options.STA_Window.File,'options');
-        print_StructToWord(selection,STA_Window_options.options)
-        print_StructToWord(selection,options.STA_Window)
-    else
-        options.STA_Window = [];
-    end
-    
-    selection.TypeText(['Analysis options.' char(13)]) 
-    print_StructToWord(selection,options)
-    
-    selection.TypeText(['Reporting functions performed.' char(13)]) 
-    print_StructToWord(selection,report);
-    
-    selection.InsertBreak;
-end
-
 function options = get_Options()
 %     options.STA.File                           = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_AllControl_4_12_2017.mat';
 %     options.STA_Window.File                    = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_Window_Control_4_10_2017.mat';
@@ -74,7 +54,6 @@ function options = get_Options()
     
     options.Analysis(1).Trial.Function          = {@(trial_Data,options)calculate_MU_MeanFiringRate_FromTrial(trial_Data,options)};
     options.Analysis(1).Trial.OutputVariable(1) = {'MeanFiringRate'};
-    options.Analysis(1).BaseDirectory           = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control';
     options.Analysis(1).MFR.Start               = 'RelativeToPlateauStart';
     options.Analysis(1).MFR.StartAfterPlateau   = +2;
     options.Analysis(1).MFR.Duration            = 5;
@@ -99,3 +78,5 @@ function print_ReportDescription(selection)
 %     selection.TypeText(['- Force traces from SingleDifferential.mat files are not included.' char(13)']) 
     selection.InsertBreak;
 end
+
+

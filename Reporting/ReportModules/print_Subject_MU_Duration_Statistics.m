@@ -62,7 +62,7 @@ function PlotOptions = get_Plot_Options_Median_AbsoluteUnits()
     PlotOptions.FontSize        = 12;
     PlotOptions.XVar            = {'TargetForce_N'};
     PlotOptions.XLabel          = 'Target Force (N)';
-    PlotOptions.XLim            = [0 0.8];
+    PlotOptions.XLim            = [0 1.2];
     PlotOptions.YVar            = {'MU_Duration'};
     PlotOptions.YLabel          = 'MU Duration (ms)';
     PlotOptions.YLim            = [];
@@ -72,10 +72,4 @@ function PlotOptions = get_Plot_Options_Median_AbsoluteUnits()
     PlotOptions.TitleSize       = 16; 
 end
 
-  
-%     MU_Median = varfun(@median,MU_Data,'InputVariables','MU_Amplitude','GroupingVariables',{'TargetForce','TargetForce_N'});  
-%     figure; 
-%     [n0,x0] = hist(MU_Data.MU_Amplitude);
-%     bar(x0,n0); hold on;
-%     plot(x0,n0,'-o')
-%    
+ 

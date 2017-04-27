@@ -16,13 +16,15 @@ function [analysis_unwrap, ind_f] = loop_Over_Trials_FromTable(MU_Data,options)
     analysis         = cell(length(trials),1);
     analysis_unwrap  = initialize_OutputArray(MU_Data,options);
     
+    
+    fprintf(1,'%s \n',func2str(options.Trial.Function{1})); 
+    fprintf(1,'Looping over trials: %6d/%6d',0,length(trials));
     for n=1:length(trials)
-        tic;
+        fprintf(1,'\b\b\b\b\b\b\b\b\b\b\b\b\b%6d/%6d',n,length(trials));
         [trialData,ind_f{n}] = get_TrialData(MU_Data,trials(n));
         analysis{n} = options.Trial.Function{1}(trialData,options); 
-        toc;
     end
-    
+    fprintf('\n')
 
     for n=1:length(trials)
         for i=1:length(options.Trial.OutputVariable)

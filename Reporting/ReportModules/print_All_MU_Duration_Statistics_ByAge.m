@@ -25,7 +25,12 @@ function print_All_MU_Duration_Statistics_ByAge(selection,MU_Data,options)
      
     options.Plot = get_Plot_Options_Median_AbsoluteUnits();
     create_Figure_FromTable(MU_Median, options);  
-    print_FigureToWord(selection,['Subject = ' SID char(13)],'WithMeta')
+    print_FigureToWord(selection,['All subjects' char(13)],'WithMeta')
+    close(gcf);
+    
+    options.Plot = get_Plot_Options_Median_By_Age_AbsoluteUnits();
+    create_Figure_FromTable(MU_Median, options);  
+    print_FigureToWord(selection,['All subjects' char(13)],'WithMeta')
     close(gcf);
     
     % IQR
@@ -34,7 +39,12 @@ function print_All_MU_Duration_Statistics_ByAge(selection,MU_Data,options)
        
     options.Plot = get_Plot_Options_IQR_AbsoluteUnits();
     create_Figure_FromTable(MU_IQR, options);  
-    print_FigureToWord(selection,['Subject = ' SID char(13)],'WithMeta')
+    print_FigureToWord(selection,['All subjects' char(13)],'WithMeta')
+    close(gcf);
+    
+    options.Plot = get_Plot_Options_IQR_By_Age_AbsoluteUnits();
+    create_Figure_FromTable(MU_IQR, options);  
+    print_FigureToWord(selection,['All subjects' char(13)],'WithMeta')
     close(gcf);
     
     selection.InsertBreak;
@@ -51,6 +61,28 @@ function PlotOptions = get_Plot_Options_Median_AbsoluteUnits()
     PlotOptions.LegendLocation  = [0.7209    0.1551    0.1679    0.1012];   
     PlotOptions.LineWidth       = 1.5;
     PlotOptions.LineStyle       = '-';
+    PlotOptions.Marker          = 'o';
+    PlotOptions.FontSize        = 12;
+    PlotOptions.XVar            = {'TargetForce_N'};
+    PlotOptions.XLabel          = 'TargetForce_N';
+    PlotOptions.XLim            = [];
+    PlotOptions.YVar            = {'median_MU_Duration'};
+    PlotOptions.YLabel          = 'Median MU Duration (mV)';
+    PlotOptions.YLim            = [];
+    PlotOptions.Title           = @(inputdata,options)['All subjects: ' char(inputdata.(options.Plot.SubplotBy{1})(1))] ;  
+    PlotOptions.TitleSize       = 16; 
+end
+
+function PlotOptions = get_Plot_Options_Median_By_Age_AbsoluteUnits()
+
+    PlotOptions.SubplotBy       = {'AgeCategory'}; 
+    PlotOptions.GroupBy         = {'ArmType'};
+    PlotOptions.ColorBy         = {'ArmType'};
+    PlotOptions.Colors          = [];
+    PlotOptions.AdditionalPlots = [];
+    PlotOptions.LegendLocation  = [0.7209    0.1551    0.1679    0.1012];   
+    PlotOptions.LineWidth       = 1.5;
+    PlotOptions.LineStyle       = 'none';
     PlotOptions.Marker          = 'o';
     PlotOptions.FontSize        = 12;
     PlotOptions.XVar            = {'TargetForce_N'};
@@ -86,9 +118,25 @@ function PlotOptions = get_Plot_Options_IQR_AbsoluteUnits()
     PlotOptions.TitleSize       = 16; 
 end
   
-%     MU_Median = varfun(@median,MU_Data,'InputVariables','MU_Amplitude','GroupingVariables',{'TargetForce','TargetForce_N'});  
-%     figure; 
-%     [n0,x0] = hist(MU_Data.MU_Amplitude);
-%     bar(x0,n0); hold on;
-%     plot(x0,n0,'-o')
-%    
+
+function PlotOptions = get_Plot_Options_IQR_By_Age_AbsoluteUnits()
+
+    PlotOptions.SubplotBy       = {'AgeCategory'}; 
+    PlotOptions.GroupBy         = {'ArmType'};
+    PlotOptions.ColorBy         = {'ArmType'};
+    PlotOptions.Colors          = [];
+    PlotOptions.AdditionalPlots = [];
+    PlotOptions.LegendLocation  = [0.7352    0.7647    0.1679    0.1012];   
+    PlotOptions.LineWidth       = 1.5;
+    PlotOptions.LineStyle       = 'none';
+    PlotOptions.Marker          = 'o';
+    PlotOptions.FontSize        = 12;
+    PlotOptions.XVar            = {'TargetForce_N'};
+    PlotOptions.XLabel          = 'TargetForce_N';
+    PlotOptions.XLim            = [];
+    PlotOptions.YVar            = {'iqr_MU_Duration'};
+    PlotOptions.YLabel          = 'IQR MU Duration (mV)';
+    PlotOptions.YLim            = [];
+    PlotOptions.Title           = @(inputdata,options)['All subjects: ' char(inputdata.(options.Plot.SubplotBy{1})(1))] ;  
+    PlotOptions.TitleSize       = 16; 
+end

@@ -7,8 +7,6 @@
 %%%% Amplitude vs firing rate
 
 
-%%%%%%%%%% GET STRUCT REPORTING TO HANDLE MULTIPLE FIELDS
-
 
 %%% Quantile regression to see how MU amplitude quantiles change over
 %%% force levels??
@@ -21,8 +19,3 @@
 % Control - is effect of target force >0
 % Stroke  - is effect of target force >0 - is effect of target force
 % different on aff and contra?
-
-
-
-
-%%%%%%%%% ADD SUMMARY STATS TO MEAN FR

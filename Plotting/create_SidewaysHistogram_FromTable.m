@@ -42,7 +42,7 @@ function create_SidewaysHistogram_FromTable(allData, options)
                     end
                     hP(n) = plot(nNorm+x(1),x0,options.Plot.Colors{n},'linewidth',2); 
                     hF(n) = fill([nNorm,flip(nNorm*0)]+x(1),[x0,flip(x0)],options.Plot.Colors{n});
-                    set(hF(n),'facealpha',.5)
+                    set(hF(n),'facealpha',.5);
                     plot([0 max(nNorm)]+x(1),[median(y), median(y)],'k','linewidth',2)
     %                 format_DataSeries(hP(n),options)
                 end
@@ -82,7 +82,7 @@ end
 function format_DataSeries(hP,options)
     set(hP,'LineWidth',options.Plot.LineWidth);
     set(hP,'Marker'   ,options.Plot.Marker);
-    set(hP,'LineStyle','-') 
+    set(hP,'LineStyle','-'); 
 end
 
 function [x,y] = get_Data(data,options,group)
@@ -108,7 +108,7 @@ function hL = setup_Legend(hA,groups,options)
        end
     end
     
-    hP(n+1) = plot(0,0,'k','linewidth',2)
+    hP(n+1) = plot(0,0,'k','linewidth',2);
     legendEntries(n+1) = {'Median'};
     %%%% ADD EXTRA GROUP NAME    %hL = legend('MVC');
     hL = legend(hP,legendEntries);   

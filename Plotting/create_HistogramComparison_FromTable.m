@@ -47,8 +47,8 @@ function create_HistogramComparison_FromTable(allData, options)
         options.Plot.Axis = hS(3,i);
         create_ComparisonOfTwoDistributionsStatistics(subplot_Data,options)
        
-        format_Plot(hS,options)
-        axes(hS(1,i))
+        format_Plot(hS,options);
+        axes(hS(1,i));
         hL(i) = setup_Legend(hP,groups,options);
         title(options.Plot.Title(subplot_Data,options),'fontsize',options.Plot.TitleSize);
     end
