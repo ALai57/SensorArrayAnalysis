@@ -62,9 +62,9 @@ function create_Figure_FromTable(data, options)
         [subplot_Data, options] = append_GroupingInformation(subplot_Data,options);
         
         cGroups = unique(subplot_Data.(options.Plot.ColorBy{1}));
-        pgroups  = unique(subplot_Data.PlotGroups); 
-        for n=1:length(pgroups)
-            [x,y,c] = get_XY_Data(subplot_Data,options,pgroups(n));
+        pGroups = unique(subplot_Data.PlotGroups); 
+        for n=1:length(pGroups)
+            [x,y,c] = get_XY_Data(subplot_Data,options,pGroups(n));
             hP(n)   = plot(x,y,'Color',c); 
             format_DataSeries(hP(n),options)
         end
@@ -96,29 +96,8 @@ function format_Plot(options)
     if ~isempty(options.Plot.YLim)
         ylim(options.Plot.YLim);
     end
-%     xlim(options.Plot.XLim);
-%     ylim(options.Plot.YLim);
 end
 
-% function [subplot_Data, options] = append_ColorData(subplot_Data,options)
-% 
-%     [c, ~, colorIndex]    = unique(subplot_Data.(options.Plot.ColorBy{1}));
-%     
-%     if isempty(options.Plot.Colors) && length(c)<7
-%         colorOrder = get(gca,'colororder');
-%     elseif isempty(options.Plot.Colors) && length(colorIndex)>=7
-%         colorOrder = varycolor(length(colorIndex));
-%     else
-%         colorOrder = options.Plot.Colors;
-%     end
-%     
-%     for n=1:length(colorIndex)
-%         color(n,:) = colorOrder(colorIndex(n),:);
-%     end
-%     
-%     subplot_Data.Color = color; 
-%     options.Plot.Colors = colorOrder;
-% end
 
 function [subplot_Data, options] = append_ColorData(subplot_Data,options)
     nColorVars = length(options.Plot.ColorBy);
@@ -174,9 +153,6 @@ function setup_Legend(hA,groups,options)
         hF(n) = plot(0,0);
         set(hF(n),'Color',options.Plot.Colors(n,:));
         format_DataSeries(hF(n),options);
-%         set(hF(n),'Marker',options.Plot.Marker);
-%         set(hF(n),'LineStyle',options.Plot.LineStyle);
-%         set(hF(n),'LineWidth',
         set(hF(n),'Visible','off');
     end
 
