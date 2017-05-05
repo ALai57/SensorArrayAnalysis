@@ -1,6 +1,6 @@
 
 
-function generateReport_SensorArray_SEMG_Statistics()
+function generateReport_SensorArray_SEMG_Statistics_Normalized()
 
     options  = get_Options();
     analyses = get_Analyses();
@@ -13,7 +13,7 @@ function generateReport_SensorArray_SEMG_Statistics()
     [serverHandle, selection] = open_ConnectionToWord();
     print_ReportDescription(selection);
     print_OptionsAndAnalyses(selection, options, analyses);
-    print_All_SensorArray_SEMG_Statistics(selection, MU_Data, options);
+    print_All_SensorArray_SEMG_Statistics_Normalized(selection, MU_Data, options);
 %     print_All_SEMG_Statistics_ByForceLevel(selection, MU_Data, options)
     print_Analysis_LoopOverSubjects(selection, MU_Data, analyses.IndividualSubject,options);
     
@@ -21,7 +21,7 @@ function generateReport_SensorArray_SEMG_Statistics()
 end
 
 function analyses = get_Analyses()
-    analyses.IndividualSubject{1} = @(selection,subjData,options)print_Subject_SensorArray_SEMG_Statistics(selection,subjData,options); 
+    analyses.IndividualSubject{1} = @(selection,subjData,options)print_Subject_SensorArray_SEMG_Statistics_Normalized(selection,subjData,options); 
 end
 
 function options = get_Options()

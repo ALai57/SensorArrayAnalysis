@@ -1,6 +1,6 @@
 
 
-function generateReport_SensorArray_SEMG_Statistics()
+function generateReport_MVC_Statistics()
 
     options  = get_Options();
     analyses = get_Analyses();
@@ -13,7 +13,7 @@ function generateReport_SensorArray_SEMG_Statistics()
     [serverHandle, selection] = open_ConnectionToWord();
     print_ReportDescription(selection);
     print_OptionsAndAnalyses(selection, options, analyses);
-    print_All_SensorArray_SEMG_Statistics(selection, MU_Data, options);
+    print_All_MVC_Statistics(selection, MU_Data, options);
 %     print_All_SEMG_Statistics_ByForceLevel(selection, MU_Data, options)
     print_Analysis_LoopOverSubjects(selection, MU_Data, analyses.IndividualSubject,options);
     
@@ -21,7 +21,7 @@ function generateReport_SensorArray_SEMG_Statistics()
 end
 
 function analyses = get_Analyses()
-    analyses.IndividualSubject{1} = @(selection,subjData,options)print_Subject_SensorArray_SEMG_Statistics(selection,subjData,options); 
+    analyses.IndividualSubject{1} = @(selection,subjData,options)print_Subject_MVC_Statistics(selection,subjData,options); 
 end
 
 function options = get_Options()
@@ -67,6 +67,19 @@ function options = get_Options()
     options.Analysis(1).SEMG.SlideStep          = 0.1;
     options.Analysis(1).SEMG.Start              = [];
     options.Analysis(1).SEMG.End                = [];
+    
+    options.Analysis(2).Trial.Function          = {@(trial_Data,options)calculate_SingleDifferential_SEMG_FromTrial(trial_Data,options)};
+    options.Analysis(2).Trial.OutputVariable(1) = {'BICM'};
+    options.Analysis(2).Trial.OutputVariable(2) = {'BICL'};
+    options.Analysis(2).Trial.OutputVariable(3) = {'TRI'};
+    options.Analysis(2).Trial.OutputVariable(4) = {'BRD'};
+    options.Analysis(2).Trial.OutputVariable(5) = {'BRA'};
+    options.Analysis(2).SEMG.Method             = 'RMS';
+    options.Analysis(2).SEMG.Statistic          = 'Max';
+    options.Analysis(2).SEMG.Window             = 2;
+    options.Analysis(2).SEMG.SlideStep          = 0.1;
+    options.Analysis(2).SEMG.Start              = [];
+    options.Analysis(2).SEMG.End                = [];
 end
 
 
@@ -79,7 +92,7 @@ function print_ReportDescription(selection)
     selection.TypeText([date() char(13) char(13) char(13)]);
     selection.Font.Size = 16;
     selection.Font.Bold = 0;
-    selection.TypeText(['This report contains a summary of Sensor Array Surface EMG.' char(13)])  
+    selection.TypeText(['This report contains a summary of MVC statistics (SEMG & Force).' char(13)])  
     selection.Font.Size = 12;%     selection.TypeText(['- For each subject, a summary table of all trials is included.' char(13)]) 
 %     selection.TypeText(['- The summary table is printed for both SensorArray.mat and SingleDifferential.mat files.' char(13)]) 
 %     selection.TypeText(char(13)) 

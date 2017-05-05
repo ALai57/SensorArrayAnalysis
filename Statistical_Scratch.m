@@ -84,6 +84,8 @@ y2   = regression{3}.response;
 b2   = regression{3}.beta;
 n2   = length(x2);
 ssx2 = (x2(:,2)-mean(x2(:,2)))'*(x2(:,2)-mean(x2(:,2)));
+
+
 %Are variances equal?
 if sse1>sse2
     Fstat = sse1/sse2;
@@ -97,11 +99,12 @@ end
 
 %Correct DF and pool error
 if p>0.975
-   t_df = satterthwaite_DFapprox_regresssion_ttest2(s1,s2,ssx1,ssx2,n1,n2) 
-    
+   t_df = satterthwaite_DFapprox_regresssion_ttest2(s1,s2,ssx1,ssx2,df1,df2)%n1,n2) 
+   denom = sse1/(n1-2)/ssx1+sse2/(n2-2)/ssx2
 else
    t_df = n1+n2-4;
-   s_pool = ((df1-2)*s1 + (df2-2)*s2)/(df1+df2-4);
+   s_pool = ((n1-2)*s1 + (n2-2)*s2)/(n1+n2-4);
+   s_pool = (sse1+sse2)/(n1+n2-4)
    denom = s_pool*(1/ssx1+1/ssx2);
    tstat = (b1(2)-b2(2))/sqrt(denom);
    tcdf(tstat,t_df);

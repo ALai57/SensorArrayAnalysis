@@ -82,7 +82,7 @@ function print_ReportDescription(selection)
     selection.TypeText([date() char(13) char(13) char(13)]);
     selection.Font.Size = 16;
     selection.Font.Bold = 0;
-    selection.TypeText(['This report contains a summary of Single Differential Surface EMG.' char(13)])  
+    selection.TypeText(['This report contains a summary of Single Differential Surface EMG data.' char(13)])  
     selection.Font.Size = 12;%     selection.TypeText(['- For each subject, a summary table of all trials is included.' char(13)]) 
 %     selection.TypeText(['- The summary table is printed for both SensorArray.mat and SingleDifferential.mat files.' char(13)]) 
 %     selection.TypeText(char(13)) 

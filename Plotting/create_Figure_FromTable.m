@@ -150,7 +150,13 @@ end
 function setup_Legend(hA,groups,options)
 
     for n=1:length(groups)
-        hF(n) = plot(0,0);
+        try
+            hF(n) = plot(0,0);
+        catch
+            hL = get(gca,'children');
+            d  = get(hL(1),'XData');
+            hF(n) = plot(d(1),0);
+        end
         set(hF(n),'Color',options.Plot.Colors(n,:));
         format_DataSeries(hF(n),options);
         set(hF(n),'Visible','off');

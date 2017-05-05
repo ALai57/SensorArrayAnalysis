@@ -1,53 +1,89 @@
 
-function print_All_SingleDifferential_SEMG_Statistics(selection,allData,options)
+function print_All_SensorArray_SEMG_Statistics_Normalized(selection,allData,options)
    
     % For readability make temporary variables
-    baseDir  = options.SingleDifferential.BaseDirectory;
+    baseDir  = options.SensorArray.BaseDirectory;
     varNames = options.Analysis(1).Trial.OutputVariable;
     
     % Get all trial information and calculate SEMG
-    allData   = append_SingleDifferentialFullFile_2Array(allData,baseDir);
+    allData   = append_SensorArrayFullFile_2Array(allData,baseDir);
     [SEMG, ~] = loop_Over_Trials_FromTable(allData,options.Analysis(1)); 
     
     % Merge SEMG data with all trial information
-    SEMG       = rename_StructFields(SEMG,varNames);
-    allData    = merge_Data(allData,SEMG,options);
-    SEMG       = reduce_RedundantData(allData,varNames);
-    SEMG_NoMVC = SEMG(~(SEMG.TargetForce=='100%MVC'),:);
-
+    SEMG         = rename_StructFields(SEMG,varNames);
+    allData      = merge_Data(allData,SEMG,options);
+    SEMG         = reduce_RedundantData(allData,varNames);
+    Norm_SEMG    = normalize_EMG(SEMG,[5,7,8]);
+    Norm_SEMG.AllData = Norm_SEMG{:,end-1:end};
+    Norm_SEMG_NoMVC   = Norm_SEMG(~(Norm_SEMG.TargetForce=='100%MVC'),:);
+    
+    
+    %Plot
+    options.Plot = get_Plot_Options_AbsoluteUnits();
+    create_Figure_FromTable(Norm_SEMG,options)
+    print_FigureToWord(selection,['All Subjects'],'WithMeta')
+    close(gcf);
+    
     % Create plot - with MVC in regression
     options.Plot = get_Plot_Options_RegressionComparison_AbsoluteUnits();
     options.Plot.Axis = axes();
-    [stats] = create_ComparisonOfTwoRegressions(SEMG,options);
+    [stats] = create_ComparisonOfTwoRegressions(Norm_SEMG,options);
     xlabel('\Delta Regression slope (SD EMG/Force)')
     title({'All subjects: Difference in Regression Slopes',...
            '(Unaff-Aff). Mean and 95% CI'})
-    print_FigureToWord(selection,['All Subjects'],'WithMeta');
-    close(gcf);  
+    print_FigureToWord(selection,['All Subjects'],'WithMeta')
+    close(gcf);   
     
     % Print statistics
     statOut = reformat_Struct(stats);
     selection.TypeText(['Statistics - regressions including MVC.' char(13)]) 
     print_TableToWord(selection,cell2table(statOut)) 
     selection.InsertBreak;
-   
+    
+    
     % Create plot - without MVC in regression
     options.Plot = get_Plot_Options_RegressionComparison_AbsoluteUnits();
     options.Plot.Axis = axes();
-    [stats] = create_ComparisonOfTwoRegressions(SEMG_NoMVC,options);
+    [stats] = create_ComparisonOfTwoRegressions(Norm_SEMG_NoMVC,options);
     xlabel('\Delta Regression slope (SD EMG/Force)')
     title({'All subjects: Difference in Regression Slopes',...
            'NoMVC trials. (Unaff-Aff). Mean and 95% CI'})
-    print_FigureToWord(selection,['All Subjects'],'WithMeta');
-    close(gcf);  
+    print_FigureToWord(selection,['All Subjects'],'WithMeta')
+    close(gcf);      
     
     % Print statistics
     statOut = reformat_Struct(stats);
-    selection.TypeText(['Statistics - regressions without MVC.' char(13)])  
-    print_TableToWord(selection,cell2table(statOut))
-    selection.InsertBreak;
+    selection.TypeText(['Statistics - regressions including MVC.' char(13)]) 
+    print_TableToWord(selection,cell2table(statOut)) 
+    selection.InsertBreak;    
+    
    
 end
+
+    
+function PlotOptions = get_Plot_Options_AbsoluteUnits()
+
+    PlotOptions.SubplotBy       = []; 
+    PlotOptions.GroupBy         = {'ArmType'};
+    PlotOptions.ColorBy         = {'ArmType'};
+    PlotOptions.Colors          = [1,0,0; 0,0,1];
+    PlotOptions.AdditionalPlots = [];
+    PlotOptions.LegendLocation  = [0.7152    0.8236    0.1866    0.1012];   
+    PlotOptions.LineWidth       = 2;
+    PlotOptions.LineStyle       = 'none';
+    PlotOptions.Marker          = 'o';
+    PlotOptions.FontSize        = 12;
+    PlotOptions.XVar            = {'TargetForce_N'};
+    PlotOptions.XLabel          = 'Target Force (N)';
+    PlotOptions.XLim            = [];
+    PlotOptions.YVar            = {'AllData'};
+    PlotOptions.YLabel          = 'RMS EMG (Sensor Arrays)';
+    PlotOptions.YLim            = [];
+    PlotOptions.Title           = @(inputdata,options)['All Subjects'] ;  
+    PlotOptions.TitleSize       = 16; 
+end
+
+
 
 
 function PlotOptions = get_Plot_Options_RegressionComparison_AbsoluteUnits()
@@ -66,7 +102,7 @@ function PlotOptions = get_Plot_Options_RegressionComparison_AbsoluteUnits()
     PlotOptions.Predictor       = {'TargetForce_N'};
     PlotOptions.XLabel          = 'Target Force (N)';
     PlotOptions.XLim            = [];
-    PlotOptions.Response        = {'BICM', 'BICL','TRI','BRD','BRA'};
+    PlotOptions.Response        = {'AllData'};
     PlotOptions.YLabel          = 'RMS EMG (Sensor Arrays)';
     PlotOptions.YLim            = [];
     PlotOptions.CI.XLim         = [];
@@ -75,28 +111,25 @@ function PlotOptions = get_Plot_Options_RegressionComparison_AbsoluteUnits()
     PlotOptions.TitleSize       = 16; 
 end
 
- function SEMG = rename_StructFields(SEMG,varNames)
+function SEMG = rename_StructFields(SEMG,varNames)
     for n=1:length(varNames) 
         name = varNames{n};
         SEMG.(name) = cell2mat(SEMG.(name));
     end
- end
+end
 
 function allData = merge_Data(allData,SEMG,options)
-    % Merge data
     allData = append_FileID_Tag(allData,options);
     SEMG    = append_FileID_Tag(SEMG,options);
-
     
-    varNames = options.Analysis(1).Trial.OutputVariable;
     if isequal(allData.FileID_Tag,SEMG.FileID_Tag)
-        allData = [allData,SEMG(:,3+[1:length(varNames)])];
+    	allData = [allData,SEMG(:,[4,5])];
     end
 end
 
 function SEMG = reduce_RedundantData(allData,varNames)
     SEMG = varfun(@check_SEMG,allData,'InputVariables',varNames,'GroupingVariables',{'SID','ArmType','SensorArrayFile','TargetForce','TargetForce_N'});
-    SEMG.Properties.VariableNames(end-4:end) = varNames;
+    SEMG.Properties.VariableNames(end-1:end) = varNames;
 end
 
 function  statOut = reformat_Struct(structIn)
@@ -115,16 +148,3 @@ function  statOut = reformat_Struct(structIn)
     header  = {'SID','F_pVal','b1_AFF','b1_UNAFF','t_pVal','t_DF','t_pVal','t_DF'};
     statOut = [header;statOut];
 end
-
-    % CREATE SUCCINCT TABLE OUTPUT 5.2.2017
-    % COLS
-    % F p, T p, T DF, (=Var !=Var), b aff, b contra
-    % ROWS subj
-
-
-     %Plot
-%     options.Plot = get_Plot_Options_AbsoluteUnits();
-%     create_Figure_FromTable_MultiInputSubplot(SEMG, options)
-%     print_FigureToWord(selection,['All subjects'],'WithMeta')
-%     close(gcf);
-

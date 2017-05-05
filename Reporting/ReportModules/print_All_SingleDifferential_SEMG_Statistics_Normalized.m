@@ -1,5 +1,5 @@
 
-function print_All_SingleDifferential_SEMG_Statistics(selection,allData,options)
+function print_All_SingleDifferential_SEMG_Statistics_Normalized(selection,allData,options)
    
     % For readability make temporary variables
     baseDir  = options.SingleDifferential.BaseDirectory;
@@ -13,12 +13,13 @@ function print_All_SingleDifferential_SEMG_Statistics(selection,allData,options)
     SEMG       = rename_StructFields(SEMG,varNames);
     allData    = merge_Data(allData,SEMG,options);
     SEMG       = reduce_RedundantData(allData,varNames);
-    SEMG_NoMVC = SEMG(~(SEMG.TargetForce=='100%MVC'),:);
+    Norm_SEMG  = normalize_EMG(SEMG,[5,7:11]);
+    Norm_SEMG_NoMVC   = Norm_SEMG(~(Norm_SEMG.TargetForce=='100%MVC'),:);
 
     % Create plot - with MVC in regression
     options.Plot = get_Plot_Options_RegressionComparison_AbsoluteUnits();
     options.Plot.Axis = axes();
-    [stats] = create_ComparisonOfTwoRegressions(SEMG,options);
+    [stats] = create_ComparisonOfTwoRegressions(Norm_SEMG,options);
     xlabel('\Delta Regression slope (SD EMG/Force)')
     title({'All subjects: Difference in Regression Slopes',...
            '(Unaff-Aff). Mean and 95% CI'})
@@ -34,7 +35,7 @@ function print_All_SingleDifferential_SEMG_Statistics(selection,allData,options)
     % Create plot - without MVC in regression
     options.Plot = get_Plot_Options_RegressionComparison_AbsoluteUnits();
     options.Plot.Axis = axes();
-    [stats] = create_ComparisonOfTwoRegressions(SEMG_NoMVC,options);
+    [stats] = create_ComparisonOfTwoRegressions(Norm_SEMG_NoMVC,options);
     xlabel('\Delta Regression slope (SD EMG/Force)')
     title({'All subjects: Difference in Regression Slopes',...
            'NoMVC trials. (Unaff-Aff). Mean and 95% CI'})
@@ -86,7 +87,6 @@ function allData = merge_Data(allData,SEMG,options)
     % Merge data
     allData = append_FileID_Tag(allData,options);
     SEMG    = append_FileID_Tag(SEMG,options);
-
     
     varNames = options.Analysis(1).Trial.OutputVariable;
     if isequal(allData.FileID_Tag,SEMG.FileID_Tag)
@@ -116,15 +116,4 @@ function  statOut = reformat_Struct(structIn)
     statOut = [header;statOut];
 end
 
-    % CREATE SUCCINCT TABLE OUTPUT 5.2.2017
-    % COLS
-    % F p, T p, T DF, (=Var !=Var), b aff, b contra
-    % ROWS subj
-
-
-     %Plot
-%     options.Plot = get_Plot_Options_AbsoluteUnits();
-%     create_Figure_FromTable_MultiInputSubplot(SEMG, options)
-%     print_FigureToWord(selection,['All subjects'],'WithMeta')
-%     close(gcf);
 

@@ -1,30 +1,7 @@
 
-
-function print_Subject_SingleDifferential_SEMG_Statistics(selection,allData,options)
+function print_Subject_SingleDifferential_SEMG_Statistics_Normalized(selection,allData,options)
    
-%     allData  = append_SingleDifferentialFullFile_2Array(allData,options.SingleDifferential.BaseDirectory);
-%     varNames = options.Analysis(1).Trial.OutputVariable;
-%     
-%     % Calculate MU Mean firing rate
-%     [SEMG, ~] = loop_Over_Trials_FromTable(allData,options.Analysis(1)); 
-%     for n=1:length(varNames) 
-%         name = varNames{n};
-%         SEMG.(name) = cell2mat(SEMG.(name));
-%     end
-%     
-%     % Merge data
-%     allData = append_FileID_Tag(allData,options);
-%     SEMG    = append_FileID_Tag(SEMG,options);
-%     
-%     if isequal(allData.FileID_Tag,SEMG.FileID_Tag)
-%     	allData = [allData,SEMG(:,3+[1:length(varNames)])];
-%     end
-%     
-%     SEMG = varfun(@check_SEMG,allData,'InputVariables',varNames,'GroupingVariables',{'SID','ArmType','SensorArrayFile','TargetForce_N'});
-%     SEMG.Properties.VariableNames(end-4:end) = varNames;
-
-
-    % For readability make temporary variables
+     % For readability make temporary variables
     baseDir  = options.SingleDifferential.BaseDirectory;
     varNames = options.Analysis(1).Trial.OutputVariable;
     
@@ -36,13 +13,13 @@ function print_Subject_SingleDifferential_SEMG_Statistics(selection,allData,opti
     SEMG       = rename_StructFields(SEMG,varNames);
     allData    = merge_Data(allData,SEMG,options);
     SEMG       = reduce_RedundantData(allData,varNames);
-    SEMG_NoMVC = SEMG(~(SEMG.TargetForce=='100%MVC'),:);
-
-
+    Norm_SEMG  = normalize_EMG(SEMG,[5,7:11]);
+    Norm_SEMG_NoMVC   = Norm_SEMG(~(Norm_SEMG.TargetForce=='100%MVC'),:);
+      
      %Plot
     SID = char(SEMG.SID(1));
     options.Plot = get_Plot_Options_AbsoluteUnits();
-    create_Figure_FromTable_MultiInputSubplot(SEMG, options)
+    create_Figure_FromTable_MultiInputSubplot(Norm_SEMG, options)
     print_FigureToWord(selection,['Subject :' SID],'WithMeta')
     close(gcf);
     
@@ -75,18 +52,17 @@ function PlotOptions = get_Plot_Options_AbsoluteUnits()
 end
 
 
- function SEMG = rename_StructFields(SEMG,varNames)
+function SEMG = rename_StructFields(SEMG,varNames)
     for n=1:length(varNames) 
         name = varNames{n};
         SEMG.(name) = cell2mat(SEMG.(name));
     end
- end
+end
 
 function allData = merge_Data(allData,SEMG,options)
     % Merge data
     allData = append_FileID_Tag(allData,options);
     SEMG    = append_FileID_Tag(SEMG,options);
-
     
     varNames = options.Analysis(1).Trial.OutputVariable;
     if isequal(allData.FileID_Tag,SEMG.FileID_Tag)
@@ -99,7 +75,9 @@ function SEMG = reduce_RedundantData(allData,varNames)
     SEMG.Properties.VariableNames(end-4:end) = varNames;
 end
 
- 
+
+
+
 %     SID = char(SEMG.SID(1));
 %     options.Plot = get_Plot_Options_AbsoluteUnits();
 %     options.Plot.YVar = {'BICM'};
