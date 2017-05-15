@@ -26,9 +26,10 @@ function print_All_SingleDifferential_SEMG_Statistics(selection,allData,options)
     close(gcf);  
     
     % Print statistics
-    statOut = reformat_Struct(stats);
-    selection.TypeText(['Statistics - regressions including MVC.' char(13)]) 
-    print_TableToWord(selection,cell2table(statOut)) 
+    statOut = formatStruct_tTest(stats);
+    statOut{:,3:5} = statOut{:,3:5}*1000;
+    selection.TypeText(['Statistics - regressions including MVC.' char(13) 'bs multiplied by 1000' char(13)]) 
+    print_TableToWord(selection,statOut) 
     selection.InsertBreak;
    
     % Create plot - without MVC in regression
@@ -42,9 +43,10 @@ function print_All_SingleDifferential_SEMG_Statistics(selection,allData,options)
     close(gcf);  
     
     % Print statistics
-    statOut = reformat_Struct(stats);
-    selection.TypeText(['Statistics - regressions without MVC.' char(13)])  
-    print_TableToWord(selection,cell2table(statOut))
+    statOut = formatStruct_tTest(stats);
+    statOut{:,3:5} = statOut{:,3:5}*1000;
+    selection.TypeText(['Statistics - regressions NOT including MVC.' char(13) 'bs multiplied by 1000' char(13)]) 
+    print_TableToWord(selection,statOut) 
     selection.InsertBreak;
    
 end
@@ -98,33 +100,4 @@ function SEMG = reduce_RedundantData(allData,varNames)
     SEMG = varfun(@check_SEMG,allData,'InputVariables',varNames,'GroupingVariables',{'SID','ArmType','SensorArrayFile','TargetForce','TargetForce_N'});
     SEMG.Properties.VariableNames(end-4:end) = varNames;
 end
-
-function  statOut = reformat_Struct(structIn)
-    nSubjs = length(structIn);
-    
-    for n=1:nSubjs
-       statOut{n,1} = structIn(n).SID;
-       statOut{n,2} = structIn(n).fTest.p;
-       statOut{n,3} = structIn(n).tTest(1).Estimate(1);
-       statOut{n,4} = structIn(n).tTest(1).Estimate(2);
-       statOut{n,5} = structIn(n).tTest(1).p;
-       statOut{n,6} = structIn(n).tTest(1).DF;
-       statOut{n,7} = structIn(n).tTest(2).p;
-       statOut{n,8} = structIn(n).tTest(2).DF;
-    end
-    header  = {'SID','F_pVal','b1_AFF','b1_UNAFF','t_pVal','t_DF','t_pVal','t_DF'};
-    statOut = [header;statOut];
-end
-
-    % CREATE SUCCINCT TABLE OUTPUT 5.2.2017
-    % COLS
-    % F p, T p, T DF, (=Var !=Var), b aff, b contra
-    % ROWS subj
-
-
-     %Plot
-%     options.Plot = get_Plot_Options_AbsoluteUnits();
-%     create_Figure_FromTable_MultiInputSubplot(SEMG, options)
-%     print_FigureToWord(selection,['All subjects'],'WithMeta')
-%     close(gcf);
 

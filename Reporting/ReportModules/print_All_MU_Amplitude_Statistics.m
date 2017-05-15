@@ -14,7 +14,7 @@ function print_All_MU_Amplitude_Statistics(selection,MU_Data,options)
     	MU_Data = [MU_Data, MU_PtP_Amp(:,4)];
     end
     
-     % Median
+    % Median
     MU_Median = varfun(@median,MU_Data,'InputVariables','MU_Amplitude','GroupingVariables',{'SID','ArmType','ArmSide','TargetForce','TargetForce_N'});
     MU_Median = sortrows(MU_Median,{'SID','TargetForce_N'},{'ascend','ascend'});
      
@@ -35,15 +35,38 @@ function print_All_MU_Amplitude_Statistics(selection,MU_Data,options)
     subjs = unique(MU_Data.SID);
     options.Plot = get_Plot_Options_CombinedHistogram_AbsoluteUnits();
     options.Plot.Axis = axes();
-    create_ComparisonOfTwoDistributionsStatistics(MU_Data,options)
+    [stats] = create_ComparisonOfTwoDistributionsStatistics(MU_Data,options);
     xlabel('\Delta MU Amplitude (mV)')
     title({'All subjects: Difference in MU Amplitudes (Unaff-Aff)','Mean and 95% CI'})
     print_FigureToWord(selection,['All Subjects'],'WithMeta')
     close(gcf);
     
+     % Print statistics
+    statOut  = formatStruct_tTest(stats);
+    selection.TypeText(['Statistics - MU Amplitude comparison.' char(13)])  
+    print_TableToWord(selection,statOut)
+    selection.InsertBreak;
+    
+    
+    % Create plot - without MVC in regression
+    options.Plot = get_Plot_Options_RegressionComparison_AbsoluteUnits();
+    options.Plot.Axis = axes();
+    [stats] = create_ComparisonOfTwoRegressions(MU_Data,options);
+    xlabel('\Delta Regression slope (MU Amplitude/Force)')
+    title({'All subjects: Difference in Regression Slopes',...
+           '(Unaff-Aff). Mean and 95% CI'})
+    print_FigureToWord(selection,['All Subjects'],'WithMeta');
+    close(gcf);  
+    
+    % Print statistics
+    statOut  = formatStruct_tTest(stats);
+    selection.TypeText(['Statistics - regressions without MVC.' char(13)])  
+    print_TableToWord(selection,statOut)
+    selection.InsertBreak;
+   
+    
     selection.InsertBreak;
 end
-
 
 function PlotOptions = get_Plot_Options_Median_AbsoluteUnits()
 
@@ -107,6 +130,31 @@ function PlotOptions = get_Plot_Options_CombinedHistogram_AbsoluteUnits()
     PlotOptions.XLabel          = 'MU Amplitude (mV)';
     PlotOptions.XLim            = [];
     PlotOptions.YLabel          = 'MUs';
+    PlotOptions.YLim            = [];
+    PlotOptions.CI.XLim         = [];
+    PlotOptions.CI.Statistic    = 'Mean';
+    PlotOptions.Title           = @(inputdata,options)[char(inputdata.SID(1))] ;  
+    PlotOptions.TitleSize       = 16; 
+end
+
+
+
+function PlotOptions = get_Plot_Options_RegressionComparison_AbsoluteUnits()
+
+    PlotOptions.SubplotBy       = []; 
+    PlotOptions.GroupBy         = {'SID'};
+    PlotOptions.CompareBy       = {'ArmType'};
+    PlotOptions.AdditionalPlots = [];
+    PlotOptions.LegendLocation  = [0.8958    0.7427    0.1021    0.1539];   
+    PlotOptions.LineWidth       = 2;
+    PlotOptions.LineStyle       = 'none';
+    PlotOptions.Marker          = 'o';
+    PlotOptions.FontSize        = 12;
+    PlotOptions.Predictor       = {'TargetForce_N'};
+    PlotOptions.XLabel          = 'Target Force (N)';
+    PlotOptions.XLim            = [];
+    PlotOptions.Response        = {'MU_Amplitude'};
+    PlotOptions.YLabel          = 'MU Amplitude';
     PlotOptions.YLim            = [];
     PlotOptions.CI.XLim         = [];
     PlotOptions.CI.Statistic    = 'Mean';

@@ -1,6 +1,6 @@
 
 
-function generateReport_MU_Amplitude_vs_ThresholdForce()
+function generateReport_MU_Duration_vs_ThresholdForce()
  
     options  = get_Options();
     analyses = get_Analyses();
@@ -13,14 +13,14 @@ function generateReport_MU_Amplitude_vs_ThresholdForce()
     [serverHandle, selection] = open_ConnectionToWord();
     print_ReportDescription(selection);
     print_OptionsAndAnalyses(selection, options, analyses);
-    print_All_MU_Amplitude_vs_ThresholdForce(selection, MU_Data, options);
+    print_All_MU_Duration_vs_ThresholdForce(selection, MU_Data, options);
     print_Analysis_LoopOverSubjects(selection, MU_Data, analyses.IndividualSubject,options);
     
     delete(serverHandle)
 end
 
 function analyses = get_Analyses()
-    analyses.IndividualSubject{1} = @(selection,subjData,options)print_Subject_MU_Amplitude_vs_ThresholdForce(selection,subjData,options);
+    analyses.IndividualSubject{1} = @(selection,subjData,options)print_Subject_MU_Duration_vs_ThresholdForce(selection,subjData,options);
 end
 
 function print_OptionsAndAnalyses(selection, options, report)
@@ -71,7 +71,8 @@ function options = get_Options()
     options.AgeRange.Names                                = {'Young','Elderly'};
     
     options.ForceRange.Threshold                          = [0,30; 30,Inf];
-    options.ForceRange.Names                              = {'Under_30N','Above_30N'};   
+    options.ForceRange.Names                              = {'Under_30N','Above_30N'}; 
+    
     % Set up MU Onset calcuation
     options.Analysis(1).Trial.Function                    = {@(trial_Data,options)calculate_MU_Onset_FromTrial(trial_Data,options)};
     options.Analysis(1).Trial.OutputVariable(1)           = {'MU_Onset_Time'};
@@ -83,12 +84,12 @@ function options = get_Options()
     options.Analysis(1).MU_Onset.ForcePrior               = 0.05;
     options.Analysis(1).MU_Onset.ForcePost                = 0.15;
    
-    % Set up PtP Amplitude calculation
+    % Set up PtP Amplitude calculation    
     options.Analysis(2).Trial.Function                    = {@(trial_Data,options)calculate_STA_AmplitudeAndDuration(trial_Data,options)};
-    options.Analysis(2).Trial.OutputVariable(1)           = {'MU_Amplitude'};
-    options.Analysis(2).BaseDirectory                     = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke';
+    options.Analysis(2).Trial.OutputVariable              = {'MU_Amplitude','MU_Duration'};
     options.Analysis(2).STA.ColumnName                    = {'STA_Template'};
     options.Analysis(2).STA.Amplitude.Statistic           = 'Max'; %Average, All
+    options.Analysis(2).STA.Duration.Statistic            = 'Max'; %Average, All
 end
 
 

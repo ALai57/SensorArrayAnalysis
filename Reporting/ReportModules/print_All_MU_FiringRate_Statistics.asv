@@ -13,6 +13,16 @@ function print_All_MU_FiringRate_Statistics(selection,allData,options)
     	allData = [allData,MU_MeanFiringRate(:,4)];
     end
     
+%      %Plot
+% 	subjs = unique(allData.SID);
+%     options.Plot = get_Plot_Options_CombinedHistogram_AbsoluteUnits();
+%     options.Plot.Axis = axes();
+%     create_ComparisonOfTwoDistributionsStatistics(allData,options)
+%     xlabel('\Delta Firing rate (pps)')
+%     title({'All subjects: Difference in MU firing rate (Unaff-Aff)','Mean and 95% CI'})
+%     print_FigureToWord(selection,['All Subjects'],'WithMeta')
+%     close(gcf);
+    
     % Print statistics
     options.Plot = get_Plot_Options_CombinedHistogram_AbsoluteUnits();
     options.Plot.Axis = axes();

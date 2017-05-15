@@ -26,16 +26,17 @@ function print_All_SensorArray_SEMG_Statistics(selection,allData,options)
     options.Plot = get_Plot_Options_RegressionComparison_AbsoluteUnits();
     options.Plot.Axis = axes();
     [stats] = create_ComparisonOfTwoRegressions(SEMG,options);
-    xlabel('\Delta Regression slope (SD EMG/Force)')
+    xlabel('\Delta Regression slope (SA EMG/Force)')
     title({'All subjects: Difference in Regression Slopes',...
            '(Unaff-Aff). Mean and 95% CI'})
     print_FigureToWord(selection,['All Subjects'],'WithMeta')
     close(gcf);   
     
     % Print statistics
-    statOut = reformat_Struct(stats);
-    selection.TypeText(['Statistics - regressions including MVC.' char(13)]) 
-    print_TableToWord(selection,cell2table(statOut)) 
+    statOut = formatStruct_tTest(stats);
+    statOut{:,3:5} = statOut{:,3:5}*1000;
+    selection.TypeText(['Statistics - regressions including MVC.' char(13) 'bs multiplied by 1000' char(13)]) 
+    print_TableToWord(selection,statOut) 
     selection.InsertBreak;
     
     
@@ -43,16 +44,17 @@ function print_All_SensorArray_SEMG_Statistics(selection,allData,options)
     options.Plot = get_Plot_Options_RegressionComparison_AbsoluteUnits();
     options.Plot.Axis = axes();
     [stats] = create_ComparisonOfTwoRegressions(SEMG_NoMVC,options);
-    xlabel('\Delta Regression slope (SD EMG/Force)')
+    xlabel('\Delta Regression slope (SA EMG/Force)')
     title({'All subjects: Difference in Regression Slopes',...
            'NoMVC trials. (Unaff-Aff). Mean and 95% CI'})
     print_FigureToWord(selection,['All Subjects'],'WithMeta')
     close(gcf);      
     
     % Print statistics
-    statOut = reformat_Struct(stats);
-    selection.TypeText(['Statistics - regressions including MVC.' char(13)]) 
-    print_TableToWord(selection,cell2table(statOut)) 
+    statOut = formatStruct_tTest(stats);
+    statOut{:,3:5} = statOut{:,3:5}*1000;
+    selection.TypeText(['Statistics - regressions NOT including MVC.' char(13) 'bs multiplied by 1000' char(13)]) 
+    print_TableToWord(selection,statOut) 
     selection.InsertBreak;
     
 end
@@ -131,19 +133,3 @@ function SEMG = reduce_RedundantData(allData,varNames)
     SEMG.Properties.VariableNames(end-1:end) = varNames;
 end
 
-function  statOut = reformat_Struct(structIn)
-    nSubjs = length(structIn);
-    
-    for n=1:nSubjs
-       statOut{n,1} = structIn(n).SID;
-       statOut{n,2} = structIn(n).fTest.p;
-       statOut{n,3} = structIn(n).tTest(1).Estimate(1);
-       statOut{n,4} = structIn(n).tTest(1).Estimate(2);
-       statOut{n,5} = structIn(n).tTest(1).p;
-       statOut{n,6} = structIn(n).tTest(1).DF;
-       statOut{n,7} = structIn(n).tTest(2).p;
-       statOut{n,8} = structIn(n).tTest(2).DF;
-    end
-    header  = {'SID','F_pVal','b1_AFF','b1_UNAFF','t_pVal','t_DF','t_pVal','t_DF'};
-    statOut = [header;statOut];
-end

@@ -31,6 +31,9 @@ function [s] = create_ComparisonOfTwoRegressions(allData,options,hA)
             axes(hA);
         end
         ci = s(i).tTest(1).CI_95;
+        if diff(ci)>1e8
+           continue; 
+        end
         effectSize = s(i).tTest(1).Estimate(2)-s(i).tTest(1).Estimate(1);
         hI = plot([ci],[i i],'k','linewidth',3); hold on;
         hM = plot([effectSize effectSize],[-0.1 0.1]+i,'k','linewidth',1.5);
@@ -59,8 +62,8 @@ function [x,y] = get_Data(data,options,group)
     y    = data.(options.Plot.Response{1})(ind);
     
     x = [ones(size(x)),x];
-    x(y==0)=[];
-    y(y==0)=[];
+    x(y==0,:)=[];
+    y(y==0,:)=[];
 end
 
 function [b0,b1,ssx,sse,n,df] = get_regression_output(r)
@@ -77,16 +80,17 @@ function [Ftest] = F_test_EqualRegressionVariances(reg1,reg2,alpha)
     
     [b0_1,b1_1,ssx1,sse1,n1,df1] = get_regression_output(reg1);
     [b0_2,b1_2,ssx2,sse2,n2,df2] = get_regression_output(reg2);
-        
-%     Ftest(1).SID = '';
     
+    mse1 = sse1/df1;
+    mse2 = sse2/df2;
+
     %Are variances equal?
     if sse1>sse2
-        Ftest(1).F_stat = sse1/sse2;
+        Ftest(1).F_stat = mse1/mse2;
         Ftest(1).F_crit = finv(1-alpha/2,df1,df2);
         Ftest(1).p      = 1-fcdf(Ftest(1).F_stat,df1,df2);
     else
-        Ftest(1).F_stat = sse2/sse1;
+        Ftest(1).F_stat = mse2/mse1;
         Ftest(1).F_crit = finv(1-alpha/2,df2,df1);
         Ftest(1).p      = 1-fcdf(Ftest(1).F_stat,df2,df1);
     end

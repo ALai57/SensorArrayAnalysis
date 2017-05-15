@@ -87,6 +87,9 @@ function print_All_MVC_Statistics(selection,allData,options)
     print_FigureToWord(selection,['All Subjects'],'WithMeta')
     close(gcf);
     print_TableToWord(selection,stats(:,1:7)) 
+    selection.TypeText(['Second format for MVC outputs']);
+    stats.MVC_Delta = stats{:,9}-stats{:,10};
+    print_TableToWord(selection,stats(:,[1,9,10,21,2,3:7])) 
     selection.InsertBreak;
     
     

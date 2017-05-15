@@ -1,6 +1,6 @@
 
 
-function print_Subject_MU_Amplitude_vs_ThresholdForce(selection,subjData,options)
+function print_Subject_MU_Duration_vs_ThresholdForce(selection,subjData,options)
     
     % Calculate MU Onset
     [MU_Onset, ~] = loop_Over_Trials_FromTable(subjData,options.Analysis(1));
@@ -8,9 +8,9 @@ function print_Subject_MU_Amplitude_vs_ThresholdForce(selection,subjData,options
     MU_Onset.MU_Onset_Force_N = cell2mat(MU_Onset.MU_Onset_Force_N);
     
     % Calculate MU Amplitude
-    [MU_PtP, ~] = loop_Over_Trials_FromTable(subjData,options.Analysis(2));
-    MU_PtP.MU_Amplitude  = cell2mat(MU_PtP.MU_Amplitude);
-    MU_PtP.MU_Amplitude  = 1000*MU_PtP.MU_Amplitude;
+    [MU_PtP,~]          = loop_Over_Trials_FromTable(subjData,options.Analysis(2));
+    MU_PtP.MU_Duration  = cell2mat(MU_PtP.MU_Duration);
+    MU_PtP.MU_Duration  = 1000*MU_PtP.MU_Duration;
     
     % Merge tables
     subjData      = append_FileID_Tag(subjData,options);
@@ -18,7 +18,7 @@ function print_Subject_MU_Amplitude_vs_ThresholdForce(selection,subjData,options
     MU_PtP        = append_FileID_Tag(MU_PtP,options);
     
     if isequal(subjData.FileID_Tag,MU_Onset.FileID_Tag,MU_PtP.FileID_Tag)
-    	subjData = [subjData, MU_Onset(:,[4,5]),MU_PtP(:,4)];
+    	subjData = [subjData, MU_Onset(:,[4,5]),MU_PtP(:,5)];
     end
     
     %Plot
@@ -47,8 +47,8 @@ function PlotOptions = get_Plot_Options_AbsoluteUnits()
     PlotOptions.XVar            = {'MU_Onset_Force_N'};
     PlotOptions.XLabel          = 'MU Onset Force (N)';
     PlotOptions.XLim            = [];
-    PlotOptions.YVar            = {'MU_Amplitude'};
-    PlotOptions.YLabel          = 'MU Amplitude (mV)';
+    PlotOptions.YVar            = {'MU_Duration'};
+    PlotOptions.YLabel          = 'MU Duration (ms)';
     PlotOptions.YLim            = [];
     PlotOptions.Title           = @(inputdata,options)[char(inputdata.SID(1)) ': ' char(inputdata.(options.Plot.SubplotBy{1})(1))] ;  
     PlotOptions.TitleSize       = 16; 

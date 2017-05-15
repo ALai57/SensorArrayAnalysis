@@ -17,7 +17,7 @@ function print_All_SingleDifferential_SEMG_Statistics_Normalized(selection,allDa
     Norm_SEMG_NoMVC   = Norm_SEMG(~(Norm_SEMG.TargetForce=='100%MVC'),:);
 
     % Create plot - with MVC in regression
-    options.Plot = get_Plot_Options_RegressionComparison_AbsoluteUnits();
+    options.Plot = get_Plot_Options_RegressionComparison_Normalized();
     options.Plot.Axis = axes();
     [stats] = create_ComparisonOfTwoRegressions(Norm_SEMG,options);
     xlabel('\Delta Regression slope (SD EMG/Force)')
@@ -33,7 +33,7 @@ function print_All_SingleDifferential_SEMG_Statistics_Normalized(selection,allDa
     selection.InsertBreak;
    
     % Create plot - without MVC in regression
-    options.Plot = get_Plot_Options_RegressionComparison_AbsoluteUnits();
+    options.Plot = get_Plot_Options_RegressionComparison_Normalized();
     options.Plot.Axis = axes();
     [stats] = create_ComparisonOfTwoRegressions(Norm_SEMG_NoMVC,options);
     xlabel('\Delta Regression slope (SD EMG/Force)')
@@ -51,7 +51,7 @@ function print_All_SingleDifferential_SEMG_Statistics_Normalized(selection,allDa
 end
 
 
-function PlotOptions = get_Plot_Options_RegressionComparison_AbsoluteUnits()
+function PlotOptions = get_Plot_Options_RegressionComparison_Normalized
 
     PlotOptions.SubplotBy       = []; 
     PlotOptions.GroupBy         = {'SID'};

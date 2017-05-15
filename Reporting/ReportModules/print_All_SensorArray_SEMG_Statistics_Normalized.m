@@ -28,7 +28,7 @@ function print_All_SensorArray_SEMG_Statistics_Normalized(selection,allData,opti
     options.Plot = get_Plot_Options_RegressionComparison_AbsoluteUnits();
     options.Plot.Axis = axes();
     [stats] = create_ComparisonOfTwoRegressions(Norm_SEMG,options);
-    xlabel('\Delta Regression slope (SD EMG/Force)')
+    xlabel('\Delta Regression slope (SA EMG/Force)')
     title({'All subjects: Difference in Regression Slopes',...
            '(Unaff-Aff). Mean and 95% CI'})
     print_FigureToWord(selection,['All Subjects'],'WithMeta')
@@ -45,7 +45,7 @@ function print_All_SensorArray_SEMG_Statistics_Normalized(selection,allData,opti
     options.Plot = get_Plot_Options_RegressionComparison_AbsoluteUnits();
     options.Plot.Axis = axes();
     [stats] = create_ComparisonOfTwoRegressions(Norm_SEMG_NoMVC,options);
-    xlabel('\Delta Regression slope (SD EMG/Force)')
+    xlabel('\Delta Regression slope (SA EMG/Force)')
     title({'All subjects: Difference in Regression Slopes',...
            'NoMVC trials. (Unaff-Aff). Mean and 95% CI'})
     print_FigureToWord(selection,['All Subjects'],'WithMeta')
