@@ -1,6 +1,6 @@
 
 
-function generateReport_MU_MeanFiringRate_vs_ThresholdForce()
+function generateReport_SingleDifferential_SNR_Statistics()
 
     options  = get_Options();
     analyses = get_Analyses();
@@ -13,33 +13,38 @@ function generateReport_MU_MeanFiringRate_vs_ThresholdForce()
     [serverHandle, selection] = open_ConnectionToWord();
     print_ReportDescription(selection);
     print_OptionsAndAnalyses(selection, options, analyses);
-    print_All_MU_FiringRate_vs_ThresholdForce(selection, MU_Data, options)
+    print_All_SingleDifferential_SNR_Statistics(selection, MU_Data, options);
     print_Analysis_LoopOverSubjects(selection, MU_Data, analyses.IndividualSubject,options);
     
     delete(serverHandle)
 end
 
 function analyses = get_Analyses()
-    analyses.IndividualSubject{1} = @(selection,subjData,options)print_Subject_MU_MeanFiringRate_vs_ThresholdForce(selection,subjData,options); 
+    analyses.IndividualSubject{1} = @(selection,subjData,options)print_Subject_SingleDifferential_SNR_Statistics(selection,subjData,options); 
 end
 
 function options = get_Options()
+    
+    options.SingleDifferential.BaseDirectory     = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data';
+    
 %     options.STA.File                           = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_AllControl_4_12_2017.mat';
 %     options.STA_Window.File                    = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_Window_Control_4_10_2017.mat';
+    
     options.STA.File                           = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_Stroke_4_17_2017.mat';
     options.STA_Window.File                    = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_Window_Stroke_4_17_2017.mat';
-    options.STA_Window.Threshold.On              = 1;
+    
+    options.STA_Window.Threshold.On              = 0;
     options.STA_Window.Threshold.Statistic       = 'PtP_Amplitude_Mean_CV';
     options.STA_Window.Threshold.Function        = {@(qty,thresh)lt(qty,thresh)};
     options.STA_Window.Threshold.Value           = 0.6;
     options.STA_Window.PtPAmplitude.Statistic    = 'Mean_CV';
     options.STA_Window.PtPDuration.Statistic     = 'Mean_CV';
-    options.STA_CrossCorrelation.Threshold.On    = 1;
+    options.STA_CrossCorrelation.Threshold.On    = 0;
     options.STA_CrossCorrelation.Threshold.Statistic = 'Mean_XC';
     options.STA_CrossCorrelation.Threshold.Function  = {@(qty,thresh)gt(qty,thresh)};
     options.STA_CrossCorrelation.Threshold.Value = 0.8;
     options.STA_CrossCorrelation.XC.Statistic    = 'Mean_XC';
-    options.MUs.Threshold.On                     = 1;
+    options.MUs.Threshold.On                     = 0;
     options.MUs.Threshold.Type                   = 'MinNumberUnits_PerForceLevel';
     options.MUs.Threshold.Function               = {@(MU_Data,options)threshold_NumberOfMUs(MU_Data,options)};
     options.MUs.Threshold.Value                  = 10;
@@ -51,23 +56,25 @@ function options = get_Options()
     options.ForceRange.Threshold                 = [0,30; 30,Inf];
     options.ForceRange.Names                     = {'Under_30N','Above_30N'};
     
-    options.Analysis(1).Trial.Function          = {@(trial_Data,options)calculate_MU_MeanFiringRate_FromTrial(trial_Data,options)};
-    options.Analysis(1).Trial.OutputVariable(1) = {'MeanFiringRate'};
-    options.Analysis(1).MFR.Start               = 'RelativeToPlateauStart';
-    options.Analysis(1).MFR.StartAfterPlateau   = +2;
-    options.Analysis(1).MFR.Duration            = 5;
     
-    % Set up MU Onset calcuation
-    options.Analysis(2).Trial.Function                    = {@(trial_Data,options)calculate_MU_Onset_FromTrial(trial_Data,options)};
-    options.Analysis(2).Trial.OutputVariable(1)           = {'MU_Onset_Time'};
-    options.Analysis(2).Trial.OutputVariable(2)           = {'MU_Onset_Force_N'};
-    options.Analysis(2).BaseDirectory                     = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke';  
-    options.Analysis(2).MU_Onset.Type                     = 'SteadyFiring';
-    options.Analysis(2).MU_Onset.SteadyFiring.Number      = 2;
-    options.Analysis(2).MU_Onset.SteadyFiring.MaxInterval = 0.2;
-    options.Analysis(2).MU_Onset.ForcePrior               = 0.05;
-    options.Analysis(2).MU_Onset.ForcePost                = 0.15;
-    
+    options.Analysis(1).Trial.Function          = {@(trial_Data,options)calculate_SingleDifferential_SNR_FromTrial(trial_Data,options)};
+    options.Analysis(1).Trial.OutputVariable(1) = {'BICM_SNR'};
+    options.Analysis(1).Trial.OutputVariable(2) = {'BICL_SNR'};
+    options.Analysis(1).Trial.OutputVariable(3) = {'TRI_SNR'};
+    options.Analysis(1).Trial.OutputVariable(4) = {'BRD_SNR'};
+    options.Analysis(1).Trial.OutputVariable(5) = {'BRA_SNR'};
+    options.Analysis(1).SEMG.Method             = 'RMS';
+    options.Analysis(1).SEMG.Statistic          = 'Max';
+    options.Analysis(1).SEMG.Window             = 2;
+    options.Analysis(1).SEMG.SlideStep          = 0.1;
+    options.Analysis(1).SEMG.Start              = [];
+    options.Analysis(1).SEMG.End                = [];
+    options.Analysis(1).Baseline.Method         = 'RMS';
+    options.Analysis(1).Baseline.Statistic      = 'Raw';
+    options.Analysis(1).Baseline.Window         = 2;
+    options.Analysis(1).Baseline.SlideStep      = 0.1;
+    options.Analysis(1).Baseline.Start          = 0.5;
+    options.Analysis(1).Baseline.End            = 2.5;
 end
 
 
@@ -80,8 +87,13 @@ function print_ReportDescription(selection)
     selection.TypeText([date() char(13) char(13) char(13)]);
     selection.Font.Size = 16;
     selection.Font.Bold = 0;
-    selection.TypeText(['This report contains a summary of MU Firing Rate vs threshold force.' char(13)])  
-    selection.Font.Size = 12;
+    selection.TypeText(['This report contains a summary of Single Differential Surface EMG data.' char(13)])  
+    selection.Font.Size = 12;%     selection.TypeText(['- For each subject, a summary table of all trials is included.' char(13)]) 
+%     selection.TypeText(['- The summary table is printed for both SensorArray.mat and SingleDifferential.mat files.' char(13)]) 
+%     selection.TypeText(char(13)) 
+%     selection.TypeText(['- After the summary table, Force traces from all trials are plotted.' char(13)]) 
+%     selection.TypeText(['- Only force traces from SensorArray.mat files are included.' char(13)]) 
+%     selection.TypeText(['- Force traces from SingleDifferential.mat files are not included.' char(13)']) 
     selection.InsertBreak;
 end
 

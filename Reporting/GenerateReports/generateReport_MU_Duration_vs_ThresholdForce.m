@@ -84,7 +84,7 @@ function options = get_Options()
     options.Analysis(1).MU_Onset.ForcePrior               = 0.05;
     options.Analysis(1).MU_Onset.ForcePost                = 0.15;
    
-    % Set up PtP Amplitude calculation    
+    % Set up PtP Duration calculation    
     options.Analysis(2).Trial.Function                    = {@(trial_Data,options)calculate_STA_AmplitudeAndDuration(trial_Data,options)};
     options.Analysis(2).Trial.OutputVariable              = {'MU_Amplitude','MU_Duration'};
     options.Analysis(2).STA.ColumnName                    = {'STA_Template'};

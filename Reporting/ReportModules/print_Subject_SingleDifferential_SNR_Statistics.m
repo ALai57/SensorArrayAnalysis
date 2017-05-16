@@ -1,6 +1,5 @@
 
-
-function print_Subject_SingleDifferential_SEMG_Statistics(selection,allData,options)
+function print_Subject_SingleDifferential_SNR_Statistics(selection,allData,options)
    
     % For readability make temporary variables
     baseDir  = options.SingleDifferential.BaseDirectory;
@@ -8,18 +7,18 @@ function print_Subject_SingleDifferential_SEMG_Statistics(selection,allData,opti
     
     % Get all trial information and calculate SEMG
     allData   = append_SingleDifferentialFullFile_2Array(allData,baseDir);
-    [SEMG, ~] = loop_Over_Trials_FromTable(allData,options.Analysis(1)); 
+    [SNR, ~] = loop_Over_Trials_FromTable(allData,options.Analysis(1)); 
     
     % Merge SEMG data with all trial information
-    SEMG       = rename_StructFields(SEMG,varNames);
-    allData    = merge_Data(allData,SEMG,options);
-    SEMG       = reduce_RedundantData(allData,varNames);
-    SEMG_NoMVC = SEMG(~(SEMG.TargetForce=='100%MVC'),:);
+    SNR       = rename_StructFields(SNR,varNames);
+    allData   = merge_Data(allData,SNR,options);
+    SNR       = reduce_RedundantData(allData,varNames);
+    SNR_NoMVC = SNR(~(SNR.TargetForce=='100%MVC'),:);
 
      %Plot
-    SID = char(SEMG.SID(1));
+    SID = char(SNR.SID(1));
     options.Plot = get_Plot_Options_AbsoluteUnits();
-    create_Figure_FromTable_MultiInputSubplot(SEMG, options)
+    create_Figure_FromTable_MultiInputSubplot(SNR, options)
     print_FigureToWord(selection,['Subject :' SID],'WithMeta')
     close(gcf);
     
@@ -44,13 +43,12 @@ function PlotOptions = get_Plot_Options_AbsoluteUnits()
     PlotOptions.XVar            = {'TargetForce_N'};
     PlotOptions.XLabel          = 'Target Force (N)';
     PlotOptions.XLim            = [];
-    PlotOptions.YVar            = {'BICM', 'BICL','TRI','BRD','BRA'};
-    PlotOptions.YLabel          = 'RMS EMG (Single Differential)';
+    PlotOptions.YVar            = {'BICM_SNR', 'BICL_SNR','TRI_SNR','BRD_SNR','BRA_SNR'};
+    PlotOptions.YLabel          = 'SNR (Single Differential)';
     PlotOptions.YLim            = [];
     PlotOptions.Title           = @(inputdata,options)[char(inputdata.SID(1))] ;  
     PlotOptions.TitleSize       = 16; 
 end
-
 
  function SEMG = rename_StructFields(SEMG,varNames)
     for n=1:length(varNames) 
@@ -76,30 +74,3 @@ function SEMG = reduce_RedundantData(allData,varNames)
     SEMG.Properties.VariableNames(end-4:end) = varNames;
 end
 
- 
-%     SID = char(SEMG.SID(1));
-%     options.Plot = get_Plot_Options_AbsoluteUnits();
-%     options.Plot.YVar = {'BICM'};
-%     create_Figure_FromTable(SEMG,options)
-%     print_FigureToWord(selection,['Subject :' SID ' BICM'],'WithMeta')
-%     close(gcf);
-%     
-%     options.Plot.YVar = {'BICL'};
-%     create_Figure_FromTable(SEMG,options)
-%     print_FigureToWord(selection,['Subject :' SID ' BICL'],'WithMeta')
-%     close(gcf);
-%     
-%     options.Plot.YVar = {'TRI'};
-%     create_Figure_FromTable(SEMG,options)
-%     print_FigureToWord(selection,['Subject :' SID ' TRI'],'WithMeta')
-%     close(gcf);
-%     
-%     options.Plot.YVar = {'BRD'};
-%     create_Figure_FromTable(SEMG,options)
-%     print_FigureToWord(selection,['Subject :' SID ' BRD'],'WithMeta')
-%     close(gcf);
-%     
-%     options.Plot.YVar = {'BRA'};
-%     create_Figure_FromTable(SEMG,options)
-%     print_FigureToWord(selection,['Subject :' SID ' BRA'],'WithMeta')
-%     close(gcf);

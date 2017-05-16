@@ -46,30 +46,6 @@ function print_All_MU_FiringRate_Statistics(selection,allData,options)
     selection.InsertBreak;
     
 end
-% 
-% 
-% function PlotOptions = get_Plot_Options_CombinedHistogram_AbsoluteUnits()
-% 
-%     PlotOptions.SubplotBy       = []; 
-%     PlotOptions.GroupBy         = {'SID'};
-%     PlotOptions.CompareBy       = {'ArmType'};
-%     PlotOptions.Colors          = {'r','b'};
-%     PlotOptions.AdditionalPlots = [];
-%     PlotOptions.LegendLocation  = [0.7152    0.8236    0.1866    0.1012];   
-%     PlotOptions.LineWidth       = 2;
-%     PlotOptions.LineStyle       = 'none';
-%     PlotOptions.Marker          = 'o';
-%     PlotOptions.FontSize        = 12;
-%     PlotOptions.XVar            = {'MU_Duration'};
-%     PlotOptions.XLabel          = 'MU Duration (ms)';
-%     PlotOptions.XLim            = [];
-%     PlotOptions.YLabel          = 'MUs';
-%     PlotOptions.YLim            = [];
-%     PlotOptions.CI.XLim         = [];
-%     PlotOptions.CI.Statistic    = 'Mean';
-%     PlotOptions.Title           = @(inputdata,options)[char(inputdata.SID(1))] ;  
-%     PlotOptions.TitleSize       = 16; 
-% end
 
 
 function PlotOptions = get_Plot_Options_CombinedHistogram_AbsoluteUnits()

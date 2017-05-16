@@ -139,17 +139,3 @@ function  [tTest] = T_test_EqualRegressionSlopes(reg1,reg2,alpha)
     tTest(2).CI_95 = [num-tTest(2).t_SE*tTest(2).T_crit,num+tTest(2).t_SE*tTest(2).T_crit];
 end
 
-
-
-% function df = calc_DF(x1,x2,sse1,sse2)
-%     ssx1 = sum((x1-mean(x1)).^2);
-%     ssx2 = sum((x2-mean(x2)).^2);
-% 
-%     n1 = length(x1);
-%     n2 = length(x2);
-%     
-%     num = (sse1/ssx1+sse2/ssx2)^2;
-%     denom = (sse1/ssx1)^2/n1 + (sse2/ssx2)^2/n2; 
-%     
-%     df = num/denom;
-% end
