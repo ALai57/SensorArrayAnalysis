@@ -1,32 +1,33 @@
 
-function print_All_SingleDifferential_SNR_Statistics(selection,allData,options)
+function print_All_SensorArray_SNR_Statistics(selection,allData,options)
    
     % For readability make temporary variables
     baseDir  = options.SingleDifferential.BaseDirectory;
     varNames = options.Analysis(1).Trial.OutputVariable;
     
     % Get all trial information and calculate SEMG
-    allData   = append_SingleDifferentialFullFile_2Array(allData,baseDir);
+    allData   = append_SensorArrayFullFile_2Array(allData,baseDir);
     [SNR, ~] = loop_Over_Trials_FromTable(allData,options.Analysis(1)); 
     
     % Merge SEMG data with all trial information
-    SNR       = rename_StructFields(SNR,varNames);
-    allData   = merge_Data(allData,SNR,options);
-    SNR       = reduce_RedundantData(allData,varNames);
-    SNR_NoMVC = SNR(~(SNR.TargetForce=='100%MVC'),:);
-
+    SNR         = rename_StructFields(SNR,varNames);
+    allData      = merge_Data(allData,SNR,options);
+    SNR         = reduce_RedundantData(allData,varNames);    
+    SNR.AllData = SNR{:,end-1:end};
+    SNR_NoMVC   = SNR(~(SNR.TargetForce=='100%MVC'),:);
+    
     % Create histogram
     options.Plot = get_Plot_Options_CombinedHistogram_AbsoluteUnits();
     options.Plot.Axis = axes();
     [stats] = create_ComparisonOfTwoDistributionsStatistics(SNR_NoMVC,options);
-    xlabel('\Delta Single Differential SNR')
-    title({'All subjects: \Delta Single Differential SNR','(Unaff-Aff) Mean and 95% CI'})
+    xlabel('\Delta Sensor Array SNR')
+    title({'All subjects: \Delta Sensor Array SNR','(Unaff-Aff) Mean and 95% CI'})
     print_FigureToWord(selection,['All Subjects'],'WithMeta')
     close(gcf);
     
      % Print statistics
     statOut  = formatStruct_tTest(stats);
-    selection.TypeText(['Statistics - Single differential SNR comparison.' char(13)])  
+    selection.TypeText(['Statistics - Sensor Array SNR comparison.' char(13)])  
     print_TableToWord(selection,statOut)
     selection.InsertBreak;
     
@@ -64,7 +65,7 @@ function print_All_SingleDifferential_SNR_Statistics(selection,allData,options)
     selection.TypeText(['Statistics - regressions NOT including MVC.' char(13) 'bs multiplied by 1000' char(13)]) 
     print_TableToWord(selection,statOut) 
     selection.InsertBreak;
-   
+    
 end
 
 
@@ -84,7 +85,7 @@ function PlotOptions = get_Plot_Options_RegressionComparison_AbsoluteUnits()
     PlotOptions.Predictor       = {'TargetForce_N'};
     PlotOptions.XLabel          = 'Target Force (N)';
     PlotOptions.XLim            = [];
-    PlotOptions.Response        = {'BICM_SNR', 'BICL_SNR','TRI_SNR','BRD_SNR','BRA_SNR'};
+    PlotOptions.Response        = {'AllData'};
     PlotOptions.YLabel          = 'SNR (Sensor Arrays)';
     PlotOptions.YLim            = [];
     PlotOptions.CI.XLim         = [];
@@ -106,7 +107,7 @@ function PlotOptions = get_Plot_Options_CombinedHistogram_AbsoluteUnits()
     PlotOptions.LineStyle       = 'none';
     PlotOptions.Marker          = 'o';
     PlotOptions.FontSize        = 12;
-    PlotOptions.XVar            = {'BICM_SNR', 'BICL_SNR','TRI_SNR','BRD_SNR','BRA_SNR'};
+    PlotOptions.XVar            = {'AllData'};
     PlotOptions.XLabel          = 'SNR (Sensor Arrays)';
     PlotOptions.XLim            = [];
     PlotOptions.YLabel          = 'Trials';
@@ -115,29 +116,29 @@ function PlotOptions = get_Plot_Options_CombinedHistogram_AbsoluteUnits()
     PlotOptions.CI.Statistic    = 'Mean';
     PlotOptions.Title           = @(inputdata,options)[char(inputdata.SID(1))] ;  
     PlotOptions.TitleSize       = 16; 
-end
+end   
 
- function SEMG = rename_StructFields(SEMG,varNames)
+
+
+
+function SEMG = rename_StructFields(SEMG,varNames)
     for n=1:length(varNames) 
         name = varNames{n};
         SEMG.(name) = cell2mat(SEMG.(name));
     end
- end
+end
 
 function allData = merge_Data(allData,SEMG,options)
-    % Merge data
     allData = append_FileID_Tag(allData,options);
     SEMG    = append_FileID_Tag(SEMG,options);
-
-    
-    varNames = options.Analysis(1).Trial.OutputVariable;
+   
     if isequal(allData.FileID_Tag,SEMG.FileID_Tag)
-        allData = [allData,SEMG(:,3+[1:length(varNames)])];
+    	allData = [allData,SEMG(:,[4,5])];
     end
 end
 
 function SEMG = reduce_RedundantData(allData,varNames)
     SEMG = varfun(@check_SEMG,allData,'InputVariables',varNames,'GroupingVariables',{'SID','ArmType','SensorArrayFile','TargetForce','TargetForce_N'});
-    SEMG.Properties.VariableNames(end-4:end) = varNames;
+    SEMG.Properties.VariableNames(end-1:end) = varNames;
 end
 
