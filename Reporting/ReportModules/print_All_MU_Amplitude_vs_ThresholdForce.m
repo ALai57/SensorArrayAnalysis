@@ -33,10 +33,8 @@ function print_All_MU_Amplitude_vs_ThresholdForce(selection,subjData,options)
     
     % Print statistics
     statOut  = formatStruct_tTest(stats);
-    statOut2 = cell2table(statOut(2:end,:));
-    statOut2.Properties.VariableNames = statOut(1,:);
     selection.TypeText(['Statistics MU amplitude vs. Recruitment Force Regressions.' char(13)])  
-    print_TableToWord(selection,statOut2)
+    print_TableToWord(selection,statOut)
     selection.InsertBreak;
 end
 

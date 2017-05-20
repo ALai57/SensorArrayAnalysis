@@ -104,7 +104,7 @@ function print_ReportDescription(selection)
     
     selection.Font.Size = 16;
     selection.Font.Bold = 0;
-    selection.TypeText(['This report contains a summary of MU Amplitude vs. MU Recruitment Force.' char(13)])  
+    selection.TypeText(['This report contains a summary of MU Duration vs. MU Recruitment Force.' char(13)])  
     selection.Font.Size = 12;
     selection.InsertBreak;
 end

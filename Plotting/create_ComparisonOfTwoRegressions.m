@@ -58,8 +58,8 @@ end
         
 function [x,y] = get_Data(data,options,group)
     ind  = data.(options.Plot.CompareBy{1}) == group;
-    x    = data.(options.Plot.Predictor{1})(ind);
-    y    = data.(options.Plot.Response{1})(ind);
+    x    = data.(options.Plot.Predictor{1})(ind,:);
+    y    = data.(options.Plot.Response{1})(ind,:);
     
     x = [ones(size(x)),x];
     x(y==0,:)=[];
@@ -106,6 +106,8 @@ function  [tTest] = T_test_EqualRegressionSlopes(reg1,reg2,alpha)
     %Correct DF for unequal variances 
     tTest(1).Stat  = 'Beta1';
     tTest(1).Estimate  = [b1_1, b1_2];
+    tTest(1).VAF       = [reg1.VAF, reg2.VAF];
+    tTest(1).beta_p    = [reg1.beta_p(2) reg2.beta_p(2)];
     tTest(1).Type  = 'UnequalVariances';
     tTest(1).DF    = satterthwaite_DFapprox_regresssion_ttest2(var1,var2,ssx1,ssx2,df1,df2);
     num = b1_2-b1_1;
@@ -119,10 +121,13 @@ function  [tTest] = T_test_EqualRegressionSlopes(reg1,reg2,alpha)
     end
     tTest(1).p     = p*2; % Two tailed test
     tTest(1).CI_95 = [num-tTest(1).t_SE*tTest(1).T_crit,num+tTest(1).t_SE*tTest(1).T_crit];
+
     
     %Do not need to correct DF for equal regression variances 
     tTest(2).Stat  = 'Beta1';
     tTest(2).Estimate  = [b1_1, b1_2];
+    tTest(2).VAF       = [reg1.VAF, reg2.VAF];
+    tTest(2).beta_p    = [reg1.beta_p(2) reg2.beta_p(2)];
     tTest(2).Type  = 'EqualVariances';
     tTest(2).DF    = n1+n2-4;
     num    = b1_2-b1_1;

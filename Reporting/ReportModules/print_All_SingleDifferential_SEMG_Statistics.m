@@ -15,44 +15,42 @@ function print_All_SingleDifferential_SEMG_Statistics(selection,allData,options)
     SEMG       = reduce_RedundantData(allData,varNames);
     SEMG_NoMVC = SEMG(~(SEMG.TargetForce=='100%MVC'),:);
 
-    % Create plot - with MVC in regression
-    options.Plot = get_Plot_Options_RegressionComparison_AbsoluteUnits();
-    options.Plot.Axis = axes();
-    [stats] = create_ComparisonOfTwoRegressions(SEMG,options);
-    xlabel('\Delta Regression slope (SD EMG/Force)')
-    title({'All subjects: Difference in Regression Slopes',...
-           '(Unaff-Aff). Mean and 95% CI'})
-    print_FigureToWord(selection,['All Subjects'],'WithMeta');
-    close(gcf);  
+    selection.InsertBreak(2) %'wdSectionBreakNextPage';
+    selection.PageSetup.Orientation = 'wdOrientLandscape';
     
-    % Print statistics
-    statOut = formatStruct_tTest(stats);
-    statOut{:,3:5} = statOut{:,3:5}*1000;
-    selection.TypeText(['Statistics - regressions including MVC.' char(13) 'bs multiplied by 1000' char(13)]) 
-    print_TableToWord(selection,statOut) 
-    selection.InsertBreak;
-   
-    % Create plot - without MVC in regression
-    options.Plot = get_Plot_Options_RegressionComparison_AbsoluteUnits();
-    options.Plot.Axis = axes();
-    [stats] = create_ComparisonOfTwoRegressions(SEMG_NoMVC,options);
-    xlabel('\Delta Regression slope (SD EMG/Force)')
-    title({'All subjects: Difference in Regression Slopes',...
-           'NoMVC trials. (Unaff-Aff). Mean and 95% CI'})
-    print_FigureToWord(selection,['All Subjects'],'WithMeta');
-    close(gcf);  
+    SDs = {'BICM','BICL','BRD'};
+    for n=1:3
+        compare_Regressions(options,SEMG_NoMVC,SDs(n),selection)
+    end
     
-    % Print statistics
-    statOut = formatStruct_tTest(stats);
-    statOut{:,3:5} = statOut{:,3:5}*1000;
-    selection.TypeText(['Statistics - regressions NOT including MVC.' char(13) 'bs multiplied by 1000' char(13)]) 
-    print_TableToWord(selection,statOut) 
-    selection.InsertBreak;
+    selection.InsertBreak(2) %'wdSectionBreakNextPage';
+    selection.PageSetup.Orientation = 'wdOrientPortrait';
+    
    
 end
 
+function compare_Regressions(options,SEMG_NoMVC,SDs,selection)
+   
+    % Create plot - without MVC in regression
+    options.Plot = get_Plot_Options_RegressionComparison_AbsoluteUnits(SDs);
+    options.Plot.Axis = axes();
+    [stats] = create_ComparisonOfTwoRegressions(SEMG_NoMVC,options);
+    set(gcf,'position',[403   315   449   351])
+    xlabel(['\Delta Regression slope (' SDs{1} ' SD EMG/Force)'])
+    title({'All subjects: Difference in Regression Slopes',...
+           'NoMVC trials. (Unaff-Aff). Mean and 95% CI'})
+    print_FigureToWord(selection,['All Subjects'],'WithMeta');
+    
+    close(gcf);  
+    
+    % Print statistics
+    statOut = formatStruct_tTest(stats);
+    statOut{:,3:5} = statOut{:,3:5}*1000;
+    selection.TypeText(['Statistics - regressions NOT including MVC. bs multiplied by 1000' char(13)]) 
+    print_TableToWord(selection,statOut) 
+end
 
-function PlotOptions = get_Plot_Options_RegressionComparison_AbsoluteUnits()
+function PlotOptions = get_Plot_Options_RegressionComparison_AbsoluteUnits(SD_Sensor)
 
     PlotOptions.SubplotBy       = []; 
     PlotOptions.GroupBy         = {'SID'};
@@ -68,8 +66,8 @@ function PlotOptions = get_Plot_Options_RegressionComparison_AbsoluteUnits()
     PlotOptions.Predictor       = {'TargetForce_N'};
     PlotOptions.XLabel          = 'Target Force (N)';
     PlotOptions.XLim            = [];
-    PlotOptions.Response        = {'BICM', 'BICL','TRI','BRD','BRA'};
-    PlotOptions.YLabel          = 'RMS EMG (Sensor Arrays)';
+    PlotOptions.Response        = SD_Sensor;
+    PlotOptions.YLabel          = [SD_Sensor{1} ' RMS EMG (Sensor Arrays)'];
     PlotOptions.YLim            = [];
     PlotOptions.CI.XLim         = [];
     PlotOptions.CI.Statistic    = 'Mean';
@@ -101,3 +99,41 @@ function SEMG = reduce_RedundantData(allData,varNames)
     SEMG.Properties.VariableNames(end-4:end) = varNames;
 end
 
+
+%     % Create plot - with MVC in regression
+%     options.Plot = get_Plot_Options_RegressionComparison_AbsoluteUnits();
+%     options.Plot.Axis = axes();
+%     [stats] = create_ComparisonOfTwoRegressions(SEMG,options);
+%     xlabel('\Delta Regression slope (SD EMG/Force)')
+%     title({'All subjects: Difference in Regression Slopes',...
+%            '(Unaff-Aff). Mean and 95% CI'})
+%     print_FigureToWord(selection,['All Subjects'],'WithMeta');
+%     close(gcf);  
+%     
+%     % Print statistics
+%     statOut = formatStruct_tTest(stats);
+%     statOut{:,3:5} = statOut{:,3:5}*1000;
+%     selection.TypeText(['Statistics - regressions including MVC.' char(13) 'bs multiplied by 1000' char(13)]) 
+%     print_TableToWord(selection,statOut) 
+%     selection.InsertBreak;
+
+
+
+% 
+%     % Create plot - without MVC in regression
+%     options.Plot = get_Plot_Options_RegressionComparison_AbsoluteUnits();
+%     options.Plot.Axis = axes();
+%     [stats] = create_ComparisonOfTwoRegressions(SEMG_NoMVC,options);
+%     xlabel('\Delta Regression slope (SD EMG/Force)')
+%     title({'All subjects: Difference in Regression Slopes',...
+%            'NoMVC trials. (Unaff-Aff). Mean and 95% CI'})
+%     print_FigureToWord(selection,['All Subjects'],'WithMeta');
+%     close(gcf);  
+%     
+%     % Print statistics
+%     statOut = formatStruct_tTest(stats);
+%     statOut{:,3:5} = statOut{:,3:5}*1000;
+%     selection.TypeText(['Statistics - regressions NOT including MVC.' char(13) 'bs multiplied by 1000' char(13)]) 
+%     print_TableToWord(selection,statOut) 
+%     selection.InsertBreak;
+   

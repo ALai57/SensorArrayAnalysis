@@ -16,9 +16,6 @@ function print_All_SensorArray_SEMG_Statistics(selection,allData,options)
     SEMG.AllData = SEMG{:,end-1:end};
     SEMG_NoMVC   = SEMG(~(SEMG.TargetForce=='100%MVC'),:);
     
-    SEMG_NoMVC.Mean_Lateral = mean(SEMG_NoMVC.LateralArray_SEMG')';
-    SEMG_NoMVC.Mean_Medial  = mean(SEMG_NoMVC.MedialArray_SEMG')';
-    
     %Plot
     options.Plot = get_Plot_Options_AbsoluteUnits();
     create_Figure_FromTable(SEMG,options)
@@ -28,7 +25,7 @@ function print_All_SensorArray_SEMG_Statistics(selection,allData,options)
     selection.InsertBreak(2) %'wdSectionBreakNextPage';
     selection.PageSetup.Orientation = 'wdOrientLandscape';
     
-    SDs = {'Mean_Medial','Mean_Lateral'};
+    SDs = {'MedialArray_SEMG','LateralArray_SEMG'};
     for n=1:2
         compare_Regressions(options,SEMG_NoMVC,SDs(n),selection)
     end
