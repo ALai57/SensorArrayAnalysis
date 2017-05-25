@@ -16,45 +16,49 @@ function print_All_SensorArray_SNR_Statistics(selection,allData,options)
     SNR.AllData = SNR{:,end-1:end};
     SNR_NoMVC   = SNR(~(SNR.TargetForce=='100%MVC'),:);
     
+    selection.InsertBreak(2) %'wdSectionBreakNextPage';
+    selection.PageSetup.Orientation = 'wdOrientLandscape';
+    
+    SDs = {'MedialArray_SNR','LateralArray_SNR'};
+    for n=1:2
+        compare_Histograms(options,SNR_NoMVC,SDs(n),selection)
+        compare_Regressions(options,SNR_NoMVC,SDs(n),selection)
+    end
+    
+    selection.InsertBreak(2) %'wdSectionBreakNextPage';
+    selection.PageSetup.Orientation = 'wdOrientPortrait';
+  
+end
+
+function compare_Histograms(options,SNR_NoMVC,SAs,selection)
+    
     % Create histogram
-    options.Plot = get_Plot_Options_CombinedHistogram_AbsoluteUnits();
+    options.Plot = get_Plot_Options_CombinedHistogram_AbsoluteUnits(SAs);
     options.Plot.Axis = axes();
     [stats] = create_ComparisonOfTwoDistributionsStatistics(SNR_NoMVC,options);
+    set(gcf,'position',[403   315   449   351])
     xlabel('\Delta Sensor Array SNR')
-    title({'All subjects: \Delta Sensor Array SNR','(Unaff-Aff) Mean and 95% CI'})
+    title({['All subjects: \Delta Sensor Array ' SAs{1} ' SNR'],'(Unaff-Aff) Mean and 95% CI'})
     print_FigureToWord(selection,['All Subjects'],'WithMeta')
     close(gcf);
     
      % Print statistics
     statOut  = formatStruct_tTest(stats);
-    selection.TypeText(['Statistics - Sensor Array SNR comparison.' char(13)])  
+    selection.TypeText(['Statistics - Sensor Array ' SAs{1} ' SNR comparison.' char(13)])  
     print_TableToWord(selection,statOut)
     selection.InsertBreak;
     
-    
-    % Create plot - with MVC in regression
-    options.Plot = get_Plot_Options_RegressionComparison_AbsoluteUnits();
-    options.Plot.Axis = axes();
-    [stats] = create_ComparisonOfTwoRegressions(SNR,options);
-    xlabel('\Delta Regression slope (SNR/Force)')
-    title({'All subjects: Difference in Regression Slopes',...
-           '(Unaff-Aff). Mean and 95% CI'})
-    print_FigureToWord(selection,['All Subjects'],'WithMeta');
-    close(gcf);  
-    
-    % Print statistics
-    statOut = formatStruct_tTest(stats);
-    statOut{:,3:5} = statOut{:,3:5};
-    selection.TypeText(['Statistics - regressions including MVC.' char(13) 'bs multiplied by 1000' char(13)]) 
-    print_TableToWord(selection,statOut) 
-    selection.InsertBreak;
-   
+end
+
+function compare_Regressions(options,SNR_NoMVC,SAs,selection)
+
     % Create plot - without MVC in regression
-    options.Plot = get_Plot_Options_RegressionComparison_AbsoluteUnits();
+    options.Plot = get_Plot_Options_RegressionComparison_AbsoluteUnits(SAs);
     options.Plot.Axis = axes();
     [stats] = create_ComparisonOfTwoRegressions(SNR_NoMVC,options);
+    set(gcf,'position',[403   315   449   351])
     xlabel('\Delta Regression slope (SNR/Force)')
-    title({'All subjects: Difference in Regression Slopes',...
+    title({['All subjects: Difference in Regression Slopes '  SAs{1}],...
            'NoMVC trials. (Unaff-Aff). Mean and 95% CI'})
     print_FigureToWord(selection,['All Subjects'],'WithMeta');
     close(gcf);  
@@ -62,14 +66,12 @@ function print_All_SensorArray_SNR_Statistics(selection,allData,options)
     % Print statistics
     statOut = formatStruct_tTest(stats);
     statOut{:,3:5} = statOut{:,3:5};
-    selection.TypeText(['Statistics - regressions NOT including MVC.' char(13) 'bs multiplied by 1000' char(13)]) 
+    selection.TypeText(['Statistics - regressions NOT including MVC. bs multiplied by 1000' char(13)]) 
     print_TableToWord(selection,statOut) 
     selection.InsertBreak;
-    
 end
 
-
-function PlotOptions = get_Plot_Options_RegressionComparison_AbsoluteUnits()
+function PlotOptions = get_Plot_Options_RegressionComparison_AbsoluteUnits(SAs)
 
     PlotOptions.SubplotBy       = []; 
     PlotOptions.GroupBy         = {'SID'};
@@ -85,8 +87,8 @@ function PlotOptions = get_Plot_Options_RegressionComparison_AbsoluteUnits()
     PlotOptions.Predictor       = {'TargetForce_N'};
     PlotOptions.XLabel          = 'Target Force (N)';
     PlotOptions.XLim            = [];
-    PlotOptions.Response        = {'AllData'};
-    PlotOptions.YLabel          = 'SNR (Sensor Arrays)';
+    PlotOptions.Response        = SAs;
+    PlotOptions.YLabel          = ['SNR (Sensor Array ' SAs{1} ')'];
     PlotOptions.YLim            = [];
     PlotOptions.CI.XLim         = [];
     PlotOptions.CI.Statistic    = 'Mean';
@@ -95,7 +97,7 @@ function PlotOptions = get_Plot_Options_RegressionComparison_AbsoluteUnits()
 end
 
 
-function PlotOptions = get_Plot_Options_CombinedHistogram_AbsoluteUnits()
+function PlotOptions = get_Plot_Options_CombinedHistogram_AbsoluteUnits(SAs)
 
     PlotOptions.SubplotBy       = []; 
     PlotOptions.GroupBy         = {'SID'};
@@ -107,8 +109,8 @@ function PlotOptions = get_Plot_Options_CombinedHistogram_AbsoluteUnits()
     PlotOptions.LineStyle       = 'none';
     PlotOptions.Marker          = 'o';
     PlotOptions.FontSize        = 12;
-    PlotOptions.XVar            = {'AllData'};
-    PlotOptions.XLabel          = 'SNR (Sensor Arrays)';
+    PlotOptions.XVar            = SAs;
+    PlotOptions.XLabel          = ['SNR (Sensor Array ' SAs{1} ' )'];
     PlotOptions.XLim            = [];
     PlotOptions.YLabel          = 'Trials';
     PlotOptions.YLim            = [];
@@ -142,3 +144,55 @@ function SEMG = reduce_RedundantData(allData,varNames)
     SEMG.Properties.VariableNames(end-1:end) = varNames;
 end
 
+
+
+    
+%     % Create histogram
+%     options.Plot = get_Plot_Options_CombinedHistogram_AbsoluteUnits();
+%     options.Plot.Axis = axes();
+%     [stats] = create_ComparisonOfTwoDistributionsStatistics(SNR_NoMVC,options);
+%     xlabel('\Delta Sensor Array SNR')
+%     title({'All subjects: \Delta Sensor Array SNR','(Unaff-Aff) Mean and 95% CI'})
+%     print_FigureToWord(selection,['All Subjects'],'WithMeta')
+%     close(gcf);
+%     
+%      % Print statistics
+%     statOut  = formatStruct_tTest(stats);
+%     selection.TypeText(['Statistics - Sensor Array SNR comparison.' char(13)])  
+%     print_TableToWord(selection,statOut)
+%     selection.InsertBreak;
+%     
+%     
+%     % Create plot - with MVC in regression
+%     options.Plot = get_Plot_Options_RegressionComparison_AbsoluteUnits();
+%     options.Plot.Axis = axes();
+%     [stats] = create_ComparisonOfTwoRegressions(SNR,options);
+%     xlabel('\Delta Regression slope (SNR/Force)')
+%     title({'All subjects: Difference in Regression Slopes',...
+%            '(Unaff-Aff). Mean and 95% CI'})
+%     print_FigureToWord(selection,['All Subjects'],'WithMeta');
+%     close(gcf);  
+%     
+%     % Print statistics
+%     statOut = formatStruct_tTest(stats);
+%     statOut{:,3:5} = statOut{:,3:5};
+%     selection.TypeText(['Statistics - regressions including MVC.' char(13) 'bs multiplied by 1000' char(13)]) 
+%     print_TableToWord(selection,statOut) 
+%     selection.InsertBreak;
+%    
+%     % Create plot - without MVC in regression
+%     options.Plot = get_Plot_Options_RegressionComparison_AbsoluteUnits();
+%     options.Plot.Axis = axes();
+%     [stats] = create_ComparisonOfTwoRegressions(SNR_NoMVC,options);
+%     xlabel('\Delta Regression slope (SNR/Force)')
+%     title({'All subjects: Difference in Regression Slopes',...
+%            'NoMVC trials. (Unaff-Aff). Mean and 95% CI'})
+%     print_FigureToWord(selection,['All Subjects'],'WithMeta');
+%     close(gcf);  
+%     
+%     % Print statistics
+%     statOut = formatStruct_tTest(stats);
+%     statOut{:,3:5} = statOut{:,3:5};
+%     selection.TypeText(['Statistics - regressions NOT including MVC.' char(13) 'bs multiplied by 1000' char(13)]) 
+%     print_TableToWord(selection,statOut) 
+%     selection.InsertBreak;

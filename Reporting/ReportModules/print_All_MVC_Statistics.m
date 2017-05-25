@@ -25,6 +25,10 @@ function print_All_MVC_Statistics(selection,allData,options)
     MVC            = reduce_RedundantData(allData,varNames);   
     MVC.AllData_SA = MVC{:,end-6:end-5};
     
+    % Manually elim bad trials
+    
+    MVC([20,3],:) = [];
+    
     SA_MVC = varfun(@mean,MVC,'InputVariables',{'AllData_SA','MedialArray_SEMG','LateralArray_SEMG'},...
                               'GroupingVariables',{'SID','ArmType','SensorArrayFile','TargetForce','TargetForce_N'});
     SA_MVC = varfun(@mean,SA_MVC,'InputVariables',{'mean_AllData_SA','mean_MedialArray_SEMG','mean_LateralArray_SEMG'},...
@@ -79,8 +83,6 @@ function print_All_MVC_Statistics(selection,allData,options)
     print_FigureToWord(selection,['All Subjects'],'WithMeta')
     close(gcf);
     
-        
-%     stats = reformat_Table(SA_MVC,SD_MVC);
     
     stats = reformat_Table(MVC);
     selection.TypeText(['Statistics .' char(13)]) 
@@ -90,6 +92,10 @@ function print_All_MVC_Statistics(selection,allData,options)
     selection.TypeText(['Second format for MVC outputs']);
     stats.MVC_Delta = stats{:,9}-stats{:,10};
     print_TableToWord(selection,stats(:,[1,9,10,21,2,3:7])) 
+    
+    stats{:,[11:14]} = stats{:,[11:14]}*1000;
+    selection.TypeText(['All MVC']);
+    print_TableToWord(selection,stats) 
     selection.InsertBreak;
     
     
@@ -402,16 +408,3 @@ function out = reformat_Table(MVC)%(MVC_SA,MVC_SD)
     text(-0.2,1.5,'AFF Greater EMG','rotation',90)
     title('All Subjects')
 end
-
-%     varNames = options.Analysis(1).Trial.OutputVariable;
-%     SEMG = varfun(@check_SEMG,allData,'InputVariables',varNames,'GroupingVariables',{'SID','ArmType','SensorArrayFile','TargetForce_N','TargetForce'});
-%     SEMG.Properties.VariableNames(end-1:end) = varNames;
-
-
-%     SEMG         = reduce_RedundantData(allData,varNames);
-%     
-%     SA_EMG.AllData = SA_EMG{:,end-1:end};
-%     
-% %     SD_EMG         = rename_StructFields(SA_EMG,varNames);
-% %     SA_EMG         = reduce_RedundantData(allData,varNames);
-%     SA_EMG.AllData = SA_EMG{:,end-1:end};

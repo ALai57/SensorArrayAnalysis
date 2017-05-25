@@ -55,16 +55,23 @@ function SEMG = calculate_SensorArray_SEMG_FromTrial(trial_Data,options)
     end
 %     profile viewer;
     plotFlag = 0;
+    MVCFlag  = 0;
     if plotFlag
         figure; 
         for n=1:8
             subplot(2,4,n)
+           
             plot(EMGtime,EMG(:,n)); hold on;
             plot(tMid,SEMG_value(:,n),'linewidth',3)
             xL = [0 max(EMGtime)];
             set(gca,'xlim',xL);
             plot(xL,[SEMG_stat(n) SEMG_stat(n)])
-            ylim([-0.05 0.05])
+            if ~MVCFlag
+                ylim([-0.05 0.05])
+            end
+            if n==1
+               title([char(trial_Data.SID(1)) '-' char(trial_Data.ArmType(1)) ' ' char(trial_Data.TrialName(1))],'interpreter','none') 
+            end
         end
     end
     

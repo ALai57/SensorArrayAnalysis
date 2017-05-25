@@ -58,8 +58,8 @@ function options = get_Options()
     
     
     options.Analysis(1).Trial.Function          = {@(trial_Data,options)calculate_SensorArray_SNR_FromTrial(trial_Data,options)};
-    options.Analysis(1).Trial.OutputVariable(1) = {'MedialArray_SEMG'};
-    options.Analysis(1).Trial.OutputVariable(2) = {'LateralArray_SEMG'};
+    options.Analysis(1).Trial.OutputVariable(1) = {'MedialArray_SNR'};
+    options.Analysis(1).Trial.OutputVariable(2) = {'LateralArray_SNR'};
     options.Analysis(1).SEMG.Method             = 'RMS';
     options.Analysis(1).SEMG.Statistic          = 'Max';
     options.Analysis(1).SEMG.Window             = 2;
