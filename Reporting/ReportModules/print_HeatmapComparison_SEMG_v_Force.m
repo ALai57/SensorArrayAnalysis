@@ -2,17 +2,17 @@
 
 
 
-function print_HeatmapComparison_MU_FiringRates_v_Force(selection,s,options)
+function print_HeatmapComparison_SEMG_v_Force(selection,s,options)
 
     s      = clean_S(s);
     s_Sort = sort_S(s,'Ratio','MVC_Force');
     
     plot_AFF_UNAFF_1(s_Sort)
-    print_FigureToWord(selection,['FR v Force regessions' char(13)],'WithMeta')
+    print_FigureToWord(selection,['Single Differential EMG v Force regessions' char(13)],'WithMeta')
     close(gcf)
     
     plot_Differences_2(s_Sort)
-    print_FigureToWord(selection,['Difference in Regression Slope: (FR v. Force)' char(13)],'WithMeta')
+    print_FigureToWord(selection,['Difference in Regression Slope: (EMG v. Force)' char(13)],'WithMeta')
     close(gcf)
     
     selection.InsertBreak;
@@ -75,9 +75,9 @@ function c_ind = find_Columns(s,vars)
 end
 
 
-function    plot_ScatterMatrices(s)
+function plot_ScatterMatrices(s)
     
-    vars = {'MVC_Force','BothArray_Firing_Rate_v_Target_Force'};
+    vars = {'MVC_Force','BICM_v_Target_Force','BICL_v_Target_Force','BRD_v_Target_Force'};
     
     c = find_Columns(s,vars);
     A = s.AFF{:,c};
@@ -107,32 +107,34 @@ end
 
 function plot_AFF_UNAFF_1(s)
     
-    vars = {'MVC_Force','BothArray_Firing_Rate_v_Target_Force'};
+    vars = {'MVC_Force','BICM_v_Target_Force','BICL_v_Target_Force','BRD_v_Target_Force'};
+    
+  
     
     c = find_Columns(s,vars);
     A = s.AFF{:,c};
     U = s.UNAFF{:,c};
-    AP = s.AFF_p{:,c(2)};
-    UP = s.UNAFF_p{:,c(2)};
+    AP = s.AFF_p{:,c(2:end)};
+    UP = s.UNAFF_p{:,c(2:end)};
     SID = s.SID;
     
-    A(:,2) = A(:,2)*100;
-    U(:,2) = U(:,2)*100;
+    A(:,2:end) = A(:,2:end)*100;
+    U(:,2:end) = U(:,2:end)*100;
     
-    ATxt = make_Label(A,'3.0',{'N',' pps/100N'});
-    UTxt = make_Label(U,'3.0',{'N',' pps/100N'});
-    APTxt = make_Label(AP,'0.2',{''});
-    UPTxt = make_Label(UP,'0.2',{''});
+    ATxt = make_Label(A,'3.0',{'N',' e-5',' e-5',' e-5'});
+    UTxt = make_Label(U,'3.0',{'N',' e-5',' e-5',' e-5'});
+    APTxt = make_Label(AP,'0.2',{'','',''});
+    UPTxt = make_Label(UP,'0.2',{'','',''});
     
-    mxA  = max(abs(A));
-    mxU  = max(abs(U));
+    mxA  = max(abs(A)); mxA(2:end) = max(mxA(2:end));
+    mxU  = max(abs(U)); mxU(2:end) = max(mxU(2:end));
     mxA  = repmat(mxA,size(A,1),1);
     mxU  = repmat(mxU,size(U,1),1);
     
     % Relative - Diff and ratio
     figure;
     subplot(2,5,1:4);
-    hM(1) = custom_heatmap(A./mxA, {'MVC Force','Slope (FR v Force)'}, SID, ...
+    hM(1) = custom_heatmap(A./mxA, {'MVC Force','Slope (BICM)','Slope (BICL)','Slope (BRD)'}, SID, ...
                     ATxt, 'Colormap', 'money2', ...
                     'UseFigureColormap',false,...
                     'ShowAllTicks',1,'TickAngle',0,...
@@ -148,7 +150,7 @@ function plot_AFF_UNAFF_1(s)
     
     
     subplot(2,5,6:9);
-    hM(3) = custom_heatmap(U./mxU,  {'MVC Force','Slope (FR v Force)'}, SID, ...
+    hM(3) = custom_heatmap(U./mxU,  {'MVC Force','Slope (BICM)','Slope (BICL)','Slope (BRD)'}, SID, ...
                     UTxt, 'Colormap', 'money2', ...
                     'UseFigureColormap',false,...
                     'ShowAllTicks',1,'TickAngle',0,...
@@ -162,33 +164,41 @@ function plot_AFF_UNAFF_1(s)
                     'NaNColor',[0 0 0],'MinColorValue',-1,'MaxColorValue',1);
     title('Slope p')
     
-    set(gcf,'position',[2    42   463   642])
+    set(gcf,'position',[ 2    42   680   642])
 end
 
 function plot_Differences_2(s)
     
-    vars = {'MVC_Force','BothArray_Firing_Rate_v_Target_Force'};
-    
+    vars = {'MVC_Force','BICM_v_Target_Force','BICL_v_Target_Force','BRD_v_Target_Force'};
+        
     c = find_Columns(s,vars);
     R = s.Ratio{:,c};
     D = s.Difference{:,c};
-    P = s.Ttest2_p{:,c(2)};
+    P = s.Ttest2_p{:,c(2:end)};
     SID = s.SID;
     
     Force = [(R(:,1)-1)*100,D(:,1)];
-    FRvF  = [(R(:,2)-1)*100,D(:,2)*100];
+    BICM  = [(R(:,2)-1)*100,D(:,2)*100];
+    BICL  = [(R(:,3)-1)*100,D(:,3)*100];
+    BRD   = [(R(:,4)-1)*100,D(:,4)*100];
     
     ForceTxt = make_Label(Force,'2.0',{'%%','N'});
-    FRTxt    = make_Label(FRvF ,'2.0',{'%%','pps/100N'});
-    PTxt     = make_Label(P,'0.2',{''});
+    BICMTxt  = make_Label(BICM ,'2.0',{'%%',' e-5'});
+    BICLTxt  = make_Label(BICL ,'2.0',{'%%',' e-5'});
+    BRDTxt   = make_Label(BRD ,'2.0',{'%%',' e-5'});
+    PTxt     = make_Label(P,'0.2',{'','',''});
     
     mxF   = max(abs(Force));
-    mxFR  = max(abs(FRvF));
     mxF   = repmat(mxF,size(Force,1),1);
-    mxFR  = repmat(mxFR,size(FRvF,1),1);
+    mxBICM  = max(abs(BICM));
+    mxBICM  = repmat(mxBICM,size(BICM,1),1);
+    mxBICL  = max(abs(BICL));
+    mxBICL  = repmat(mxBICL,size(BICL,1),1);
+    mxBRD  = max(abs(BRD));
+    mxBRD  = repmat(mxBRD,size(BRD,1),1);
     
     figure;
-    subplot(1,5,1:2);
+    subplot(1,11,1:2);
     hM(1) = custom_heatmap(Force./mxF, {'Relative','Absolute'}, SID, ...
                     ForceTxt, 'Colormap', 'money2', ...
                     'UseFigureColormap',false,...
@@ -196,23 +206,55 @@ function plot_Differences_2(s)
                     'NaNColor',[0 0 0],'MinColorValue',-1,'MaxColorValue',1);
     title('\Delta MVC Forces')
     
-    subplot(1,5,3:4);
-    hM(2) = custom_heatmap(FRvF./mxFR, {'Relative','Absolute'}, [], ...
-                   FRTxt, 'Colormap', 'money2', ...
+    subplot(1,11,3:4);
+    hM(2) = custom_heatmap(BICM./mxBICM, {'Relative','Absolute'}, [], ...
+                   BICMTxt, 'Colormap', 'money2', ...
                     'UseFigureColormap',false,...
                     'ShowAllTicks',1,'TickAngle',25,...
                     'NaNColor',[0 0 0],'MinColorValue',-1,'MaxColorValue',1);
-    title('\Delta Slope (pps/N)')
+    title('\Delta Slope (BICM)')
     
-    subplot(1,5,5);
-    hM(3) = custom_heatmap(P/0.05, {'           p'}, [], ...
-                    PTxt, 'Colormap', 'money2', ...
+    subplot(1,11,5);
+    hM(3) = custom_heatmap(P(:,1)/0.05, {'           p'}, [], ...
+                    PTxt(:,1), 'Colormap', 'money2', ...
                     'UseFigureColormap',false,...
                     'ShowAllTicks',1,'TickAngle',25,...
                     'NaNColor',[0 0 0],'MinColorValue',-1,'MaxColorValue',1);
     title('p value')
     
-   
+    subplot(1,11,6:7);
+    hM(2) = custom_heatmap(BICL./mxBICL, {'Relative','Absolute'}, [], ...
+                   BICLTxt, 'Colormap', 'money2', ...
+                    'UseFigureColormap',false,...
+                    'ShowAllTicks',1,'TickAngle',25,...
+                    'NaNColor',[0 0 0],'MinColorValue',-1,'MaxColorValue',1);
+    title('\Delta Slope (BICL)')
+    
+    subplot(1,11,8);
+    hM(3) = custom_heatmap(P(:,2)/0.05, {'           p'}, [], ...
+                    PTxt(:,2), 'Colormap', 'money2', ...
+                    'UseFigureColormap',false,...
+                    'ShowAllTicks',1,'TickAngle',25,...
+                    'NaNColor',[0 0 0],'MinColorValue',-1,'MaxColorValue',1);
+    title('p value')
+    
+    subplot(1,11,9:10);
+    hM(2) = custom_heatmap(BRD./mxBRD, {'Relative','Absolute'}, [], ...
+                   BRDTxt, 'Colormap', 'money2', ...
+                    'UseFigureColormap',false,...
+                    'ShowAllTicks',1,'TickAngle',25,...
+                    'NaNColor',[0 0 0],'MinColorValue',-1,'MaxColorValue',1);
+    title('\Delta Slope (BRD)')
+    
+    subplot(1,11,11);
+    hM(3) = custom_heatmap(P(:,3)/0.05, {'           p'}, [], ...
+                    PTxt(:,3), 'Colormap', 'money2', ...
+                    'UseFigureColormap',false,...
+                    'ShowAllTicks',1,'TickAngle',25,...
+                    'NaNColor',[0 0 0],'MinColorValue',-1,'MaxColorValue',1);
+    title('p value')
+    
+   set(gcf,'position',[-3   131   993   342])
 end
 
 function Txt = make_Label(val,tformat,appendTxt)

@@ -31,6 +31,7 @@ function create_Histogram_FromTable(allData, options)
             else
                 [y, x] = hist(data);
                 hP(n) = plot(x,y); 
+%                 hP(n) = plot(x,y/sum(y)); 
                 format_DataSeries(hP(n),options)
             end
         end

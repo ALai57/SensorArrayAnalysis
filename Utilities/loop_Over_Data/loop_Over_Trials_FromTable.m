@@ -25,7 +25,18 @@ function [analysis_unwrap, ind_f] = loop_Over_Trials_FromTable(MU_Data,options)
         analysis{n} = options.Trial.Function{1}(trialData,options); 
     end
     fprintf('\n')
-
+    
+    try
+        if isequal(func2str(options.Trial.Function{1}), ...
+                   '@(trial_Data,options)calculate_ForceTrace_FromTrial(trial_Data,options)')
+                tmp = [];
+            for n=1:length(trials)
+                tmp = [tmp;analysis{n}];
+            end    
+            analysis_unwrap = tmp;
+        end
+        return;
+    end
     for n=1:length(trials)
         for i=1:length(options.Trial.OutputVariable)
             varname = options.Trial.OutputVariable{i};
