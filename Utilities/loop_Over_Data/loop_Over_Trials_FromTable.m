@@ -34,8 +34,8 @@ function [analysis_unwrap, ind_f] = loop_Over_Trials_FromTable(MU_Data,options)
                 tmp = [tmp;analysis{n}];
             end    
             analysis_unwrap = tmp;
-        end
         return;
+        end
     end
     for n=1:length(trials)
         for i=1:length(options.Trial.OutputVariable)

@@ -6,7 +6,6 @@ function SEMG = calculate_SensorArray_SEMG_FromTrial(trial_Data,options)
     ch = [2,3,4,5,8,9,10,11];
     SEMG = initialize_OutputArray(trial_Data,options);
     
-    % ERROR CHECK HERE
     try
         EMG     = load(trial_Data.SensorArrayFullFile{1});
         EMGtime = table2array(EMG.tbl(:,1));
@@ -40,7 +39,8 @@ function SEMG = calculate_SensorArray_SEMG_FromTrial(trial_Data,options)
     
     switch options.SEMG.Statistic
         case 'Max'
-            SEMG_stat = max(SEMG_value);
+            ind_t = tMid <options.SEMG.MaxT;
+            SEMG_stat = max(SEMG_value(ind_t,:));
     end
     
     z = zeros(size(SEMG_stat,1),1);

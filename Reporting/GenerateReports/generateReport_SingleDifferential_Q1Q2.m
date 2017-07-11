@@ -1,6 +1,6 @@
 
 
-function generateReport_SensorArray_SEMG_Statistics()
+function generateReport_SingleDifferential_Q1Q2()
 
     options  = get_Options();
     analyses = get_Analyses();
@@ -13,21 +13,20 @@ function generateReport_SensorArray_SEMG_Statistics()
     [serverHandle, selection] = open_ConnectionToWord();
     print_ReportDescription(selection);
     print_OptionsAndAnalyses(selection, options, analyses);
-    print_All_SensorArray_SEMG_Statistics(selection, MU_Data, options);
-%     print_All_SEMG_Statistics_ByForceLevel(selection, MU_Data, options)
     print_Analysis_LoopOverSubjects(selection, MU_Data, analyses.IndividualSubject,options);
     
     delete(serverHandle)
 end
 
 function analyses = get_Analyses()
-    analyses.IndividualSubject{1} = @(selection,subjData,options)print_Subject_SensorArray_SEMG_Statistics(selection,subjData,options); 
+    analyses.IndividualSubject{1} = @(selection,subjData,options)print_Subject_SingleDifferential_SEMG_v_Force_Normalized(selection,subjData,options);
+    analyses.IndividualSubject{2} = @(selection,subjData,options)print_Subject_SingleDifferential_SEMG_v_SEMG_Normalized(selection,subjData,options); 
 end
 
 function options = get_Options()
     
-    options.SensorArray.BaseDirectory          = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data';
-    options.SingleDifferential.BaseDirectory   = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data';
+    options.SingleDifferential.BaseDirectory     = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data';
+    
 %     options.STA.File                           = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_AllControl_4_12_2017.mat';
 %     options.STA_Window.File                    = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Analysis\DataTable_Window_Control_4_10_2017.mat';
     
@@ -58,16 +57,18 @@ function options = get_Options()
     options.ForceRange.Names                     = {'Under_30N','Above_30N'};
     
     
-    options.Analysis(1).Trial.Function          = {@(trial_Data,options)calculate_SensorArray_SEMG_FromTrial(trial_Data,options)};
-    options.Analysis(1).Trial.OutputVariable(1) = {'MedialArray_SEMG'};
-    options.Analysis(1).Trial.OutputVariable(2) = {'LateralArray_SEMG'};
+    options.Analysis(1).Trial.Function          = {@(trial_Data,options)calculate_SingleDifferential_SEMG_FromTrial(trial_Data,options)};
+    options.Analysis(1).Trial.OutputVariable(1) = {'BICM'};
+    options.Analysis(1).Trial.OutputVariable(2) = {'BICL'};
+    options.Analysis(1).Trial.OutputVariable(3) = {'TRI'};
+    options.Analysis(1).Trial.OutputVariable(4) = {'BRD'};
+    options.Analysis(1).Trial.OutputVariable(5) = {'BRA'};
     options.Analysis(1).SEMG.Method             = 'RMS';
     options.Analysis(1).SEMG.Statistic          = 'Max';
     options.Analysis(1).SEMG.Window             = 2;
     options.Analysis(1).SEMG.SlideStep          = 0.1;
     options.Analysis(1).SEMG.Start              = [];
     options.Analysis(1).SEMG.End                = [];
-    options.Analysis(1).SEMG.MaxT               = 20;
 end
 
 
@@ -80,13 +81,8 @@ function print_ReportDescription(selection)
     selection.TypeText([date() char(13) char(13) char(13)]);
     selection.Font.Size = 16;
     selection.Font.Bold = 0;
-    selection.TypeText(['This report contains a summary of Sensor Array Surface EMG.' char(13)])  
-    selection.Font.Size = 12;%     selection.TypeText(['- For each subject, a summary table of all trials is included.' char(13)]) 
-%     selection.TypeText(['- The summary table is printed for both SensorArray.mat and SingleDifferential.mat files.' char(13)]) 
-%     selection.TypeText(char(13)) 
-%     selection.TypeText(['- After the summary table, Force traces from all trials are plotted.' char(13)]) 
-%     selection.TypeText(['- Only force traces from SensorArray.mat files are included.' char(13)]) 
-%     selection.TypeText(['- Force traces from SingleDifferential.mat files are not included.' char(13)']) 
+    selection.TypeText(['This report contains a summary of Single Differential Surface EMG data.' char(13)])  
+    selection.Font.Size = 12;
     selection.InsertBreak;
 end
 

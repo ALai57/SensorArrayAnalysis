@@ -1,7 +1,7 @@
 
-function print_Subject_SingleDifferential_SEMG_Statistics_Normalized(selection,allData,options)
+function print_Subject_SingleDifferential_SEMG_v_Force_Normalized(selection,allData,options)
    
-     % For readability make temporary variables
+  % For readability make temporary variables
     baseDir  = options.SingleDifferential.BaseDirectory;
     varNames = options.Analysis(1).Trial.OutputVariable;
     
@@ -13,16 +13,94 @@ function print_Subject_SingleDifferential_SEMG_Statistics_Normalized(selection,a
     SEMG       = rename_StructFields(SEMG,varNames);
     allData    = merge_Data(allData,SEMG,options);
     SEMG       = reduce_RedundantData(allData,varNames);
-    Norm_SEMG  = normalize_EMG(SEMG,[5,7:11]);
-      
-     %Plot
-    SID = char(SEMG.SID(1));
-    options.Plot = get_Plot_Options_AbsoluteUnits();
-    create_Figure_FromTable_MultiInputSubplot(Norm_SEMG, options)
-    print_FigureToWord(selection,['Subject :' SID],'WithMeta')
-    close(gcf);
     
+    %Control vs stroke. Change here.
+    mm = {'TargetForce_N','BICM';...
+          'TargetForce_N','BICL';...
+          'TargetForce_N','BRD'};
+      
+    at = {'AFF','UNAFF'};
+    
+%     SEMG.ArmType = SEMG.ArmSide;
+%     at = {'R','L'};
+     
+    Norm_SEMG  = normalize_EMG(SEMG,[5,7:11]);
+
+    
+    
+    % Create plot - with MVC in regression
+    Norm_SEMG_Mean = varfun(@mean,Norm_SEMG,...
+                             'InputVariables',...
+                                    {'BICM',...
+                                     'BICL',...
+                                     'TRI',...
+                                     'BRD',...
+                                     'BRA'},...
+                             'GroupingVariables',...
+                                    {'SID',...
+                                     'ArmType',...
+                                     'TargetForce',...
+                                     'TargetForce_N'});
+                                    
+   
+    figure;
+    for n=1:size(mm,1)
+        
+        subplot(size(mm,1),2,2*(n-1)+1);
+        i = Norm_SEMG.ArmType == at{1};
+        plotg(Norm_SEMG.TargetForce_N(i),...
+              Norm_SEMG.(mm{n,2})(i),...
+              Norm_SEMG.SID(i),...
+              '-o');
+        title(at{1})
+        plot([0 1], [0 1],'k')
+        xlim([0 1.1]);
+        ylim([0 1.5])
+        xlabel([mm{n,1} ' (%MVC)'])
+        ylabel([mm{n,2} ' (%MVC)'])
+        
+        subplot(size(mm,1),2,2*n);
+        plotg(Norm_SEMG.TargetForce_N(~i),...
+              Norm_SEMG.(mm{n,2})(~i),...
+              Norm_SEMG.SID(~i),...
+              '-o');
+        title(at{2})
+        plot([0 1], [0 1],'k')
+        ylim([0 1.1])
+        xlim([0 1.5])
+        
+%          subplot(size(mm,1),2,2*(n-1)+1);
+%         i = Norm_SEMG_Mean.ArmType == at{1};
+%         plotg(Norm_SEMG_Mean.TargetForce_N(i),...
+%               Norm_SEMG_Mean.(['mean_' mm{n,2}])(i),...
+%               Norm_SEMG_Mean.SID(i),...
+%               '-o');
+%         title(at{1})
+%         plot([0 1], [0 1],'k')
+%         xlim([0 1.1]);
+%         ylim([0 1.5])
+%         xlabel([mm{n,1} ' (%MVC)'])
+%         ylabel([mm{n,2} ' (%MVC)'])
+%         
+%         subplot(size(mm,1),2,2*n);
+%         plotg(Norm_SEMG_Mean.TargetForce_N(~i),...
+%               Norm_SEMG_Mean.(['mean_' mm{n,2}])(~i),...
+%               Norm_SEMG_Mean.SID(~i),...
+%               '-o');
+%         title(at{2})
+%         plot([0 1], [0 1],'k')
+%         ylim([0 1.1])
+%         xlim([0 1.5])
+    end
+ 
+    set(gcf,'position',[403    95   560   571])
+    
+    % Print statistics
+    print_FigureToWord(selection,mm{length(mm)-n+1},'WithMeta') 
     selection.InsertBreak;
+    close(gcf);
+
+   
    
 end
 

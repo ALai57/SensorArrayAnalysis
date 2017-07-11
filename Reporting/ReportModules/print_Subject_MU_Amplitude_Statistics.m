@@ -27,6 +27,11 @@ function print_Subject_MU_Amplitude_Statistics(selection,MU_Data,options)
     print_FigureToWord(selection,['Subject = ' SID char(13)],'WithMeta')
     close(gcf);
     
+    options.Plot = get_Plot_Options_SidewaysHistogram_AbsoluteUnits();
+    create_SidewaysHistogram_FromTable(MU_Data, options);
+    print_FigureToWord(selection,['Subject = ' SID char(13)],'WithMeta')
+    close(gcf);
+    
     MU_Median = varfun(@median,MU_Data,'InputVariables','MU_Amplitude','GroupingVariables',{'SID','ArmType','SensorArrayFile','TargetForce_N'});
     
     options.Plot = get_Plot_Options_HistogramMedian_AbsoluteUnits();
@@ -37,6 +42,27 @@ function print_Subject_MU_Amplitude_Statistics(selection,MU_Data,options)
     selection.InsertBreak;
 end
 
+
+function PlotOptions = get_Plot_Options_SidewaysHistogram_AbsoluteUnits()
+
+    PlotOptions.SubplotBy       = []; 
+    PlotOptions.GroupBy         = {'ArmType'};
+    PlotOptions.Colors          = {'r','b'};
+    PlotOptions.AdditionalPlots = [];
+    PlotOptions.LegendLocation  = [ 0.1333    0.8218    0.1750    0.1012];   
+    PlotOptions.LineWidth       = 2;
+    PlotOptions.LineStyle       = 'none';
+    PlotOptions.Marker          = 'o';
+    PlotOptions.FontSize        = 12;
+    PlotOptions.XVar            = {'TargetForce_N'};
+    PlotOptions.XLabel          = 'Target Force (Newtons)';
+    PlotOptions.XLim            = [];
+    PlotOptions.YVar            = {'MU_Amplitude'};
+    PlotOptions.YLabel          = 'MU Amplitude (mV)';
+    PlotOptions.YLim            = [];
+    PlotOptions.Title           = @(inputdata,options)[char(inputdata.SID(1)) ': Distribution of all MU amlitudes'] ;  
+    PlotOptions.TitleSize       = 16; 
+end
 
 function PlotOptions = get_Plot_Options_Histogram_AbsoluteUnits()
 

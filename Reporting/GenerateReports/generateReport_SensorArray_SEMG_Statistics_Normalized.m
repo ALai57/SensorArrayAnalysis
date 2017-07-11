@@ -13,7 +13,8 @@ function generateReport_SensorArray_SEMG_Statistics_Normalized()
     [serverHandle, selection] = open_ConnectionToWord();
     print_ReportDescription(selection);
     print_OptionsAndAnalyses(selection, options, analyses);
-    print_All_SensorArray_SEMG_Statistics_Normalized(selection, MU_Data, options);
+    print_All_SensorArra
+    y_SEMG_Statistics_Normalized(selection, MU_Data, options);
 %     print_All_SEMG_Statistics_ByForceLevel(selection, MU_Data, options)
     print_Analysis_LoopOverSubjects(selection, MU_Data, analyses.IndividualSubject,options);
     

@@ -2,7 +2,8 @@
 function view_SensorArrayData(tbl)
 
     if isempty(tbl)
-       % Get file 
+       [fName,path] = uigetfile();
+       load([path '\' fName]);
     end
     F = calculate_ForceMagnitude_FromTable(tbl);
     figure;
