@@ -1,0 +1,43 @@
+
+
+function SEMG = calculate_OnionSkin(trial_Data,options)
+
+%     profile on;
+    ch = [7,8];
+    SEMG = table([],[],[],[],'VariableNames',{'SensorArrayFile'},)
+    SEMG = initialize_OutputArray(trial_Data,options);
+    
+    % ERROR CHECK HERE
+    try
+        Force     = load(trial_Data.SingleDifferentialFullFile{1});
+        Forcetime = table2array(Force.tbl(:,1));
+        Force     = table2array(Force.tbl(:,ch));
+    catch
+        for n=1:length(options.Trial.OutputVariable)
+            SEMG.(options.Trial.OutputVariable{n}) = repmat({[0 0 0 0]},size(trial_Data,1),1);
+        end
+        return;
+    end
+    
+    for m=1:size(trial_Data,1)
+        iRate{m} = 1./diff(trial_Data.FiringTimes{m});
+        iTime{m} = trial_Data.FiringTimes{m}(1:end-1); 
+    end
+    
+    figure; plot(Forcetime,Force); hold on;
+    for m=1:size(trial_Data)
+        plot(iTime{m},iRate{m});
+    end
+end
+
+function Onion_Out = initialize_OutputArray(trialData,options)
+    c         = cell(size(trialData,1),1);
+    emptyCell = [];
+    
+    for n=1:length(options.Trial.OutputVariable) 
+        tmp       = table(c,'VariableNames',{options.Trial.OutputVariable{n}});
+        emptyCell = [emptyCell,tmp];
+    end
+    
+    Onion_Out   = [trialData(:,[8,10,13]),emptyCell]; 
+end

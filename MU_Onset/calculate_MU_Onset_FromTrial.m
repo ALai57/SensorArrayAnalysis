@@ -10,6 +10,8 @@ function MU_Onset = calculate_MU_Onset_FromTrial(trialData,options)
     EMG     = load_SensorArray_Data(trialData,options);
     MU_Onset = initialize_OutputArray(trialData,options);
      
+    X = calc_EMG(EMG.tbl,options);
+
     for i=1:size(trialData,1)
         
     
@@ -17,8 +19,11 @@ function MU_Onset = calculate_MU_Onset_FromTrial(trialData,options)
         
         Onset_Time{i,1}  = calculate_MU_OnsetTime(FT,options);
         Onset_Force{i,1} = calculate_MU_OnsetForce(Onset_Time{i},EMG.tbl,options);
+        Onset_EMG{i,1}   = find_MU_OnsetEMG(Onset_Time{i},X,trialData.ArrayLocation(i));
+        
        
         
+%         Onset_EMG{i,1}   = find_MU_OnsetEMG(Onset_Time{i},EMG.tbl,options);
 %         figure;
 %         F = calculate_ForceMagnitude_FromTable(EMG.tbl);
 %         plot(EMG.tbl.Time,F,'k'); hold on;
@@ -37,6 +42,13 @@ function MU_Onset = calculate_MU_Onset_FromTrial(trialData,options)
     
     MU_Onset.(options.Trial.OutputVariable{1}) = Onset_Time;
     MU_Onset.(options.Trial.OutputVariable{2}) = Onset_Force;
+    try
+        MU_Onset.(options.Trial.OutputVariable{3}) = Onset_EMG;
+    end
+%     figure; 
+%     plot(cell2mat(MU_Onset.MU_Onset_Force_N),...
+%          cell2mat(MU_Onset.MU_Onset_EMG),...
+%          'o')
 end
 
 function STA_Out = initialize_OutputArray(trialData,options)
@@ -83,7 +95,93 @@ function Onset_Force  = calculate_MU_OnsetForce(onset_Time,EMG,options)
     
 end
 
+function X = calc_EMG(EMG,options)
 
+    time = EMG.Time;
+    
+    dt = time(2)-time(1);
+    
+    fLen = options.MU_Onset.MAF.Length;
+    fLen = round(fLen/dt);
+    E = EMG{:,2:end};
+    
+    switch options.MU_Onset.EMGtype
+        case 'MAF'
+            coeff = ones(1, fLen)/fLen;
+            EMG{:,2:end} = filter(coeff, 1, EMG{:,2:end});
+        case 'RMS'
+            c=1;
+            while c<length(EMG.Time)/100
+                x=c*100;
+                if x<=fLen
+                    X(c,:) = [time(x) ,rms( E(1:x+fLen,:) )];
+                elseif length(EMG.Time)-x<fLen
+                    X(c,:) = [time(x) ,rms( E(x-fLen:end,:) )];
+                else
+                    X(c,:) = [time(x) ,rms( E(x-fLen:x+fLen,:) )];
+                end
+                c=c+1;
+            end
+            
+    end
+%     figure; plot(time,E(:,1:4)); hold on;
+%     plot(X(:,1),X(:,2:5));
+
+end
+
+
+function Onset_EMG  = find_MU_OnsetEMG(onset_Time,X,arr)
+
+    tmp  = abs(X(:,1)-onset_Time);
+    ind  = find(tmp == min(tmp));
+    
+    switch arr
+        case 'Medial'    
+            Onset_EMG = mean( X(ind(1),[2:5]) );
+        case 'Lateral'
+            Onset_EMG = mean( X(ind(1),[8:11]) );
+    end
+    
+end
+
+% function Onset_EMG  = calculate_MU_OnsetEMG(onset_Time,EMG,options)
+% 
+%     time = EMG.Time;
+%     
+%     dt = time(2)-time(1);
+%     
+%     fLen = options.MU_Onset.MAF.Length;
+%     fLen = round(fLen/dt);
+%     E = EMG{:,2:end};
+%     
+%     switch options.MU_Onset.EMGtype
+%         case 'MAF'
+%             coeff = ones(1, fLen)/fLen;
+%             EMG{:,2:end} = filter(coeff, 1, EMG{:,2:end});
+%         case 'RMS'
+%             c=1;
+%             while c<length(EMG.Time)/100
+%                 x=c*100;
+%                 if x<=fLen
+%                     X(c,:) = [time(x) ,rms( E(1:x+fLen,:) )];
+%                 elseif length(EMG.Time)-x<fLen
+%                     X(c,:) = [time(x) ,rms( E(x-fLen:end,:) )];
+%                 else
+%                     X(c,:) = [time(x) ,rms( E(x-fLen:x+fLen,:) )];
+%                 end
+%                 c=c+1;
+%             end
+%             
+%     end
+% %     figure; plot(time,E(:,1:4)); hold on;
+% %     plot(X(:,1),X(:,2:5));
+%     
+%     tmp  = abs(X(:,1)-onset_Time);
+%     ind  = find(tmp == min(tmp));
+%     
+%     Onset_EMG = X(ind,:);
+%     
+% end
 
 function Onset_Time  = calculate_MU_OnsetTime(FT,options)
 

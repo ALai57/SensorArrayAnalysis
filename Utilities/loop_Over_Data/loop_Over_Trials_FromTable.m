@@ -28,8 +28,10 @@ function [analysis_unwrap, ind_f] = loop_Over_Trials_FromTable(MU_Data,options)
     
     try
         if isequal(func2str(options.Trial.Function{1}), ...
-                   '@(trial_Data,options)calculate_ForceTrace_FromTrial(trial_Data,options)')
-                tmp = [];
+               '@(trial_Data,options)calculate_ForceTrace_FromTrial(trial_Data,options)') || ...
+           isequal(func2str(options.Trial.Function{1}), ...
+               '@(trial_Data,options)calculate_OnionSkin(trial_Data,options)')
+            tmp = [];
             for n=1:length(trials)
                 tmp = [tmp;analysis{n}];
             end    

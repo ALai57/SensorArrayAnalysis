@@ -49,7 +49,18 @@ function options = get_Options()
     
     options.ForceRange.Threshold                 = [0,30; 30,Inf];
     options.ForceRange.Names                     = {'Under_30N','Above_30N'};
+   
+    options.BaseDirectory                       = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data';
+    options.Analysis(1).Trial.Function          = {@(trial_Data,options)calculate_OnionSkin(trial_Data,options)};
+    options.Analysis(1).Trial.OutputVariable(1) = {'Rate'};
+    options.Analysis(1).Trial.OutputVariable(1) = {'RateTime'};
+    options.Analysis(1).Trial.OutputVariable(2) = {'Force'};
+    options.Analysis(1).Trial.OutputVariable(3) = {'ForceTime'};
     
+    options.Analysis(1).RateSmoothing = 'None';
+    options.Analysi(1).MAF.Size = 4;
+    
+    options.Analysis(1).ForceType = 'Magnitude';
 end
 
 

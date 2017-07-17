@@ -8,10 +8,10 @@
 %     % 3) Decomposition outputs were obtained from Delsys dEMG
 %     % 4) Decompositions were exported
     
-options.DecompInput.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID'}; 
+options.DecompInput.FileNameConvention  = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID'}; 
 options.DecompOutput.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID'}; 
 options.DecompExport.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'}; 
-options.SensorArray.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'}; 
+options.SensorArray.FileNameConvention  = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'}; 
 
 ID_Tag = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID'};
 options.DecompInput.FileID_Tag   = ID_Tag;
