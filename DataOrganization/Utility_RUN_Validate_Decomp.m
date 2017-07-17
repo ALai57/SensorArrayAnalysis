@@ -1,12 +1,38 @@
-
-%  % This script sets up a validation for Delsys dEMG decomp
-%  % The script checks that the decomposition was done correctly
-%  
-%  % The file checks that
-%     % 1) All trials were set up for decomposition
-%     % 2) The correct EMG channels were decomposed
-%     % 3) Decomposition outputs were obtained from Delsys dEMG
-%     % 4) Decompositions were exported
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Author: Andrew Lai
+%
+%   DESCRIPTION: 
+%   - Validates that:
+%      1) All trials were set up for decomposition
+%      2) The correct EMG channels were decomposed
+%      3) Decomposition outputs were obtained from Delsys dEMG
+%      4) Decompositions were exported
+%
+%   BEFORE RUNNING, SETUP:
+%   - Convert raw sensor array data (.csv format) into .mat files
+%   - ONLY RUN IF Fx and Fz were SWITCHED in experiment (by mistake)
+%
+%   INPUT: 
+%   - folder where all subject data reside
+%   - options including
+%       File naming conventions
+%       Sensor array number
+%    
+%   OUTPUT: 
+%   - decompValidation_tbl = table with results of decomp validation
+%
+%   TO EDIT:
+%   - Change target folders
+%   - Change naming convention if necessary
+%
+%   VARIABLES:
+%   - options
+%      .X.FileNameConvention = Naming convention, separated by underscores
+%      .X.FileID_Tag         = Unique identifier for each file
+%      .Array                = Sensor Array Information 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
 options.DecompInput.FileNameConvention  = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID'}; 
 options.DecompOutput.FileNameConvention = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID'}; 

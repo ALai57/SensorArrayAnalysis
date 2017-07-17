@@ -1,20 +1,26 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Author: Andrew Lai
+%
+%   DESCRIPTION: 
+%   - Converts .csv files with raw sensor array data into .mat files
+%   - .mat format saves memory
+%
+%   BEFORE RUNNING, SETUP:
+%   - Convert .hpf files to .csv using 'Delsys File Utility'
+%   - Place .csv files in a target folder  
+%   
+%   INPUT: 
+%   - Folder containing all the .csv files 
+%    
+%   OUTPUT: 
+%   - One .mat file per .csv file with all sensor array EMG and force data
+%
+%   TO EDIT:
+%   - Change target folders
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Convert .csv files into .mat files
-    % Run this after converting .hpf files to .csv files using the Delsys File Utility
-    % First, place the .csv files in a folder called 'array'
-    % Then run this code to convert into .mat format (which also saves memory)
-    % If desired, delete the CSV files, since they are easily recoverable and take up a lot of memory
-    
-    
-% INPUT = folder containing all the .csv files 
-    
-% OUTPUT = One .mat file per .csv file
-    % Each .mat file has a single table, called tbl
-    % The table has a column for raw data:
-        % 4 channels per sensor array sensor
-        % Channels for Force traces
-    
-    
 baseDirectory = 'C:\Users\Andrew\Box Sync\BicepsSensorArray';
 
 %Control

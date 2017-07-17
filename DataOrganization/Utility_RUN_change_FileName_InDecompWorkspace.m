@@ -1,4 +1,26 @@
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Author: Andrew Lai
+%
+%   DESCRIPTION: 
+%   - Changes file names in the decomposition workspace
+%
+%   BEFORE RUNNING, SETUP:
+%   - 
+%   - ONLY RUN IF file names were INCORRECT in experiment (by mistake)
+%
+%   INPUT: 
+%   - directory to switch file names in
+%   - Name of old string and new string to switch
+%    
+%   OUTPUT: 
+%   - Decomposition workspace with names switched
+%
+%   TO EDIT:
+%   - Change target folders
+%   - Change new string name and old string name
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% OLD control subjects
 

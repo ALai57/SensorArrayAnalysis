@@ -1,3 +1,33 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Author: Andrew Lai
+%
+%   DESCRIPTION: 
+%   - Initialize folder with subject-specific information
+%
+%   BEFORE RUNNING, SETUP:
+%   - No prerequisites
+%   
+%   INPUT: 
+%   - subject directory where all subject data reside
+%   - options including
+%       File naming conventions
+%    
+%   OUTPUT: 
+%   - trialInformation file containing:
+%       Subject MVC
+%       Subject beginning of ramp time
+%       Subject plateau time
+%
+%   TO EDIT:
+%   - Change "create empty file information" function to add desired fields
+%
+%   VARIABLES:
+%   - options
+%      .X.FileNameConvention = Naming convention, separated by underscores
+%      .X.FileID_Tag         = Unique identifier for each file
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 function out=initialSetup_FileInformationFolder(subj_Dir, options)

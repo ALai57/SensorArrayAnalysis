@@ -1,7 +1,34 @@
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Author: Andrew Lai
 %
+%   DESCRIPTION: 
+%   - Perform analysis, looping over all subjects with a specific attribute
+%
+%   BEFORE RUNNING, SETUP:
+%   - No prerequisites
+%   
+%   INPUT: 
+%   - dataDirs = directory where all subject data resides
+%   - options including
+%       File naming conventions
+%       Analysis to be performed on each subject (as a function handle)
+%    
+%   OUTPUT: 
+%   - analysis data structure, each cell contains results from one subject
+%
+%   TO EDIT:
+%   - Change naming conventions if necessary
+%   - Change function that subject subfolders 'get_subfolders'
+%
+%   VARIABLES:
+%   - options
+%      .X.FileNameConvention = Naming convention, separated by underscores
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%%% Example - build data table, looping over only control subjects
+%
 % dataDirs(1)  =  {'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control'};
 % 
 % options.SensorArray.FileNameConvention         = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'}; 
@@ -24,14 +51,18 @@ function analysis = loop_Over_SubjectType(dataDirs,options)
         
         SIDs = get_subFolders(dataDirs{status});
 
-        for subj=[1,9]%:length(SIDs) %Loop through each subject
+        for subj=1:length(SIDs) %Loop through each subject
 
             SID            = SIDs{subj};
-            subj_Dir       = [dataDirs{status} '\' SID];
+            
+            %%%%% EDIT THIS IF FOLDER STRUCTURE CHANGES %%%%%%%
+            subj_Dir       = [dataDirs{status} '\' SID]; 
            
             tic;
             for a=1:length(options.Subject_Analyses)
-                analysis{a} = [analysis{a}; options.Subject_Analyses{a}(subj_Dir,options)];
+                analysis{a} = [analysis{a}; ...
+                               options.Subject_Analyses{a}(subj_Dir,options)...
+                              ];
             end     
             elapsed = toc;
             fprintf('Subject: %-5s  | Elapsed time: %-8.2f secs\n',SID,elapsed); 
@@ -41,15 +72,15 @@ function analysis = loop_Over_SubjectType(dataDirs,options)
 
 end
 
-function subFolders = get_subFolders(dataDirs)
-    contents = dir(dataDirs);
+function subFolders = get_subFolders(dataDirs) 
+    fContents   = dir(dataDirs);
     
-    dirFlag        = false(length(contents),1);
+    dirFlag    = false(length(fContents),1);
     subFolders = {};
-    for n=3:length(contents)
-       if isdir([contents(n).folder '\' contents(n).name])
+    for n=3:length(fContents) % First two folders are '.' and '..'
+       if isdir([fContents(n).folder '\' fContents(n).name])
            dirFlag(n) = true;
-           subFolders(end+1,1) = {contents(n).name};
+           subFolders(end+1,1) = {fContents(n).name};
        end
     end
     
