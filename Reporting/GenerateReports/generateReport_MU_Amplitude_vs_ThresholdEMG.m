@@ -7,8 +7,8 @@ function generateReport_MU_Amplitude_vs_ThresholdEMG()
     
     MU_Data = threshold_MUs(options);
     
-    MU_Data = append_AgeCategory(MU_Data,options);
-    MU_Data = append_ForceCategory(MU_Data,options);
+    MU_Data = append_AgeCategory(MU_Data,options);   % Adds categorical variable to data table: Elderly or Young
+    MU_Data = append_ForceCategory(MU_Data,options); % Adds categorical variable to data table: Under 30 N, Over 30 N
 
     [serverHandle, selection] = open_ConnectionToWord();
     print_ReportDescription(selection);
@@ -83,6 +83,7 @@ function options = get_Options()
     options.Analysis(1).MU_Onset.SteadyFiring.MaxInterval = 0.2;
     options.Analysis(1).MU_Onset.ForcePrior               = 0.05;
     options.Analysis(1).MU_Onset.ForcePost                = 0.15;
+    options.Analysis(1).MU_Onset.EMG_DataType             = 'SingleDifferential';  
     options.Analysis(1).MU_Onset.EMGtype                  = 'RMS';
     options.Analysis(1).MU_Onset.MAF.Length               = 0.15; 
    

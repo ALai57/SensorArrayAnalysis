@@ -1,32 +1,80 @@
-
-% % This function validates that the decomposition was done correctly
-%  
-%  % The file checks that
-%     % 1) All trials were set up for decomposition
-%     % 2) The correct EMG channels were decomposed
-%     % 3) Decomposition outputs were obtained from Delsys dEMG
-%     % 4) Decompositions were exported
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Author: Andrew Lai
+%
+%   DESCRIPTION: 
+%   - This function validates that the decomposition was done correctly by
+%     checking if:
+%       1) All trials were set up for decomposition
+%       2) The correct EMG channels were decomposed
+%       3) Decomposition outputs were obtained from Delsys dEMG
+%       4) Decompositions were exported
+%
+%   BEFORE RUNNING, SETUP:
+%   - Configure using "Utility_RUN_Validate_Decomp.m"
+%   
+%   INPUT: 
+%   - options including
+%       File naming conventions 
+%       Sensor array location information
+%   - masterFolder = the directory (usu subj folder) that has subfolders for
+%        array
+%        decomp
+%        hpf
+%        singlediff
+%        smr
+%        trial_information
+%    
+%   OUTPUT: 
+%   - Appends extra 'Array' struct to each SensorArray.mat file
+%          Array struct contains: 
+%           MUFiringTimes 
+%           MUAPs
+%           Array info
+%
+%   TO EDIT:
+%   - N/A
+%
+%   VARIABLES:
+%   - options
+%      .DecompInput
+%      .DecompOutput
+%      .DecompExport
+%      .SensorArray
+%         Each with
+%          .FileNameConvention = the naming convention used for each file type
+%          .FileID_Tag = the way to identify files that come from the same trial
+%
+%      .Array = Information about the sensor arrays used in the experiment
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     
-function decompValidation = validate_Decomp(subjDir,options)
+function decompValidation = validate_Decomp(masterFolder,options)
         
-    decompInput_tbl = get_DecompInputs_FromSubjectFolder(subjDir,options.DecompInput);
-    decompInput_tbl = append_FileID_Tag(decompInput_tbl,options.DecompInput);
+    decompInput = get_DecompInputs_FromSubjectFolder(masterFolder,options.DecompInput);
+    decompInput = append_FileID_Tag(decompInput,options.DecompInput);
     
-    decompOutput_tbl = get_DecompOutputs_FromSubjectFolder(subjDir,options);
-    decompOutput_tbl = append_FileID_Tag(decompOutput_tbl,options.DecompOutput);
+    decompOutput = get_DecompOutputs_FromMasterFolder(masterFolder,options);
+    decompOutput = append_FileID_Tag(decompOutput,options.DecompOutput);
  
-    decompExport_tbl = get_DecompExports_FromSubjectFolder(subjDir,options);
-    decompExport_tbl = append_FileID_Tag(decompExport_tbl,options.DecompExport);
+    decompExport = get_DecompExports_FromMasterFolder(masterFolder,options);
+    decompExport = append_FileID_Tag(decompExport,options.DecompExport);
     
-    sensorArray_tbl = get_SensorArrayFileInfo_FromSubjectFolder(subjDir,options);
-    sensorArray_tbl = append_FileID_Tag(sensorArray_tbl,options.SensorArray);
+    sensorArray = get_SensorArrayFileInfo_FromMasterFolder(masterFolder,options);
+    sensorArray = append_FileID_Tag(sensorArray,options.SensorArray);
     
-    matchInput  = assemble_ValidationTable(sensorArray_tbl,decompInput_tbl ,'NoDecompInput' ,'DecompInputChannels','DecompChannels',options);    
-    matchOutput = assemble_ValidationTable(sensorArray_tbl,decompOutput_tbl,'NoDecompOutput','DecompOutputFiles'  ,'OutputFiles'   ,options); 
-    matchExport = assemble_ValidationTable(sensorArray_tbl,decompExport_tbl,'NoDecompExport','DecompExportFiles'  ,'ExportFiles'   ,options); 
+    matchInput  = assemble_ValidationTable(sensorArray,decompInput ,'NoDecompInput' ,'DecompInputChannels','DecompChannels',options);    
+    matchOutput = assemble_ValidationTable(sensorArray,decompOutput,'NoDecompOutput','DecompOutputFiles'  ,'OutputFiles'   ,options); 
+    matchExport = assemble_ValidationTable(sensorArray,decompExport,'NoDecompExport','DecompExportFiles'  ,'ExportFiles'   ,options); 
     
-    decompValidation = [matchInput(:,1), matchInput(:,2), matchOutput(:,2), matchExport(:,2), matchInput(:,3), matchOutput(:,3), matchExport(:,3)];
+    decompValidation = [matchInput(:,1),...
+                        matchInput(:,2),...
+                        matchOutput(:,2),...
+                        matchExport(:,2),...
+                        matchInput(:,3),...
+                        matchOutput(:,3),...
+                        matchExport(:,3)];
 end
 
 

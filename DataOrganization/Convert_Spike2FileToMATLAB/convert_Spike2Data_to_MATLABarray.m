@@ -1,3 +1,34 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Author: Andrew Lai
+%
+%   DESCRIPTION: 
+%   - Converts long .mat file composed of structs into segmented .mat file,
+%     outputs a table form, instead of multiple structs
+%
+%   BEFORE RUNNING, SETUP:
+%   - Convert raw data in .smr format to .mat format using Spike2 script:
+%       Spike2 script name = 'Convert_Spike2_To_MAT.s2s'
+%   - Configure and run using "Step2_RUN_Segment_SMRMAT_To_MATLAB_Tables"   
+%
+%   INPUT: 
+%   - spikeFile = The .mat file to be segmented
+%   - options   =  information on how to name the segments, trial time, etc
+%    
+%   OUTPUT: 
+%   - One .mat file per segment containing:
+%       (1) tbl (a table that has channel values and timestamps)
+%
+%   TO EDIT:
+%   - N/A
+%
+%   VARIABLES:
+%   - options
+%       .Segmentation
+%         .Channels       = The names of the Spike2 Channels I want to keep
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function data = convert_Spike2Data_to_MATLABarray(spikeFile,options)
 

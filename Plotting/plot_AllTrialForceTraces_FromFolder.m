@@ -10,7 +10,7 @@ function fName = plot_AllTrialForceTraces_FromFolder(directoryName,options)
         directoryName = uigetdir('Q:\Andrew\DelsysArray - Copy\Data','Choose folder to plot from');
     end
     
-    tbl_MATFile = extract_FileInformation_FromFolder(directoryName,'.mat',options);
+    tbl_MATFile = extract_FileInformation_FromFolder(directoryName,'.mat',options.Trial);
     
 %     matFiles    = get_AllFilesWithExtension(directoryName,'.mat');
 %     tbl_MATFile = table(matFiles,'VariableNames',{'Files'});

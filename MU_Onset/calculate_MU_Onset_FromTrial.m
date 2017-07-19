@@ -7,36 +7,64 @@
 %%%%%%%%% CONSOLIDATE INTO ONE FUNCTION
 function MU_Onset = calculate_MU_Onset_FromTrial(trialData,options)
 
-    EMG     = load_SensorArray_Data(trialData,options);
+    try
+        EMG_DataType = options.MU_Onset.EMG_DataType;
+        calcEMGFlag = 1;
+    catch
+        EMG_DataType = 'SensorArray';
+        calcEMGFlag = 0;
+    end
+    
+    if strcmp(EMG_DataType, 'SensorArray')
+        EMG = load_SensorArray_Data(trialData,options);
+    elseif strcmp(EMG_DataType,'SingleDifferential')
+        EMG = load_SingleDifferential_Data(trialData,options);
+    end
     MU_Onset = initialize_OutputArray(trialData,options);
      
-    X = calc_EMG(EMG.tbl,options);
-
+    if calcEMGFlag
+        X = calc_EMG(EMG.tbl,options);
+    end
+    
     for i=1:size(trialData,1)
         
     
         FT = trialData.FiringTimes{i};
         
         Onset_Time{i,1}  = calculate_MU_OnsetTime(FT,options);
-        Onset_Force{i,1} = calculate_MU_OnsetForce(Onset_Time{i},EMG.tbl,options);
-        Onset_EMG{i,1}   = find_MU_OnsetEMG(Onset_Time{i},X,trialData.ArrayLocation(i));
-        
+        Onset_Force{i,1} = calculate_MU_OnsetForce(Onset_Time{i},...
+                                                   EMG.tbl,...
+                                                   options);
+       if calcEMGFlag
+        Onset_EMG{i,1}   = find_MU_OnsetEMG(Onset_Time{i},...
+                                            X,...
+                                            trialData.ArrayLocation(i),...
+                                            EMG_DataType);
+       end
        
         
-%         Onset_EMG{i,1}   = find_MU_OnsetEMG(Onset_Time{i},EMG.tbl,options);
+
 %         figure;
+%         subplot(2,1,1)
 %         F = calculate_ForceMagnitude_FromTable(EMG.tbl);
 %         plot(EMG.tbl.Time,F,'k'); hold on;
 %         if ~isempty(FT)
 %             stem(FT,0.8*max(F)*ones(length(FT),1),'marker','none');
 %             xL = get(gca,'XLim');
 %             yL = get(gca,'YLim');
-%             plot([Onset_Time(i) Onset_Time(i)],[yL(1) yL(2)],'r','linewidth',2)
-%             plot([xL(1) xL(2)],[Onset_Force(i) Onset_Force(i)],'r','linewidth',2)
+%             plot([Onset_Time{i} Onset_Time{i}],[yL(1) yL(2)],'r','linewidth',2)
+%             plot([xL(1) xL(2)],[Onset_Force{i} Onset_Force{i}],'r','linewidth',2)
 %         end
 %         xlabel('Time')
 %         ylabel('Force')
 %         title('Calculated onset time and force')
+% 
+%         subplot(2,1,2)
+%         plot(EMG.tbl.Time,EMG.tbl.BICM,'b'); hold on;
+%         plot(X(:,1),X(:,2),'k');
+%         xlabel('Time')
+%         ylabel('EMG')
+%         title('Calculated onset time and EMG')
         
     end
     
@@ -66,6 +94,12 @@ end
 function EMG = load_SensorArray_Data(trial,options)
     SID      = char(trial.SID(1));
     fullFile = [options.BaseDirectory '\' SID '\array\' char(trial.SensorArrayFile(1))];
+    EMG = load(fullFile,'tbl');
+end
+
+function EMG = load_SingleDifferential_Data(trial,options)
+    SID      = char(trial.SID(1));
+    fullFile = [options.BaseDirectory '\' SID '\singlediff\' char(trial.SingleDifferentialFile(1))];
     EMG = load(fullFile,'tbl');
 end
 
@@ -130,18 +164,21 @@ function X = calc_EMG(EMG,options)
 end
 
 
-function Onset_EMG  = find_MU_OnsetEMG(onset_Time,X,arr)
+function Onset_EMG  = find_MU_OnsetEMG(onset_Time,X,arr,EMG_DataType)
 
     tmp  = abs(X(:,1)-onset_Time);
     ind  = find(tmp == min(tmp));
     
-    switch arr
-        case 'Medial'    
-            Onset_EMG = mean( X(ind(1),[2:5]) );
-        case 'Lateral'
-            Onset_EMG = mean( X(ind(1),[8:11]) );
+    if strcmp(EMG_DataType,'SensorArray')
+        switch arr
+            case 'Medial'    
+                Onset_EMG = mean( X(ind(1),[2:5]) );
+            case 'Lateral'
+                Onset_EMG = mean( X(ind(1),[8:11]) );
+        end
+    elseif strcmp(EMG_DataType,'SingleDifferential')
+        Onset_EMG = X(ind(1),[2]);
     end
-    
 end
 
 % function Onset_EMG  = calculate_MU_OnsetEMG(onset_Time,EMG,options)

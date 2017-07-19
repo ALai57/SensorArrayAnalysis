@@ -1,4 +1,26 @@
- 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Author: Andrew Lai
+%
+%   DESCRIPTION: 
+%   - Converts .csv files with raw sensor array data into .mat files
+%   - .mat format saves memory
+%
+%   BEFORE RUNNING, SETUP:
+%   - Convert .hpf files to .csv using 'Delsys File Utility'
+%   - Place .csv files in a target folder  
+%   - Configure and run with "Step1_RUN_Convert_CSVfiles_To_MATLAB_Tables"
+%   
+%   INPUT: 
+%   - directoryName = Folder containing all the .csv files 
+%    
+%   OUTPUT: 
+%   - One .mat file per .csv file with all sensor array EMG and force data
+%
+%   TO EDIT:
+%   - Change target folders
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 function convert_CSVfolder_to_MATLAB_Tables(directoryName)

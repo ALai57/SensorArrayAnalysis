@@ -23,6 +23,7 @@ function print_Subject_MU_MeanFiringRate_vs_ThresholdForce(selection,subjData,op
     options.Plot = get_Plot_Options_AbsoluteUnits();
     create_Figure_FromTable(subjData, options)
     SID = subjData.SID(1);
+    set(gcf,'position',[125         195        1122         420])
     
     %Finish
     print_FigureToWord(selection,['Subject = ' SID char(13)],'WithMeta')
@@ -33,10 +34,11 @@ end
 
 function PlotOptions = get_Plot_Options_AbsoluteUnits()
 
-    PlotOptions.SubplotBy       = {'ArmType'}; 
-    PlotOptions.GroupBy         = {'TargetForce'};
-    PlotOptions.ColorBy         = {'TargetForce'};
-    PlotOptions.Colors          = [];
+    PlotOptions.SubplotBy       = {'TargetForce'}; 
+    PlotOptions.GroupBy         = {'ArmType'};
+    PlotOptions.ColorBy         = {'ArmType'};
+    PlotOptions.Colors          = [1,0,0;...
+                                   0,0,1];
     PlotOptions.AdditionalPlots = [];
     PlotOptions.LegendLocation  = [0.1450    0.7492    0.2661    0.1690];
     PlotOptions.LineWidth       = 2;
@@ -53,28 +55,6 @@ function PlotOptions = get_Plot_Options_AbsoluteUnits()
     PlotOptions.TitleSize       = 16; 
 end
 
-
-function PlotOptions = get_Plot_Options_PctMVC()
-
-    PlotOptions.SubplotBy       = {'ArmType'}; 
-    PlotOptions.GroupBy         = {'ArrayNumber'};
-    PlotOptions.ColorBy         = {'TargetForce'};
-    PlotOptions.Colors          = [];
-    PlotOptions.AdditionalPlots = [];
-    PlotOptions.LegendLocation  = [0.1450    0.7492    0.2661    0.1690];
-    PlotOptions.LineWidth       = 2;
-    PlotOptions.LineStyle       = 'none';
-    PlotOptions.Marker          = 'o';
-    PlotOptions.FontSize        = 12;
-    PlotOptions.XVar            = {'TargetForce_MVC'};
-    PlotOptions.XLabel          = 'TargetForce (%MVC)';
-    PlotOptions.XLim            = [0 100];
-    PlotOptions.YVar            = {'nMU'};
-    PlotOptions.YLabel          = 'Number of Motor Units';
-    PlotOptions.YLim            = [0 60];
-    PlotOptions.Title           = @(inputdata,options)[char(inputdata.SID(1)) ': ' char(inputdata.(options.Plot.SubplotBy{1})(1))] ;  
-    PlotOptions.TitleSize       = 16; 
-end
 
 
 

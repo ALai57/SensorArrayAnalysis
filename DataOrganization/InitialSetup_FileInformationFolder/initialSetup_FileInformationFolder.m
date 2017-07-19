@@ -59,8 +59,8 @@ end
 function [MVC,forceMatching_Info] = create_Empty_FileInformation(subj_Dir,options)
 
     array_Dir = [subj_Dir '\array'];
-    options.Trial   = options.SensorArray;
-    arrayFiles      = extract_FileInformation_FromFolder(array_Dir,'.mat',options);
+%     options.Trial   = options.SensorArray;
+    arrayFiles      = extract_FileInformation_FromFolder(array_Dir,'.mat',options.SensorArray);
     
     sides = unique(arrayFiles.ArmType);
     
