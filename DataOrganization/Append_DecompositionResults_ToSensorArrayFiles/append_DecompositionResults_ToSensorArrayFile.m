@@ -14,7 +14,7 @@
 %   - options including
 %       File naming conventions
 %       Sensor array location information
-%   - masterFolder = the directory (usu subj folder) that has subfolders for
+%   - subjectFolder = the directory that has subfolders for
 %        array
 %        decomp
 %        hpf
@@ -40,20 +40,20 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function append_DecompositionResults_ToSensorArrayFile(masterFolder,options)
+function append_DecompositionResults_ToSensorArrayFile(subjectFolder,options)
     
-    fid = open_LogFile([masterFolder '\array']);
+    fid = open_LogFile([subjectFolder '\array']);
     
-    tbl_SensorArray    = get_SensorArrayFileInfo_FromMasterFolder(masterFolder,options);
+    tbl_SensorArray    = get_SensorArrayFileInfo_FromMasterFolder(subjectFolder,options);
     tbl_SensorArray    = append_FileID_Tag(tbl_SensorArray,options);
     
-    tbl_DecompExports  = get_DecompExports_FromMasterFolder(masterFolder,options); 
+    tbl_DecompExports  = get_DecompExports_FromMasterFolder(subjectFolder,options); 
     tbl_DecompExports  = append_FileID_Tag(tbl_DecompExports,options);
     
-    tbl_DecompOutputs  = get_DecompOutputs_FromMasterFolder(masterFolder,options); 
+    tbl_DecompOutputs  = get_DecompOutputs_FromMasterFolder(subjectFolder,options); 
     tbl_DecompOutputs  = append_FileID_Tag(tbl_DecompOutputs,options);
     
-    tbl_DecompValidation = validate_Decomp(masterFolder,options);
+    tbl_DecompValidation = validate_Decomp(subjectFolder,options);
     
     if ~isequal(tbl_DecompValidation.SensorArray_FileID_Tag,tbl_SensorArray.FileID_Tag)
         error('Decompositions not valid - Sensor Array File IDs not the same as validation File IDs')    
@@ -64,30 +64,21 @@ function append_DecompositionResults_ToSensorArrayFile(masterFolder,options)
     
     for i=1:size(tbl_SensorArray,1)
         
-        fName_Array = [masterFolder '\array\' tbl_SensorArray.Files{i}];
+        fName_Array = [subjectFolder '\array\' tbl_SensorArray.Files{i}];
         targetFile  = tbl_SensorArray.FileID_Tag(i);
         
         ind  = find_MatchingFiles(tbl_DecompExports.FileID_Tag,...
                                   targetFile);
         ind2 = find_MatchingFiles(tbl_DecompValidation.SensorArray_FileID_Tag,...
                                   targetFile);
-%         ind = tbl_DecompExports.FileID_Tag == tbl_SensorArray.FileID_Tag(i);
-%         ind = find(ind);
-%         
-%         ind2 = tbl_DecompValidation.SensorArray_FileID_Tag == tbl_SensorArray.FileID_Tag(i);
-%         if isempty(ind) 
-%             Array = create_DefaultArray(tbl_DecompValidation(ind2,:),options);
-%             fprintf(fid,'No decomposition files found for %s. Saving empty file.\n',fName_Array);     
-%         else
-%             Array = get_DecompositionInfo(tbl_DecompExports(ind,:),tbl_DecompValidation(ind2,:),dataFolder,options);
-%         end
+                              
         if isempty(find(ind)) 
             Array = create_EmptyArray(tbl_DecompValidation(ind2,:),options);
             fprintf(fid,'No decomposition files found for %s. Saving empty file.\n',fName_Array);     
         else
             Array = get_DecompositionInfo(tbl_DecompExports(ind,:),...
                                           tbl_DecompValidation(ind2,:),...
-                                          masterFolder,...
+                                          subjectFolder,...
                                           options);
         end
 
@@ -99,7 +90,7 @@ function append_DecompositionResults_ToSensorArrayFile(masterFolder,options)
         
     end
     fclose(fid);
-    fprintf('Subject folder complete: %s.\n',masterFolder);
+    fprintf('Subject folder complete: %s.\n',subjectFolder);
 end
 
 

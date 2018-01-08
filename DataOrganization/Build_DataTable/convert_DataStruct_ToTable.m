@@ -23,12 +23,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-function dataTable = convert_Build_2Array_DataTable_StructToTable(analysis)
+function dataTable = convert_DataStruct_ToTable(dataStruct)
     
     dataTable = [];
-    for i=1:length(analysis)
-       for j=1:length(analysis{i})
-           dataTable = [dataTable;analysis{i}{j}];
+    for i=1:length(dataStruct)
+       for j=1:length(dataStruct{i})
+           dataTable = [dataTable;dataStruct{i}{j}];
        end
     end
 

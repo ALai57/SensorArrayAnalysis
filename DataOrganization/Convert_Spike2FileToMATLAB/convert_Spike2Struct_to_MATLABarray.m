@@ -30,15 +30,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function data = convert_Spike2Data_to_MATLABarray(spikeFile,options)
+function data = convert_Spike2Struct_to_MATLABarray(spikeFile,options)
 
     spike2Channels  = options.Segmentation.Channels;
 
-    N  = get_ChannelDataLength(spikeFile,spike2Channels);
-    dt = spikeFile.(spike2Channels{1}).interval;
+    N  = get_Channel_DataLength(spikeFile,spike2Channels);
+    dt = get_Channel_dt(spikeFile,spike2Channels);
     
-    time = ((1:N)*dt)';
-    data = time;
+    time_vec = ((1:N)*dt)';
+    data     = time_vec;
     
     for n=1:length(spike2Channels)
         data(:,n+1) = spikeFile.(spike2Channels{n}).values(1:N);
@@ -46,7 +46,11 @@ function data = convert_Spike2Data_to_MATLABarray(spikeFile,options)
     
 end    
 
-function N = get_ChannelDataLength(spikeFile,spike2Channels)
+function dt = get_Channel_dt(spikeFile,spike2Channels)
+    dt = spikeFile.(spike2Channels{1}).interval;
+end
+
+function N = get_Channel_DataLength(spikeFile,spike2Channels)
     for i=1:length(spike2Channels)
         L(1,i) = length(spikeFile.(spike2Channels{i}).values);
     end

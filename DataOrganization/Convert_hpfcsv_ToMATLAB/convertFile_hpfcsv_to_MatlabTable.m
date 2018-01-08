@@ -3,7 +3,7 @@
 %   Author: Andrew Lai
 %
 %   DESCRIPTION: 
-%   - Converts .csv files with raw sensor array data into .mat files
+%   - Converts a single .csv file with raw sensor array data into .mat file
 %   - .mat format saves memory
 %
 %   BEFORE RUNNING, SETUP:
@@ -12,53 +12,21 @@
 %   - Configure and run with "Step1_RUN_Convert_CSVfiles_To_MATLAB_Tables"
 %   
 %   INPUT: 
-%   - directoryName = Folder containing all the .csv files 
+%   - directoryName = Folder containing the .csv file
+%   - fName = Name for the old hpf.csv file
+%   - sName = Name to save the newly converted file under
 %    
 %   OUTPUT: 
-%   - One .mat file per .csv file with all sensor array EMG and force data
+%   - One .mat file with all sensor array EMG and force data
 %
 %   TO EDIT:
-%   - Change target folders
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-function convert_CSVfolder_to_MATLAB_Tables(directoryName)
-
-    if ~exist(directoryName)
-        directoryName = uigetdir('Q:\Andrew\DelsysArray - Copy\Data','Choose folder of CSV files to convert');
-    end
+function convertFile_hpfcsv_to_MatlabTable(directoryName,fName,sName)
     
-    display('Converting .csv files to .mat tables');
-    
-    csvFiles = get_AllFilesWithExtension(directoryName,'.csv');
-    fid      = create_Log(directoryName,length(csvFiles));
-    
-    for n=1:length(csvFiles)
-        fName = [csvFiles{n}];
-        sName = strrep(csvFiles{n},'.hpf','');
-        sName = strrep(sName,'.csv','_SensorArray.mat');
-        
-        convert_CSVfile_to_MATLAB_Table(directoryName,fName, sName)
-        fprintf(fid, '%-50s  -->   to  -->   %-50s\n',fName, sName);
-        fprintf('Converted %d/%d. New file name = %s\n', n,length(csvFiles),sName);
-    end
-    
-    fclose(fid);
-    fprintf('Conversion complete\n')
-end
-
-
-
-function fid = create_Log(directoryName,nFiles)
-    fid = fopen([directoryName '\CSV_to_MATLABTable_ConversionLog.txt'],'wt');
-    fprintf(fid, 'File conversion log\n%s \n\n\n',datestr(now));
-    fprintf(fid, 'Base folder = %s \n',directoryName);
-    fprintf(fid, '%d ''.csv'' files found \n',nFiles);
-end
-
-function convert_CSVfile_to_MATLAB_Table(directoryName,fName,sName)
-    
+    %Conversion for load cell
     Newtons_Per_Volt = 66*2;
 
     fName = [directoryName '\' fName];
