@@ -28,23 +28,20 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%% CHANGE OPTIONS.TRIAL to OPTIONS
-
-function fileInfo = extract_FileInformation_FromFolder(directoryName,ext,options)
+function files = parse_FileNames_In_Folder(directoryName,ext,options)
     [matFiles,datenum] = get_AllFilesWithExtension(directoryName,ext);
     
-    fileInfo = table(matFiles,datenum,'VariableNames',{'Files','Datenum'});
-%     fileInfo = parse_FileNameTable(fileInfo,options.Trial);
-    fileInfo = parse_FileNameTable(fileInfo,options);
-    fileInfo = append_FullFileName_ToTable(fileInfo,directoryName);
+    files = table(matFiles,datenum,'VariableNames',{'Files','Datenum'});
+    files = parse_FileName_Table(files,options); %Old version: options.Trial
+    files = append_FullFilePath(files,directoryName);
 end
 
-function fileTable  = append_FullFileName_ToTable(fileTable,directoryName)
-    nFiles = size(fileTable,1);
+function files  = append_FullFilePath(files,directoryName)
+    nFiles = size(files,1);
     
     for n=1:nFiles
-        fullFileName{n,1} = [directoryName '\' fileTable.Files{n}];
+        fullFileName{n,1} = [directoryName '\' files.Files{n}];
     end
     
-    fileTable.FullFile = fullFileName;
+    files.FullFile = fullFileName;
 end

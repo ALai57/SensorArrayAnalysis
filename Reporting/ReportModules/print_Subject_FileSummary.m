@@ -34,8 +34,8 @@ function tbl = get_TrialsSummary(fileArray,options)
     reportingVar = []; groupingVar = [];
     allFields = options.Trial.FileNameConvention;
     for n=1:length(fileArray)
-        reportingVar{n,1} = extract_Information_FromFileName(fileArray{n},allFields,reportStat);
-        groupingVar{n,1}  = extract_Information_FromFileName(fileArray{n},allFields,reportBy);
+        reportingVar{n,1} = parse_FileName(fileArray{n},allFields,reportStat);
+        groupingVar{n,1}  = parse_FileName(fileArray{n},allFields,reportBy);
     end
     
 

@@ -42,7 +42,7 @@ function DO_FileInfo = get_DecompOutputs_FromMasterFolder(masterFolder,options)
     decompWorkspace  = get_SubjectDecompWorkspace(masterFolder);
     
     DO_FileInfo = get_Basic_DecompOutputInfo(decompWorkspace);
-    DO_FileInfo = parse_FileNameTable(DO_FileInfo,options.DecompOutput);
+    DO_FileInfo = parse_FileName_Table(DO_FileInfo,options.DecompOutput);
     DO_FileInfo = split_Decomp_RepID(DO_FileInfo);
 %     decompOutput_tbl = append_DecompLabels(decompOutput_tbl);
 %     decompOutput_tbl = append_DecompChannels(decompOutput_tbl,decompWorkspace);

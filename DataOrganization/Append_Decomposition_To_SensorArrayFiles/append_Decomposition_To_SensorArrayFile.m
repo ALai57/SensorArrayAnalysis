@@ -40,10 +40,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function append_DecompositionResults_ToSensorArrayFile(subjectFolder,options)
+function append_Decomposition_To_SensorArrayFile(subjectFolder,options)
     
     fid = open_LogFile([subjectFolder '\array']);
     
+    %Parse files and append File ID tag to identify them
     tbl_SensorArray    = get_SensorArrayFileInfo_FromMasterFolder(subjectFolder,options);
     tbl_SensorArray    = append_FileID_Tag(tbl_SensorArray,options);
     
@@ -53,15 +54,18 @@ function append_DecompositionResults_ToSensorArrayFile(subjectFolder,options)
     tbl_DecompOutputs  = get_DecompOutputs_FromMasterFolder(subjectFolder,options); 
     tbl_DecompOutputs  = append_FileID_Tag(tbl_DecompOutputs,options);
     
-    tbl_DecompValidation = validate_Decomp(subjectFolder,options);
+    tbl_DecompValidation = create_DecompValidationTable(subjectFolder,options);
     
-    if ~isequal(tbl_DecompValidation.SensorArray_FileID_Tag,tbl_SensorArray.FileID_Tag)
+    %Check that Sensor Array ID tags match Decomp ID Tags
+    if ~isequal(tbl_DecompValidation.SensorArray_FileID_Tag, tbl_SensorArray.FileID_Tag)
         error('Decompositions not valid - Sensor Array File IDs not the same as validation File IDs')    
     end
         
     fprintf(fid,'%d Sensor Array files found.\n',size(tbl_SensorArray,1));
     fprintf(fid,'%d Decomposition files found.\n\n\n',size(tbl_DecompExports,1));
     
+    %Iterate over each File ID in the sensor array table
+    %Load decomp results and append to existing Sensor Array File
     for i=1:size(tbl_SensorArray,1)
         
         fName_Array = [subjectFolder '\array\' tbl_SensorArray.Files{i}];
@@ -71,20 +75,20 @@ function append_DecompositionResults_ToSensorArrayFile(subjectFolder,options)
                                   targetFile);
         ind2 = find_MatchingFiles(tbl_DecompValidation.SensorArray_FileID_Tag,...
                                   targetFile);
-                              
+        
+        %Did this file decompose? If yes, append to Sensor array file. If no, append empty result structure.                      
         if isempty(find(ind)) 
             Array = create_EmptyArray(tbl_DecompValidation(ind2,:),options);
             fprintf(fid,'No decomposition files found for %s. Saving empty file.\n',fName_Array);     
         else
-            Array = get_DecompositionInfo(tbl_DecompExports(ind,:),...
+            Array = fetch_DecompositionResult(tbl_DecompExports(ind,:),...
                                           tbl_DecompValidation(ind2,:),...
                                           subjectFolder,...
                                           options);
         end
 
-        %Resave
-%         save(fName_Array,'Array','-append');
-        load(fName_Array,'tbl');
+        %Append result
+        load(fName_Array,'tbl'); % save(fName_Array,'Array','-append');
         save(fName_Array,'tbl','Array');
         fprintf(fid,'Saving complete. %d decomposition files combined with %s.\n',length(ind),fName_Array);
         
@@ -118,7 +122,7 @@ function fid = open_LogFile(subjArrayFolder)
     fprintf(fid,'This log details which files were combined\n\n\n');
 end
 
-function Array = get_DecompositionInfo(tbl_Decomp,tbl_DecompValidation,subjFolder,options)
+function Array = fetch_DecompositionResult(tbl_Decomp,tbl_DecompValidation,subjFolder,options)
         
     tbl_Decomp.Array    = categorical(tbl_Decomp.Array);
     tbl_Decomp.FileType = categorical(tbl_Decomp.FileType);
@@ -148,7 +152,8 @@ function Array = get_DecompositionInfo(tbl_Decomp,tbl_DecompValidation,subjFolde
         fName_Firings = [subjFolder '\decomp\' tbl_Decomp.ExportFiles{i_f}];
         y=importdata(fName_Firings);
         
-        Equal_nMUs = check_ForEqualNumberOfMUs(x,y); %Check for equal number of MU templates and Firing times
+        %Check that each MU template has associated firing times
+        Equal_nMUs = check_ForEqualNumberOfMUs(x,y); 
          
         if Equal_nMUs
             for k=1:max(x.data(:,1))

@@ -25,26 +25,24 @@
 function convertFolder_hpfcsv_to_MatlabTable(directoryName)
     
     %Default behavior
-    default_dir = 'Q:\Andrew\DelsysArray - Copy\Data';
-    default_msg = 'Choose folder of CSV files to convert';
     if ~exist(directoryName)
-        directoryName = uigetdir(default_dir, default_msg);
+        directoryName = get_NewDirectory();
     end
     
-    disp('Converting .csv files to .mat tables');
+    printStartingMessage_ToConsole();
     
     csvFiles = get_AllFilesWithExtension(directoryName,'.csv');
     nFiles   = length(csvFiles);
     
     fid = create_LogFile(directoryName);
-    fprintf(fid, '%d ''.csv'' files found \n',nFiles);
+    printNumFilesFound_ToLog(fid, nFiles)
     
     for n=1:nFiles
         fName = csvFiles{n};
         sName = get_SaveName(fName);
         
         convertFile_hpfcsv_to_MatlabTable(directoryName, fName, sName)
-        update_LogFile(fName,sName)
+        printIteration_ToLog(fName,sName)
         printIteration_ToConsole(n, nFiles, sName)
     end
     
@@ -52,11 +50,25 @@ function convertFolder_hpfcsv_to_MatlabTable(directoryName)
     fprintf('Conversion complete\n')
 end
 
+function directoryName = get_NewDirectory()
+    default_dir = 'Q:\Andrew\DelsysArray - Copy\Data';
+    default_msg = 'Choose folder of CSV files to convert';
+    directoryName = uigetdir(default_dir, default_msg);
+end
+
+function printStartingMessage_ToConsole()
+    disp('Converting .csv files to .mat tables');
+end
+
+function printNumFilesFound_ToLog(fid, nFiles)
+    fprintf(fid, '%d ''.csv'' files found \n',nFiles);
+end
+
 function printIteration_ToConsole(n, nFiles, sName)
     fprintf('Converted %d/%d. New file name = %s\n', n, nFiles, sName);
 end
 
-function update_LogFile(fName,sName)
+function printIteration_ToLog(fName,sName)
     fprintf(fid, '%-50s  -->   to  -->   %-50s\n', fName, sName);
 end
 

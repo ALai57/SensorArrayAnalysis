@@ -12,7 +12,7 @@ function print_Subject_ForceTraces(selection,allData,options)
     
     % Merge SEMG data with all trial information
     
-    FName   = parse_FileNameTable(table(F{:,1},'VariableNames',{'Files'}),options.SingleDifferential);
+    FName   = parse_FileName_Table(table(F{:,1},'VariableNames',{'Files'}),options.SingleDifferential);
     F = [FName,F];
 %     F_NoMVC = F(~(F.TargetForce=='100%MVC'),:);
 
@@ -96,46 +96,3 @@ function SEMG = rename_StructFields(SEMG,varNames)
     end
 end
 
-
-
-
-
-
-
-
-
-
-
-% 
-%     dt = F.Time{1}(2)-F.Time{1}(1);
-%     figure; hold on;
-%     for n=1:17
-%         FX = F.Fx{n};
-%         FZ = F.Fz{n};
-%         T  = F.Time{n};
-%         dPer100ms = round(0.2/dt);
-%         coeff = ones(1, dPer100ms)/dPer100ms;
-%         avgFX = filter(coeff, 1, FX);
-%         avgFZ = filter(coeff, 1, FZ);        
-%         plot(avgFX,avgFZ)
-%     end
-%     
-%     figure; hold on;
-%     for n=18:28
-%         FX = F.Fx{n};
-%         FZ = F.Fz{n};
-%         T  = F.Time{n};
-%         ind = T>3 & T<17;
-%         dPer100ms = round(0.2/dt);
-%         coeff = ones(1, dPer100ms)/dPer100ms;
-%         avgFX = filter(coeff, 1, FX);
-%         avgFZ = filter(coeff, 1, FZ);        
-%         plot(avgFX(ind),avgFZ(ind))       
-%     end
-%     
-%     
-%     figure; hold on;
-%     for n=18:28
-%         plot(F.Fx{n},F.Fz{n})
-%     end
-%     

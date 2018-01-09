@@ -27,7 +27,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-function tbl_out = parse_FileNameTable(fileTable,options)
+function tbl_out = parse_FileName_Table(fileTable,options)
 
     allFields = options.FileNameConvention;
     
@@ -35,9 +35,9 @@ function tbl_out = parse_FileNameTable(fileTable,options)
         for n=1:size(fileTable,1)
             theFile        = fileTable.Files{n};
             targetField    = allFields{i};
-            cellArray{n,i} = extract_Information_FromFileName(theFile,...
-                                                              allFields,...
-                                                              targetField);
+            cellArray{n,i} = parse_FileName(theFile,...
+                                            allFields,...
+                                            targetField);
         end
     end
     

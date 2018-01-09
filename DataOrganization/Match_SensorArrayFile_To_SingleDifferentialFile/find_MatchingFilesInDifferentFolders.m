@@ -7,7 +7,7 @@
 function matchedFiles = find_MatchingFilesInDifferentFolders(directoryName,options)
 
     for i=1:length(directoryName)
-        Files(i).tbl          = extract_FileInformation_FromFolder(directoryName{i},'.mat',options.Trial);
+        Files(i).tbl          = parse_FileNames_In_Folder(directoryName{i},'.mat',options.Trial);
         [groupingVar, groups] = get_FileGroupingInformation(Files(i).tbl,options);
         groupedFiles(i).tbl   = find_FilesBelongingToGroup(Files(i).tbl, groupingVar, groups);   
         

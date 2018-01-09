@@ -29,6 +29,7 @@ function convertFile_hpfcsv_to_MatlabTable(directoryName,fName,sName)
     %Conversion for load cell
     Newtons_Per_Volt = 66*2;
 
+    %File name and new save name
     fName = [directoryName '\' fName];
     sName = [directoryName '\' sName];
 
@@ -40,7 +41,9 @@ function convertFile_hpfcsv_to_MatlabTable(directoryName,fName,sName)
     
     %Remove unnecessary columns
     variableNames = variableNames{1};
-    if size(data,2)>12
+    
+    
+    if size(data,2)>12 %Data is in V3 format
         ind_delete = 3:2:19;
         data(:,ind_delete) = [];
         variableNames = {'Time',...
@@ -57,12 +60,12 @@ function convertFile_hpfcsv_to_MatlabTable(directoryName,fName,sName)
                          'TargetForce_Time',...
                          'TargetForce'};
          data(:,[6,7]) = data(:,[6,7])*Newtons_Per_Volt;
-    elseif size(data,2)==2
+    elseif size(data,2)==2 %Data is in V2 format
         variableNames = {'Time',...
                          'Fx_N'};
                      
          data(:,2) = data(:,2)*Newtons_Per_Volt;
-    else
+    else  % Data is in V1 format
         variableNames = {'Time',...
                          'ArrayMedial_Ch1',...
                          'ArrayMedial_Ch2',...
@@ -84,6 +87,6 @@ function convertFile_hpfcsv_to_MatlabTable(directoryName,fName,sName)
     clear data;
     tbl.Properties.VariableNames = variableNames;
     
-    %Save and report result
+    %Save result
     save(sName,'tbl');
 end

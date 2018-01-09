@@ -11,7 +11,7 @@
 %       4) Decompositions were exported
 %
 %   BEFORE RUNNING, SETUP:
-%   - Configure using "Utility_RUN_Validate_Decomp.m"
+%   - Configure using "Utility_RUN_Create_DecompValidationTable.m"
 %   
 %   INPUT: 
 %   - options including
@@ -50,8 +50,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     
-function decompValidation = validate_Decomp(masterFolder,options)
-        
+function decompValidation = create_DecompValidationTable(masterFolder,options)
+    
+    %Parse file names and append File ID Tag to identify files
     decompInput = get_DecompInputs_FromSubjectFolder(masterFolder,options.DecompInput);
     decompInput = append_FileID_Tag(decompInput,options.DecompInput);
     
@@ -64,6 +65,9 @@ function decompValidation = validate_Decomp(masterFolder,options)
     sensorArray = get_SensorArrayFileInfo_FromMasterFolder(masterFolder,options);
     sensorArray = append_FileID_Tag(sensorArray,options.SensorArray);
     
+    %Check that Decomp Input, Decomp Output, and Decomp Exports all match
+    %the Sensor Array files. IE, for each sensor array file, was the file
+    %added to decomp? Did decomp happen? Was decomp exported?
     matchInput  = assemble_ValidationTable(sensorArray,decompInput ,'NoDecompInput' ,'DecompInputChannels','DecompChannels',options);    
     matchOutput = assemble_ValidationTable(sensorArray,decompOutput,'NoDecompOutput','DecompOutputFiles'  ,'OutputFiles'   ,options); 
     matchExport = assemble_ValidationTable(sensorArray,decompExport,'NoDecompExport','DecompExportFiles'  ,'ExportFiles'   ,options); 
@@ -78,18 +82,20 @@ function decompValidation = validate_Decomp(masterFolder,options)
 end
 
 
-function tbl_match = assemble_ValidationTable(sensorArray_tbl, target_tbl,emptyCellName,varName,targetName,options)
+function tbl_match = assemble_ValidationTable(sensorArray_tbl, target_tbl, emptyCellName, varName, targetName, options)
 
     
     tbl_match = initialize_ValidationTable([],[],varName);
     
+    %Loop over Sensor Array files - check that ID Tags in the target table
+    %match ID tags in the sensor array table
     IDs = unique(sensorArray_tbl.FileID_Tag);
     for n=1:length(IDs)
         
         tmp = initialize_ValidationTable(IDs(n),emptyCellName,varName);
         
         tbl_FileID = find_FilesMatchingIDTag(target_tbl,IDs(n));
-        if ~isempty(tbl_FileID)
+        if ~isempty(tbl_FileID) %If id tags match sensor array, further parse decomp files
             tmp = process_DecomposedFiles(tbl_FileID,targetName,varName,tmp,options);
         end
         tbl_match = [tbl_match;tmp];
@@ -97,7 +103,7 @@ function tbl_match = assemble_ValidationTable(sensorArray_tbl, target_tbl,emptyC
 end
 
 
-function tmp = process_DecomposedFiles(tbl_FileID,targetName,varName,tmp,options)
+function tmp = process_DecomposedFiles(tbl_FileID, targetName, varName, tmp, options)
 
     nFiles = size(tbl_FileID,1);
 
@@ -126,23 +132,6 @@ function tmp = process_DecomposedFiles(tbl_FileID,targetName,varName,tmp,options
     end
     
 end
-
-
-%             if size(tbl_FileID,1)>1
-%                 
-%                 
-%                 for i=1:size(tbl_FileID,1)
-%                     
-%                 end
-%                 
-%                 for i=1:size(tbl_FileID,1)
-%                     tmp.([varName '_' num2str(i)]) = tbl_FileID.(targetName)(i);
-%                 end
-%             else
-%                 for i=1:size(tbl_FileID.(targetName),2)
-%                     tmp.([varName '_' num2str(i)]) = tbl_FileID.(targetName)(i);
-%                 end
-%             end
 
 
 
@@ -174,93 +163,4 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-% 
-% 
-% 
-% function tbl_match = assemble_ValidationTable(sensorArray_tbl, decompInput_tbl)
-% 
-%     IDs = unique(sensorArray_tbl.FileID_Tag);
-% 
-%     tbl_match      = blank_ValidationTable();
-%     tbl_match(1,:) = [];
-% 
-%     for n=1:length(IDs)
-% 
-%         ind        = decompInput_tbl.FileID_Tag == IDs(n);
-%         tbl_FileID = decompInput_tbl(ind,:);
-% 
-%         tmp = blank_ValidationTable();
-%     
-%         if ~isempty(tbl_FileID)
-%             if size(tbl_FileID,1)>1
-%                 for i=1:size(tbl_FileID,1)
-%                     tmp.(['DecompInputChannels_' num2str(i)]) = tbl_FileID.DecompChannels(i);
-%                 end
-%             else
-%                 for i=1:size(tbl_FileID.DecompChannels,2)
-%                     tmp.(['DecompInputChannels_' num2str(i)]) = tbl_FileID.DecompChannels(i);
-%                 end
-%             end
-%         end
-%         tbl_match = [tbl_match;tmp];
-%     end
-% end
-
-
-
-
-
-% function tmp = blank_ValidationTable()
-%     tmp = table(IDs(n),...
-%                     {'NoDecompInput'},...
-%                     {'NoDecompInput'},...
-%                     {'NoDecompOutput'},...
-%                     {'NoDecompOutput'},...
-%                     {'NoDecompExport'},...
-%                     {'NoDecompExport'},...
-%                             'VariableNames',...
-%                                     {'SensorArray_FileID_Tag',...
-%                                      'DecompInputChannels_1',...
-%                                      'DecompInputChannels_2',...
-%                                      'DecompOutput_1',...
-%                                      'DecompOutput_2',...
-%                                      'DecompExport_1',...
-%                                      'DecompExport_2'  }   );
-% end
-
-
-
-
-% tbl_match = table(categorical({}),{},{},'VariableNames',...
-%                                                 {'SensorArray_FileID_Tag',...
-%                                                  'DecompInputChannels_1',...
-%                                                  'DecompInputChannels_2',...
-%                                                  'DecompOutput_1',...
-%                                                  'DecompOutput_2',...
-%                                                  'DecompExport_1',...
-%                                                  'DecompExport_2'  }   );
-
-
-%     decompOutput_tbl = get_DecompOutputs_FromFolder(decompWorkspace);
-%     decompOutput_tbl.Properties.VariableNames{1} = 'Files';
-%     decompOutput_tbl = parse_FileNameTable(decompOutput_tbl,options.DecompOutput);
-%     decompOutput_tbl = split_Decomp_RepID(decompOutput_tbl);
-%     decompOutput_tbl = append_FileID_Tag(decompOutput_tbl,options.DecompOutput);
-
-%     decompOutput_tbl.Properties.VariableNames{1} = 'Files';
-%     decompOutput_tbl = parse_FileNameTable(decompOutput_tbl,options.DecompOutput);
-%     decompOutput_tbl = split_Decomp_RepID(decompOutput_tbl);
-%     decompOutput_tbl = append_FileID_Tag(decompOutput_tbl,options.DecompOutput);
 

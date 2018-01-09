@@ -10,14 +10,10 @@ function fName = plot_AllTrialForceTraces_FromFolder(directoryName,options)
         directoryName = uigetdir('Q:\Andrew\DelsysArray - Copy\Data','Choose folder to plot from');
     end
     
-    tbl_MATFile = extract_FileInformation_FromFolder(directoryName,'.mat',options.Trial);
+    tbl_MATFile = parse_FileNames_In_Folder(directoryName,'.mat',options.Trial);
     
-%     matFiles    = get_AllFilesWithExtension(directoryName,'.mat');
-%     tbl_MATFile = table(matFiles,'VariableNames',{'Files'});
-%     tbl_MATFile = parse_FileNameTable(tbl_MATFile,options.Trial);
-    
-    display(sprintf('Folder = %s',directoryName));
-    display(sprintf('%d Files found',size(tbl_MATFile,1)))
+    fprintf('Folder = %s',directoryName);
+    fprintf('%d Files found',size(tbl_MATFile,1));
     
     
     groupingVar = options.Trial.GroupingVariable;
@@ -34,7 +30,7 @@ function fName = plot_AllTrialForceTraces_FromFolder(directoryName,options)
             fName{n}      = [directoryName '\' tbl_Group.Files{n}];
             hP(n)         = plot_ForceTrace_FromMATLABtable(fName{n},c,lineStyle);
 
-            display(sprintf('Plotted %d/%d. File name = %s', n, size(tbl_Group,1),tbl_Group.Files{n}));
+            fprintf('Plotted %d/%d. File name = %s', n, size(tbl_Group,1),tbl_Group.Files{n});
         end
 
         setup_Legend()

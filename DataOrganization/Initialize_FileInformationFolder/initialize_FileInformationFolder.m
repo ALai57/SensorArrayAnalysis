@@ -30,7 +30,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-function out=initialSetup_FileInformationFolder(subj_Dir, options)
+function out = initialize_FileInformationFolder(subj_Dir, options)
 
     [~,SID,~] = fileparts(subj_Dir);
     info_Dir  = [subj_Dir '\trial_information'];
@@ -60,7 +60,7 @@ function [MVC,forceMatching_Info] = create_Empty_FileInformation(subj_Dir,option
 
     array_Dir = [subj_Dir '\array'];
 %     options.Trial   = options.SensorArray;
-    arrayFiles      = extract_FileInformation_FromFolder(array_Dir,'.mat',options.SensorArray);
+    arrayFiles      = parse_FileNames_In_Folder(array_Dir,'.mat',options.SensorArray);
     
     sides = unique(arrayFiles.ArmType);
     

@@ -36,7 +36,7 @@ function decompInputs_tbl = get_DecompInputs_FromSubjectFolder(subjDir,options)
         clear Channels
     end
     
-    decompInputs_tbl = parse_FileNameTable(decompInputs_tbl,options);
+    decompInputs_tbl = parse_FileName_Table(decompInputs_tbl,options);
         
     decompInputs_tbl.Properties.VariableNames{1} = 'InputFiles';
 end

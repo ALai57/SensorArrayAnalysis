@@ -12,7 +12,7 @@ function fEqual = validate_ForceTracesAreEqual_FromDifferentFolders(directoryNam
         for i=1:length(directoryName)
             fName{n,i} = [directoryName{i} '\' theFiles(i).tbl.Files{n}];
         end
-        [avgError(n,1),stdError(n,1)] = validate_EqualForces(fName(n,:));
+        [avgError(n,1),stdError(n,1)] = compare_ForceTraces(fName(n,:));
     end
     
     ePass = abs(avgError)<2;
@@ -22,7 +22,7 @@ function fEqual = validate_ForceTracesAreEqual_FromDifferentFolders(directoryNam
     
 end
 
-function [avgError,stdError] = validate_EqualForces(fName)
+function [avgError,stdError] = compare_ForceTraces(fName)
     
     for n=1:length(fName)
         load(fName{n})

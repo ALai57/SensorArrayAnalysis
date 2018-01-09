@@ -30,7 +30,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function data = convert_Spike2Struct_to_MATLABarray(spikeFile,options)
+function data = convert_smrmat_To_MatlabArray(spikeFile,options)
 
     spike2Channels  = options.Segmentation.Channels;
 

@@ -49,33 +49,33 @@ options.NumberOfArrays = 2;
 
 decompValidation_tbl = [];
 
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\DW'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\ED'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\JA'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\JC'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\JF'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\PT'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\WT'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\DW'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\ED'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\JA'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\JC'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\JF'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\PT'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\WT'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
 
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\AC'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\AL'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\BA'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\GR'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\HS'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\MS'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\ZR'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\AC'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\AL'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\BA'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\GR'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\HS'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\MS'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\ZR'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
 
 
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\EW'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\JD'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\JL'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\JR'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\KB'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\KP'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\MM'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\NG'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\NT'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
-subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\WS'; decompValidation_tbl  = [decompValidation_tbl; validate_Decomp(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\EW'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\JD'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\JL'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\JR'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\KB'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\KP'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\MM'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\NG'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\NT'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
+subjDir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke\WS'; decompValidation_tbl  = [decompValidation_tbl; create_DecompValidationTable(subjDir,options)];
 
 
 

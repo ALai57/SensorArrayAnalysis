@@ -39,36 +39,39 @@
 
 
 
-function segment_Spike2File_IntoTrials(theFile,options)
+function segment_smrmat_Into_Trials(smrmatFile,options)
      
-    validate_hpfcsvFilesMatchWithTriggers(theFile,options) 
-    splitFile_IntoTrials(theFile,options)
+    validate_EqualNumber_hpfcsvFiles_And_Triggers(smrmatFile,options) 
+    split_smrmat_Into_Trials(smrmatFile,options)
     
 end
 
-function splitFile_IntoTrials(theFile,options) 
+function split_smrmat_Into_Trials(theFile,options) 
     
     spikeFile = load(theFile);
     
+    %Get arm type of smrmat file and corresponding hpfcsv files
     trialStartTimes = spikeFile.Memory.times;  
-    trialCondition  = extract_Information_FromFileName(theFile,...
-                                                       options.Segmentation.FileNameConvention,...
-                                                       'ArmType');
-    trialNames      = get_allTrialNames(theFile,options);
+    trialCondition  = parse_FileName(theFile,...
+                                     options.Segmentation.FileNameConvention,...
+                                     'ArmType');
+    trialNames      = get_Corresponding_hpfcsvFiles(theFile,options);
     trialNames      = sortrows(trialNames,'Datenum');  
-    trialNames      = filter_Trials_ByCondition(trialNames,'ArmType',trialCondition);
+    trialNames      = filter_Trials(trialNames,'ArmType',trialCondition);
     
     
     nTrials  = length(trialStartTimes);
     smrDir   = fileparts(theFile);
     
-    data = convert_Spike2Struct_to_MATLABarray(spikeFile,options);
+    %Convert the full dataset into matlab array
+    data = convert_smrmat_To_MATLABarray(spikeFile,options);
     clear spikeFile
     
+    %Parse the full matlab array into trials and save
     for i=1:nTrials
         trial_name  = trialNames.Files{i}(1:end-4);
         start_time  = trialStartTimes(i);
-        tbl         = extract_Trial_FromFullSpike2File(start_time, data, options); 
+        tbl         = extract_Trial_From_smrmat(start_time, data, options); 
         saveName    = [smrDir '\' trial_name '_SingleDifferential.mat'];
         
         save(saveName,'tbl')
@@ -77,56 +80,61 @@ function splitFile_IntoTrials(theFile,options)
     fprintf('Segmentation complete! %i/%d\n',i,nTrials)
 end
 
-function validate_hpfcsvFilesMatchWithTriggers(theFile,options)
+function validate_EqualNumber_hpfcsvFiles_And_Triggers(smrmatFile,options)
     
-    load(theFile,'Memory')
-    
+    %Get the number of triggers
+    load(smrmatFile,'Memory')
     trialStartTimes = Memory.times;  
-    trialCondition  = extract_Information_FromFileName(theFile,...
-                                                       options.Segmentation.FileNameConvention,...
-                                                       'ArmType');
-    trialSID        = extract_Information_FromFileName(theFile,...
-                                                       options.Segmentation.FileNameConvention,...
-                                                       'SID');
-                                                   
-    trialNames      = get_allTrialNames(theFile,options);
+    
+    %Parse smrmat file name to get: arm type, SID
+    trialArmType  = parse_FileName(smrmatFile,...
+                                    options.Segmentation.FileNameConvention,...
+                                    'ArmType');
+    trialSID      = parse_FileName(smrmatFile,...
+                                    options.Segmentation.FileNameConvention,...
+                                    'SID');
+                                
+    %Get # of hpfcsvfiles for the [SID and arm type] in the smrmat file                                               
+    trialNames      = get_Corresponding_hpfcsvFiles(smrmatFile,options);
     trialNames      = sortrows(trialNames,'Datenum');  
-    trialNames      = filter_Trials_ByCondition(trialNames,'ArmType',trialCondition);
+    trialNames      = filter_Trials(trialNames,'ArmType',trialArmType);
     
     nFiles    = size(trialNames,1);
     nTriggers = length(trialStartTimes);
     
-    print_FileAndTriggerMatch_ToConsole(trialSID, trialCondition, nFiles, nTriggers)
+    print_NumFilesAndTriggers_ToConsole(trialSID, trialArmType, nFiles, nTriggers)
     
+    %If number of files doesn't match number of triggers, throw error
     if nFiles~=nTriggers
         error('The number of files does not match the number of triggers')
     end
 end
 
-function print_FileAndTriggerMatch_ToConsole(SID, condition, nFiles, nTriggers)
+function print_NumFilesAndTriggers_ToConsole(SID, condition, nFiles, nTriggers)
     fprintf('Subject ID = %s  ::: Subject Condition = %s\n', SID, condition); 
     fprintf('Number of Files/Triggers = %0.0f/%0.0f\n', nFiles, nTriggers); 
 end
 
-function trials = get_allTrialNames(theFile,options) 
+function trials = get_Corresponding_hpfcsvFiles(theFile,options) 
 
     [pathstr,    ~, ~] = fileparts(theFile);
     hpfDir   = strrep(pathstr, 'smr','hpf');
-    trials = extract_FileInformation_FromFolder(hpfDir,'.hpf',options.HPF);
+    trials = parse_FileNames_In_Folder(hpfDir,'.hpf',options.HPF);
    
 end
 
-function trialNames_good = filter_Trials_ByCondition(trialNames,trialCondition,target) 
+function trialNames_good = filter_Trials(trialNames,targetField,targetValue) 
+    %Return all trials where targetField == targetValue
     
-    trialNames.(trialCondition) = categorical(trialNames.(trialCondition));
-    target = categorical({target});
+    trialNames.(targetField) = categorical(trialNames.(targetField));
+    targetValue = categorical({targetValue});
     
-    ind = trialNames.(trialCondition) == target; 
+    ind = trialNames.(targetField) == targetValue; 
 
     trialNames_good = trialNames(ind,:);
 end
 
-function tbl = extract_Trial_FromFullSpike2File(trial_start,data,options) 
+function tbl = extract_Trial_From_smrmat(trial_start,data,options) 
     
     window_t     = options.Segmentation.TrialTime;  %Length of each trial in seconds
     dt           = data(2,1)-data(1,1);             %sampling dt
@@ -134,13 +142,14 @@ function tbl = extract_Trial_FromFullSpike2File(trial_start,data,options)
     t_trial      = dt:dt:window_t;                  %Time vector for the trial
     trial_length = length(t_trial);                 %Number of data points in the trial
     
-    window = find_TrialTimeWindow(t_all,trial_start,trial_length);
+    %Get index where trial is ongoing
+    idx = find_TrialTimeWindow(t_all,trial_start,trial_length);
     
     try
-        tbl = array2table(data(window,:));
+        tbl = array2table(data(idx,:));
     catch
-        tbl = array2table(data(window(1):end,:));
-        ind = (size(tbl,1)+1):length(window);
+        tbl = array2table(data(idx(1):end,:));
+        ind = (size(tbl,1)+1):length(idx);
         tbl{ind,:} = NaN;
     end
     
@@ -149,6 +158,7 @@ function tbl = extract_Trial_FromFullSpike2File(trial_start,data,options)
 end
 
 function window = find_TrialTimeWindow(t_all,t_start,trial_len)
+    %Return indices where the trial time best matches the trial window
     index = find(abs(t_all-t_start)==min(abs(t_all-t_start)));
     window = index:index+trial_len-1;
 end

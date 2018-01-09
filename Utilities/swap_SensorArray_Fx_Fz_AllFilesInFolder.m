@@ -2,7 +2,7 @@
 
 
 
-function switch_Fx_Fz_AllFilesInFolder(theFolder)
+function swap_SensorArray_Fx_Fz_AllFilesInFolder(theFolder)
 
     if isempty(theFolder)
         theFolder = uigetdir('C:\Users\Andrew\Box Sync\BicepsSensorArray\Data\Control');
