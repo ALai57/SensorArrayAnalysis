@@ -7,7 +7,7 @@ function print_Subject_OnionSkin(selection,subjData,options)
     
     % Get all trial information 
     subjData   = append_SingleDifferentialFullFile_2Array(subjData,baseDir);
-    [MU_Onion, ~] = loop_Over_Trials_FromTable(subjData,options.Analysis(1));
+    [MU_Onion, ~] = apply_To_Trials_In_DataTable(subjData,options.Analysis(1));
     
     SID = subjData.SID(1); 
     

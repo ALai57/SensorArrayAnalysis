@@ -7,7 +7,7 @@ function print_All_SingleDifferential_SEMG_v_Force_Normalized(selection,allData,
     
     % Get all trial information and calculate SEMG
     allData   = append_SingleDifferentialFullFile_2Array(allData,baseDir);
-    [SEMG, ~] = loop_Over_Trials_FromTable(allData,options.Analysis(1)); 
+    [SEMG, ~] = apply_To_Trials_In_DataTable(allData,options.Analysis(1)); 
     
     % Merge SEMG data with all trial information
     SEMG       = rename_StructFields(SEMG,varNames);

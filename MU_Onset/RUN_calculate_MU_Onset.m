@@ -13,4 +13,4 @@ options.MU_Onset.SteadyFiring.MaxInterval = 0.2;
 options.MU_Onset.ForcePrior = 0.05;
 options.MU_Onset.ForcePost  = 0.15;
 
-[analysis, ind_f] = loop_Over_Trials_FromTable(MU_Data,options);
+[analysis, ind_f] = apply_To_Trials_In_DataTable(MU_Data,options);

@@ -44,7 +44,7 @@ function out = initialize_FileInformationFolder(subj_Dir, options)
     end
     
     if ~exist(info_File,'file')
-        [MVC,forceMatching_Info] = create_Empty_FileInformation(subj_Dir,options);
+        [MVC,force_Info] = create_Empty_FileInformation(subj_Dir,options);
         save(info_File,'MVC','forceMatching_Info');
         fprintf('Blank file created: %s\n',info_File)
     else
@@ -56,38 +56,37 @@ function out = initialize_FileInformationFolder(subj_Dir, options)
     
 end
 
-function [MVC,forceMatching_Info] = create_Empty_FileInformation(subj_Dir,options)
+function [MVC,force_Info] = create_Empty_FileInformation(subj_Dir,options)
 
-    array_Dir = [subj_Dir '\array'];
-%     options.Trial   = options.SensorArray;
-    arrayFiles      = parse_FileNames_In_Folder(array_Dir,'.mat',options.SensorArray);
+    array_Dir  = [subj_Dir '\array'];
+    array_Files = parse_FileNames_In_Folder(array_Dir,'.mat',options.SensorArray);
     
-    sides = unique(arrayFiles.ArmType);
+    arm_Types = unique(array_Files.ArmType);
     
-    z = zeros(length(sides),1);
+    z = zeros(length(arm_Types),1);
     MVC = table(z,z,'VariableNames',{'Fx_N','Fz_N'});
     
-    for n=1:length(sides)
-        MVC.Properties.RowNames{n} = sides{n};
+    for n=1:length(arm_Types)
+        MVC.Properties.RowNames{n} = arm_Types{n};
     end
     
-    forceMatching_Info               = arrayFiles;
-    forceMatching_Info.RampStart     = repmat(3.5,size(forceMatching_Info,1),1);
+    force_Info           = array_Files;
+    force_Info.RampStart = repmat(3.5,size(force_Info,1),1);
     
-    for n=1:size(arrayFiles.TargetForce,1)
-        TF(n,1) = sscanf(arrayFiles.TargetForce{n}, '%g*');
-        if TF(n,1) == 100
-           forceMatching_Info.RampStart(n) = 0;
-           plateauDelay(n,1) = 0;
+    for n=1:size(array_Files.TargetForce,1)
+        TF(n,1) = sscanf(array_Files.TargetForce{n}, '%g*');
+        if TF(n,1) == 100 % MVC
+           force_Info.RampStart(n) = 0;
+           plateau_Delay(n,1) = 0;
            continue; 
         end
-        if ~isempty(strfind(arrayFiles.TargetForce{n},'MVC'))
-            plateauDelay(n,1) = TF(n)/10;
-        elseif ~isempty(strfind(arrayFiles.TargetForce{n},'Newtons'))
-            plateauDelay(n,1) = TF(n)/5;
+        if ~isempty(strfind(array_Files.TargetForce{n},'MVC'))
+            plateau_Delay(n,1) = TF(n)/10;
+        elseif ~isempty(strfind(array_Files.TargetForce{n},'Newtons'))
+            plateau_Delay(n,1) = TF(n)/5;
         end
     end
     
-    forceMatching_Info.PlateauStart = forceMatching_Info.RampStart+plateauDelay;
+    force_Info.PlateauStart = force_Info.RampStart+plateau_Delay;
     %%%%%%%%%%%%%%% START HERE NOW %%%%%%%%%%%%%% ADD MVC and RAMP START INFO.
 end

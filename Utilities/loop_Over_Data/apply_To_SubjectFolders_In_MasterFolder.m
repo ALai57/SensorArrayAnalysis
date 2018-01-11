@@ -34,7 +34,7 @@
 % options.SensorArray.FileNameConvention         = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'}; 
 % options.SingleDifferential.FileNameConvention  = {'SID','ArmType','ArmSide','Experiment','TargetForce','Rep','ID','FileType'}; 
 % 
-% options.Subject_Analyses{1}                    = @(subj_Dir, options)loop_Over_Trials(subj_Dir,options);
+% options.Subject_Analyses{1}                    = @(subj_Dir, options)apply_To_SensorArrayFiles_In_Subject_Folder(subj_Dir,options);
 % options.Trial_Analyses{1}                      = @(arrayFile,singlediffFile,trial_Information,MVC,options)build_2Array_DataTable(arrayFile,...
 %                                                                                                                                       singlediffFile,...
 %                                                                                                                                       trial_Information,...
@@ -44,9 +44,12 @@
 %  [1,2,3,6,7,11,14] = old Control subjects
 
 
-function analysis = loop_Over_SubjectType(dataDirs,options)
+function analysis = apply_To_SubjectFolders_In_MasterFolder(dataDirs,options)
 
     analysis = cell(length(options.Subject_Analyses),1);
+    
+     %Loop over all master folders - this is typically the folder
+     %labeled "stroke" or "control"
     for status=1:length(dataDirs)
         
         SIDs = get_subFolders(dataDirs{status});

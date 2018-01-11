@@ -53,7 +53,7 @@
 % subj_Dir = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control\WT';                                                                                                                                  
 %                                                                                                                                   
 
-function analysis = loop_Over_Trials(masterFolder, options)
+function analysis = apply_To_SensorArrayFiles_In_SubjectFolder(masterFolder, options)
 
     [~,SID,~] = fileparts(masterFolder);
     
@@ -61,6 +61,7 @@ function analysis = loop_Over_Trials(masterFolder, options)
     singlediff_Dir = [masterFolder '\singlediff'];
     info_Dir       = [masterFolder '\trial_Information'];
     
+    %Extract relevant files from subject sub-folders
     arrayFiles      = parse_FileNames_In_Folder(array_Dir,...
                                                          '.mat',...
                                                          options.SensorArray);
@@ -70,8 +71,9 @@ function analysis = loop_Over_Trials(masterFolder, options)
     
     load([info_Dir '\' SID '_Trial_Information.mat'])
     
+    % Loop through each trial in subject's array folder - e.g. Sensor array data
     analysis = cell(length(options.Trial_Analyses),1);
-    for i=1:size(arrayFiles,1) % Loop through each trial 
+    for i=1:size(arrayFiles,1)  
         for j=1:length(options.Trial_Analyses)
             analysis{j} = [analysis{j}; ...
                             options.Trial_Analyses{j}(arrayFiles(i,:),...

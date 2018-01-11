@@ -12,10 +12,10 @@ function print_All_MVC_Statistics(selection,allData,options)
     
     % Get all trial information and calculate SEMG
     allData     = append_SensorArrayFullFile_2Array(allData,baseDir_SA);
-    [SA_EMG, ~] = loop_Over_Trials_FromTable(allData,options.Analysis(1)); 
+    [SA_EMG, ~] = apply_To_Trials_In_DataTable(allData,options.Analysis(1)); 
     
     allData     = append_SingleDifferentialFullFile_2Array(allData,baseDir_SD);
-    [SD_EMG, ~] = loop_Over_Trials_FromTable(allData,options.Analysis(2)); 
+    [SD_EMG, ~] = apply_To_Trials_In_DataTable(allData,options.Analysis(2)); 
     
     % Merge SEMG data with all trial information
     SA_EMG         = rename_StructFields(SA_EMG,varNames_SA);

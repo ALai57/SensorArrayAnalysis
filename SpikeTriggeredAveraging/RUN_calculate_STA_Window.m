@@ -15,6 +15,6 @@ options.STA.WindowStart  = 7;
 options.STA.WindowEnd    = 15;
 
 
-[STA_Window, ind_f] = loop_Over_Trials_FromTable(MU_Data,options);
+[STA_Window, ind_f] = apply_To_Trials_In_DataTable(MU_Data,options);
 
 

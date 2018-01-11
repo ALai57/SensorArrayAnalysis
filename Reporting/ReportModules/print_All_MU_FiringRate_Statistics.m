@@ -2,7 +2,7 @@
 function print_All_MU_FiringRate_Statistics(selection,allData,options)
       
     % Calculate MU Mean firing rate
-    [MU_MeanFiringRate, ~]           = loop_Over_Trials_FromTable(allData,options.Analysis(1));
+    [MU_MeanFiringRate, ~]           = apply_To_Trials_In_DataTable(allData,options.Analysis(1));
     MU_MeanFiringRate.MeanFiringRate = cell2mat(MU_MeanFiringRate.MeanFiringRate);
     
     % Merge data

@@ -2,11 +2,11 @@
 function print_All_MU_Amplitude_vs_MeanFiringRate(selection,subjData,options)
     
     % Calculate MU Onset
-    [MU_MeanFiringRate, ~] = loop_Over_Trials_FromTable(subjData,options.Analysis(1));
+    [MU_MeanFiringRate, ~] = apply_To_Trials_In_DataTable(subjData,options.Analysis(1));
     MU_MeanFiringRate.MeanFiringRate = cell2mat(MU_MeanFiringRate.MeanFiringRate);
     
     % Calculate MU Amplitude
-    [MU_PtP, ~] = loop_Over_Trials_FromTable(subjData,options.Analysis(2));
+    [MU_PtP, ~] = apply_To_Trials_In_DataTable(subjData,options.Analysis(2));
     MU_PtP.MU_Amplitude  = cell2mat(MU_PtP.MU_Amplitude);
     MU_PtP.MU_Amplitude  = 1000*MU_PtP.MU_Amplitude;
     

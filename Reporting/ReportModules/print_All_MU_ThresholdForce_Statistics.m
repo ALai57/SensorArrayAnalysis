@@ -2,7 +2,7 @@
 function print_All_MU_ThresholdForce_Statistics(selection,allData,options)
       
     % Calculate MU Onset
-    [MU_Onset, ~] = loop_Over_Trials_FromTable(allData,options.Analysis(1));
+    [MU_Onset, ~] = apply_To_Trials_In_DataTable(allData,options.Analysis(1));
     MU_Onset.MU_Onset_Time    = cell2mat(MU_Onset.MU_Onset_Time);
     MU_Onset.MU_Onset_Force_N = cell2mat(MU_Onset.MU_Onset_Force_N);
      

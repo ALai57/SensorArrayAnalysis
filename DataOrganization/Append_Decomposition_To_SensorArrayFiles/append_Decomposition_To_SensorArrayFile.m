@@ -6,8 +6,8 @@
 %   - Appends the Delsys decomposition to files with sensor array data
 %
 %   BEFORE RUNNING, SETUP:
-%   - Build 2Array Data Table using "loop_Over_SubjectType" with
-%       "loop_Over_Trials" and
+%   - Build 2Array Data Table using "apply_To_SubjectFolders_In_MasterFolder" with
+%       "apply_To_Subjects_SensorArrayFiles" and
 %       "build_2Array_DataTable"
 %   
 %   INPUT: 

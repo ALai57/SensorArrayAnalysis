@@ -8,7 +8,7 @@ function print_Subject_ForceTraces(selection,allData,options)
     
     % Get all trial information and calculate SEMG
     allData   = append_SingleDifferentialFullFile_2Array(allData,baseDir);
-    [F, ~]    = loop_Over_Trials_FromTable(allData,options.Analysis(1)); 
+    [F, ~]    = apply_To_Trials_In_DataTable(allData,options.Analysis(1)); 
     
     % Merge SEMG data with all trial information
     

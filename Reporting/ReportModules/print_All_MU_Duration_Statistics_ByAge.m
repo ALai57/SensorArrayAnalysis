@@ -2,7 +2,7 @@
 function print_All_MU_Duration_Statistics_ByAge(selection,MU_Data,options)
     
     % Calculate MU Amplitude
-    [MU_PtP, ~] = loop_Over_Trials_FromTable(MU_Data,options.Analysis(1));
+    [MU_PtP, ~] = apply_To_Trials_In_DataTable(MU_Data,options.Analysis(1));
     MU_PtP.MU_Duration  = cell2mat(MU_PtP.MU_Duration);
     MU_PtP.MU_Duration  = 1000*MU_PtP.MU_Duration;
     

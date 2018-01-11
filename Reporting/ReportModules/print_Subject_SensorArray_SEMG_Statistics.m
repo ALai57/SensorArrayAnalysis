@@ -5,7 +5,7 @@ function print_Subject_SensorArray_SEMG_Statistics(selection,allData,options)
     allData = append_SingleDifferentialFullFile_2Array(allData,options.SingleDifferential.BaseDirectory);
     
     % Calculate MU Mean firing rate
-    [SEMG, ~] = loop_Over_Trials_FromTable(allData,options.Analysis(1)); 
+    [SEMG, ~] = apply_To_Trials_In_DataTable(allData,options.Analysis(1)); 
     for n=1:length(options.Analysis(1).Trial.OutputVariable) 
         name = options.Analysis(1).Trial.OutputVariable{n};
         SEMG.(name) = cell2mat(SEMG.(name));

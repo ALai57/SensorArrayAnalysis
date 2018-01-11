@@ -31,14 +31,14 @@
 % VERIFY FORCE MATCH FROM ARRY AND SINGLE DIFF
 % ADD DECOMP CHANNELS
 
-function dataTbl = build_2Array_DataTable(arrayFile,singlediffFile,trial_Information,MVC,options)
+function dataTbl = build_DataTable(arrayFile,singlediffFile,trial_Information,MVC,options)
 
     load(char(arrayFile.FullFile));
 
     dataTbl = [];
     for k=1:length(Array) %Loop through each array
-        
-        if isempty(Array(k).Decomp) %No decomposition data
+         
+        if isempty(Array(k).Decomp) % If no decomposition data
             tmp = get_BasicTrialInformation(arrayFile,singlediffFile);
             tmp = append_No_DecompositionResults(tmp,Array(k));
             tmp = repmat(tmp,size(trial_Information,1),1);
@@ -48,6 +48,11 @@ function dataTbl = build_2Array_DataTable(arrayFile,singlediffFile,trial_Informa
         
             Array(k).EMGfile = arrayFile.FullFile;
 
+            %Get all relevant information to assemble into one big table 
+            % trial 
+            % decomposition
+            % spike triggered averages
+            % force trace
             trialInfo_tbl    = get_BasicTrialInformation(arrayFile,singlediffFile);
             Decomp_tbl       = get_Decomposition_Info(Array(k));
 %             STA_tbl          = get_STA_Info(Array(k));
@@ -170,57 +175,3 @@ function MU_tbl = get_Decomposition_Info(Array)
     
     MU_tbl = [temp,MU_tbl];
 end
-
-% function STA_tbl = get_STA_Info(Array)
-% 
-%     nMU      = length(Array.Decomp);
-%     ArrayNum = Array.Number;
-%     
-%     EMG = load(char(Array.EMGfile),'tbl');
-%    
-%     c = cell(nMU,1);
-%     z = zeros(nMU,1);
-%     STA_tbl = table([1:nMU]',...
-%                     c,...
-%                     c,...
-%                       'VariableNames',...
-%                         {'MU',...
-%                          'FiringTimes',...
-%                          'STA_Template'});
-%     for n=1:nMU
-%         tic;
-%         STA_tbl.FiringTimes{n,1}      = Array.Decomp(n).FiringTimes;
-%         STA_tbl.STA_Template{n,1}     = get_STA(Array.Decomp(n), EMG.tbl, Array.Number);
-%         toc;
-%     end 
-%     
-%     temp = table(repmat(ArrayNum,nMU,1),'VariableNames',{'ArrayNumber'});
-%     
-%     STA_tbl = [temp,STA_tbl];
-% end
-% 
-% function STA = get_STA(Decomp,EMG,arrayNumber)
-% 
-%     [t_New,MUAPs_20k] = downSample(Decomp.Templates.Time, Decomp.Templates{:,2:5}, 1/20000);
-%     
-%     Delsys_Template_20k = table(t_New,...
-%                                 MUAPs_20k(:,1),...
-%                                 MUAPs_20k(:,2),...
-%                                 MUAPs_20k(:,3),...
-%                                 MUAPs_20k(:,4),...
-%                                     'VariableNames',...
-%                                             {'Time',...
-%                                              'Ch1',...
-%                                              'Ch2',...
-%                                              'Ch3',...
-%                                              'Ch4'} );
-% 
-%     if arrayNumber == categorical({'1'})
-%        columnInd = [1,2:5];
-%     elseif arrayNumber == categorical({'2'})
-%        columnInd = [1,8:11]; 
-%     end
-% 
-%     [STA, ~, ~] = calculate_STA(Decomp.FiringTimes, EMG(:,columnInd), Delsys_Template_20k);
-% 
-% end

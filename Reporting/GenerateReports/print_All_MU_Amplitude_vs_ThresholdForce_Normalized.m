@@ -3,12 +3,12 @@
 function print_All_MU_Amplitude_vs_ThresholdForce_Normalized(selection,subjData,options)
     
     % Calculate MU Onset
-    [MU_Onset, ~]             = loop_Over_Trials_FromTable(subjData,options.Analysis(1));
+    [MU_Onset, ~]             = apply_To_Trials_In_DataTable(subjData,options.Analysis(1));
     MU_Onset.MU_Onset_Time    = cell2mat(MU_Onset.MU_Onset_Time);
     MU_Onset.MU_Onset_Force_N = cell2mat(MU_Onset.MU_Onset_Force_N);
     
     % Calculate MU Amplitude
-    [MU_PtP, ~]          = loop_Over_Trials_FromTable(subjData,options.Analysis(2));
+    [MU_PtP, ~]          = apply_To_Trials_In_DataTable(subjData,options.Analysis(2));
     MU_PtP.MU_Amplitude  = cell2mat(MU_PtP.MU_Amplitude);
     MU_PtP.MU_Amplitude  = 1000*MU_PtP.MU_Amplitude;
     

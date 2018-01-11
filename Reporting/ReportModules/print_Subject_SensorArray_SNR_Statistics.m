@@ -7,7 +7,7 @@ function print_Subject_SensorArray_SNR_Statistics(selection,allData,options)
     
     % Get all trial information and calculate SEMG
     allData   = append_SensorArrayFullFile_2Array(allData,baseDir);
-    [SNR, ~] = loop_Over_Trials_FromTable(allData,options.Analysis(1)); 
+    [SNR, ~] = apply_To_Trials_In_DataTable(allData,options.Analysis(1)); 
     
     % Merge SEMG data with all trial information
     SNR         = rename_StructFields(SNR,varNames);

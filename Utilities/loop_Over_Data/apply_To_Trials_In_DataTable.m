@@ -8,7 +8,7 @@
 % options.Trial.OutputVariable = {'STA_Window_PtP'};
 % options.BaseDirectory     = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray';
 
-function [analysis_unwrap, ind_f] = loop_Over_Trials_FromTable(MU_Data,options)
+function [analysis_unwrap, ind_f] = apply_To_Trials_In_DataTable(MU_Data,options)
 
     trialList = categorical(MU_Data.SensorArrayFile);
     trials    = unique(trialList);
@@ -69,43 +69,6 @@ function [trial_Data,ind_t] = get_TrialData(MU_Data,trialFile)
     ind_t      = categorical(MU_Data.SensorArrayFile) == trialFile;
     trial_Data = MU_Data(ind_t,:);
 end
-
-
-
-
-
-
-
-
-% function [analysis_unwrap, ind_f] = loop_Over_Trials_FromTable(MU_Data,options)
-% 
-%     trialList = categorical(MU_Data.SensorArrayFile);
-%     trials    = unique(trialList);
-%     
-%     analysis         = cell(length(trials),1);
-%     analysis_unwrap  = initialize_OutputArray(MU_Data,options);
-%     
-%     for n=1:length(trials)
-%         
-%         tic;
-%         [trialData,ind_f{n}] = get_TrialData(MU_Data,trials(n));
-%         
-%         for k=1:length(options.Trial.Analysis)
-%            analysis{n} = options.Trial.Analysis{k}(trialData,options); 
-%         end
-% 
-%         toc;
-%     end
-%     
-% 
-%     for n=1:length(trials)
-%         for i=1:length(options.Trial.OutputVariable)
-%             varname = options.Trial.OutputVariable{i};
-%             analysis_unwrap.(varname)(ind_f{n}) = analysis{n}.(varname);
-%         end
-%     end
-%     
-% end
 
 
 

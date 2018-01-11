@@ -3,7 +3,7 @@
 %   Author: Andrew Lai
 %
 %   DESCRIPTION: 
-%   - Performs STA on data from a single trial. 
+%   - Performs Spike Triggered Averaging (STA) on data from a single trial. 
 %
 %   BEFORE RUNNING, SETUP:
 %   - Make sure that decomposition data is appended to sensor array files

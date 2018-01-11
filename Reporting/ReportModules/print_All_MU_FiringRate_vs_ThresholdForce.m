@@ -2,11 +2,11 @@
 function print_All_MU_FiringRate_vs_ThresholdForce(selection,allData,options)
       
     % Calculate MU Mean firing rate
-    [MU_MeanFiringRate, ~]           = loop_Over_Trials_FromTable(allData,options.Analysis(1));
+    [MU_MeanFiringRate, ~]           = apply_To_Trials_In_DataTable(allData,options.Analysis(1));
     MU_MeanFiringRate.MeanFiringRate = cell2mat(MU_MeanFiringRate.MeanFiringRate);
     
     % Calculate MU Onset
-    [MU_Onset, ~] = loop_Over_Trials_FromTable(allData,options.Analysis(2));
+    [MU_Onset, ~] = apply_To_Trials_In_DataTable(allData,options.Analysis(2));
     MU_Onset.MU_Onset_Time    = cell2mat(MU_Onset.MU_Onset_Time);
     MU_Onset.MU_Onset_Force_N = cell2mat(MU_Onset.MU_Onset_Force_N);
      
