@@ -1,8 +1,13 @@
 
 function print_Subject_MU_Amplitude_vs_Duration(selection,subjData,options)
         
+    % Function to calculate MU Amplitude and duration
+    calc_MU_Amp_Fcn = @(trial_Data,options)calculate_STA_AmplitudeAndDuration(trial_Data,options);
+
     % Calculate MU Amplitude
-    [MU_PtP, ~] = apply_To_Trials_In_DataTable(subjData,options.Analysis(1));
+    [MU_PtP, ~] = apply_To_Trials_In_DataTable(subjData, ...
+                                               calc_MU_Amp_Fcn, ...
+                                               options.Analysis(1));
     MU_PtP.MU_Amplitude  = cell2mat(MU_PtP.MU_Amplitude);
     MU_PtP.MU_Amplitude  = 1000*MU_PtP.MU_Amplitude;
     

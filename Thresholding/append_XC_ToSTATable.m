@@ -15,7 +15,7 @@ function MU_Data = append_XC_ToSTATable(MU_Data,options)
             xc(n,i) = max(xcorr(dTemps{n}(:,i),sTemps{n}(:,i),'coeff'));
         end
     end
-    display('Finished calculating cross-correlation');
+    display('Finished calculating Delsys/STA cross-correlation');
     MU_Data.XC = xc;
     
     stat = options.STA_CrossCorrelation.XC.Statistic;

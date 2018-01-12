@@ -181,44 +181,6 @@ function Onset_EMG  = find_MU_OnsetEMG(onset_Time,X,arr,EMG_DataType)
     end
 end
 
-% function Onset_EMG  = calculate_MU_OnsetEMG(onset_Time,EMG,options)
-% 
-%     time = EMG.Time;
-%     
-%     dt = time(2)-time(1);
-%     
-%     fLen = options.MU_Onset.MAF.Length;
-%     fLen = round(fLen/dt);
-%     E = EMG{:,2:end};
-%     
-%     switch options.MU_Onset.EMGtype
-%         case 'MAF'
-%             coeff = ones(1, fLen)/fLen;
-%             EMG{:,2:end} = filter(coeff, 1, EMG{:,2:end});
-%         case 'RMS'
-%             c=1;
-%             while c<length(EMG.Time)/100
-%                 x=c*100;
-%                 if x<=fLen
-%                     X(c,:) = [time(x) ,rms( E(1:x+fLen,:) )];
-%                 elseif length(EMG.Time)-x<fLen
-%                     X(c,:) = [time(x) ,rms( E(x-fLen:end,:) )];
-%                 else
-%                     X(c,:) = [time(x) ,rms( E(x-fLen:x+fLen,:) )];
-%                 end
-%                 c=c+1;
-%             end
-%             
-%     end
-% %     figure; plot(time,E(:,1:4)); hold on;
-% %     plot(X(:,1),X(:,2:5));
-%     
-%     tmp  = abs(X(:,1)-onset_Time);
-%     ind  = find(tmp == min(tmp));
-%     
-%     Onset_EMG = X(ind,:);
-%     
-% end
 
 function Onset_Time  = calculate_MU_OnsetTime(FT,options)
 

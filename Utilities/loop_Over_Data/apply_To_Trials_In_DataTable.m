@@ -8,7 +8,7 @@
 % options.Trial.OutputVariable = {'STA_Window_PtP'};
 % options.BaseDirectory     = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray';
 
-function [analysis_unwrap, ind_f] = apply_To_Trials_In_DataTable(MU_Data,options)
+function [analysis_unwrap, ind_f] = apply_To_Trials_In_DataTable(MU_Data, theFcn, options)
 
     trialList = categorical(MU_Data.SensorArrayFile);
     trials    = unique(trialList);
@@ -17,19 +17,19 @@ function [analysis_unwrap, ind_f] = apply_To_Trials_In_DataTable(MU_Data,options
     analysis_unwrap  = initialize_OutputArray(MU_Data,options);
     
     
-    fprintf(1,'%s \n',func2str(options.Trial.Function{1})); 
+    fprintf(1,'%s \n',func2str(theFcn)); 
     fprintf(1,'Looping over trials: %6d/%6d',0,length(trials));
     for n=1:length(trials)
         fprintf(1,'\b\b\b\b\b\b\b\b\b\b\b\b\b%6d/%6d',n,length(trials));
         [trialData,ind_f{n}] = get_TrialData(MU_Data,trials(n));
-        analysis{n} = options.Trial.Function{1}(trialData,options); 
+        analysis{n} = theFcn(trialData,options); 
     end
     fprintf('\n')
     
     try
-        if isequal(func2str(options.Trial.Function{1}), ...
+        if isequal(func2str(theFcn), ...
                '@(trial_Data,options)calculate_ForceTrace_FromTrial(trial_Data,options)') || ...
-           isequal(func2str(options.Trial.Function{1}), ...
+           isequal(func2str(theFcn), ...
                '@(trial_Data,options)calculate_OnionSkin(trial_Data,options)')
             tmp = [];
             for n=1:length(trials)

@@ -1,12 +1,20 @@
 
 function print_Subject_MU_Amplitude_vs_MeanFiringRate(selection,subjData,options)
     
-    % Calculate MU Onset
-    [MU_MeanFiringRate, ~] = apply_To_Trials_In_DataTable(subjData,options.Analysis(1));
+    % Functions to calculate MU onset and MU Amplitude
+    calc_MU_MFR_Fcn = @(trial_Data,options)calculate_MU_MeanFiringRate_FromTrial(trial_Data,options);
+    calc_MU_Amp_Fcn = @(trial_Data,options)calculate_STA_AmplitudeAndDuration(trial_Data,options);
+
+    % Calculate MU Mean Firing Rate (MFR)
+    [MU_MeanFiringRate, ~] = apply_To_Trials_In_DataTable(subjData, ...
+                                                          calc_MU_MFR_Fcn, ... 
+                                                          options.Analysis(1));
     MU_MeanFiringRate.MeanFiringRate = cell2mat(MU_MeanFiringRate.MeanFiringRate);
     
     % Calculate MU Amplitude
-    [MU_PtP, ~] = apply_To_Trials_In_DataTable(subjData,options.Analysis(2));
+    [MU_PtP, ~] = apply_To_Trials_In_DataTable(subjData, ...
+                                               calc_MU_Amp_Fcn, ...
+                                               options.Analysis(2));
     MU_PtP.MU_Amplitude  = cell2mat(MU_PtP.MU_Amplitude);
     MU_PtP.MU_Amplitude  = 1000*MU_PtP.MU_Amplitude;
     

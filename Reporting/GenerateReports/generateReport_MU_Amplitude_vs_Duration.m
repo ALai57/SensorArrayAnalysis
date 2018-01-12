@@ -13,15 +13,12 @@ function generateReport_MU_Amplitude_vs_Duration()
     [serverHandle, selection] = open_ConnectionToWord();
     print_ReportDescription(selection);
     print_OptionsAndAnalyses(selection, options, analyses);
-%     print_All_MU_Amplitude_vs_MeanFiringRate(selection, MU_Data, options)
-%     print_All_MU_Amplitude_vs_Duration(selection, MU_Data, options)
     print_Analysis_LoopOverSubjects(selection, MU_Data, analyses.IndividualSubject,options);
     
     delete(serverHandle)
 end
 
 function analyses = get_Analyses()
-%     analyses.IndividualSubject{1} = @(selection,subjData,options)print_Subject_MU_Amplitude_vs_MeanFiringRate(selection,subjData,options);
     analyses.IndividualSubject{1} = @(selection,subjData,options)print_Subject_MU_Amplitude_vs_Duration(selection,subjData,options);
 end
 
@@ -76,7 +73,7 @@ function options = get_Options()
     options.ForceRange.Names                     = {'Under_30N','Above_30N'};
        
     % Set up PtP Amplitude calculation
-    options.Analysis(1).Trial.Function          = {@(trial_Data,options)calculate_STA_AmplitudeAndDuration(trial_Data,options)};
+%     options.Analysis(1).Trial.Function          = {@(trial_Data,options)calculate_STA_AmplitudeAndDuration(trial_Data,options)};
     options.Analysis(1).Trial.OutputVariable    = {'MU_Amplitude','MU_Duration'};
 %     options.Analysis(1).BaseDirectory           = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control';
     options.Analysis(1).STA.ColumnName          = {'STA_Template'};
