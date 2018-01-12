@@ -1,12 +1,21 @@
 
 function print_Subject_MU_Duration_vs_MeanFiringRate(selection,subjData,options)
     
-    % Calculate MU Onset
-    [MU_MeanFiringRate, ~] = apply_To_Trials_In_DataTable(subjData,options.Analysis(1));
+    
+    % Functions to calculate MU Mean Firing Rate (MFR) and Duration
+    calc_MU_MFR_Fcn = @(trial_Data,options)calculate_MU_MeanFiringRate_FromTrial(trial_Data,options);
+    calc_MU_Dur_Fcn = @(trial_Data,options)calculate_STA_AmplitudeAndDuration(trial_Data,options);
+
+    % Calculate MU MFR
+    [MU_MeanFiringRate, ~] = apply_To_Trials_In_DataTable(subjData,...
+                                                          calc_MU_MFR_Fcn,...
+                                                          options.Analysis(1));
     MU_MeanFiringRate.MeanFiringRate = cell2mat(MU_MeanFiringRate.MeanFiringRate);
     
-    % Calculate MU Amplitude
-    [MU_PtP, ~] = apply_To_Trials_In_DataTable(subjData,options.Analysis(2));
+    % Calculate MU Duration
+    [MU_PtP, ~] = apply_To_Trials_In_DataTable(subjData,...
+                                               calc_MU_Dur_Fcn,...
+                                               options.Analysis(2));
     MU_PtP.MU_Duration  = cell2mat(MU_PtP.MU_Duration);
     MU_PtP.MU_Duration  = 1000*MU_PtP.MU_Duration;
     

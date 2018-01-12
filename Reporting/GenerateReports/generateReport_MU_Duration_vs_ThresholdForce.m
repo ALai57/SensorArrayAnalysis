@@ -74,7 +74,6 @@ function options = get_Options()
     options.ForceRange.Names                              = {'Under_30N','Above_30N'}; 
     
     % Set up MU Onset calcuation
-    options.Analysis(1).Trial.Function                    = {@(trial_Data,options)calculate_MU_Onset_FromTrial(trial_Data,options)};
     options.Analysis(1).Trial.OutputVariable(1)           = {'MU_Onset_Time'};
     options.Analysis(1).Trial.OutputVariable(2)           = {'MU_Onset_Force_N'};
     options.Analysis(1).BaseDirectory                     = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke';  
@@ -85,7 +84,6 @@ function options = get_Options()
     options.Analysis(1).MU_Onset.ForcePost                = 0.15;
    
     % Set up PtP Duration calculation    
-    options.Analysis(2).Trial.Function                    = {@(trial_Data,options)calculate_STA_AmplitudeAndDuration(trial_Data,options)};
     options.Analysis(2).Trial.OutputVariable              = {'MU_Amplitude','MU_Duration'};
     options.Analysis(2).STA.ColumnName                    = {'STA_Template'};
     options.Analysis(2).STA.Amplitude.Statistic           = 'Max'; %Average, All

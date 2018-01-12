@@ -70,16 +70,14 @@ function options = get_Options()
     options.ForceRange.Names                     = {'Under_30N','Above_30N'};
     
 
-    % Set up MU Onset calcuation
-    options.Analysis(1).Trial.Function          = {@(trial_Data,options)calculate_MU_MeanFiringRate_FromTrial(trial_Data,options)};
+    % Set up MU MFR calcuation
     options.Analysis(1).Trial.OutputVariable(1) = {'MeanFiringRate'};
     options.Analysis(1).BaseDirectory           = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Control';
     options.Analysis(1).MFR.Start               = 'RelativeToPlateauStart';
     options.Analysis(1).MFR.StartAfterPlateau   = +2;
     options.Analysis(1).MFR.Duration            = 5;
    
-    % Set up PtP Amplitude calculation
-    options.Analysis(2).Trial.Function                    = {@(trial_Data,options)calculate_STA_AmplitudeAndDuration(trial_Data,options)};
+    % Set up PtP Duration calculation
     options.Analysis(2).Trial.OutputVariable              = {'MU_Amplitude','MU_Duration'};
     options.Analysis(2).STA.ColumnName                    = {'STA_Template'};
     options.Analysis(2).STA.Amplitude.Statistic           = 'Max'; %Average, All

@@ -51,14 +51,13 @@ function options = get_Options()
     options.ForceRange.Threshold                 = [0,30; 30,Inf];
     options.ForceRange.Names                     = {'Under_30N','Above_30N'};
     
-    options.Analysis(1).Trial.Function          = {@(trial_Data,options)calculate_MU_MeanFiringRate_FromTrial(trial_Data,options)};
+    % Set up MU MFR Calculation
     options.Analysis(1).Trial.OutputVariable(1) = {'MeanFiringRate'};
     options.Analysis(1).MFR.Start               = 'RelativeToPlateauStart';
     options.Analysis(1).MFR.StartAfterPlateau   = +2;
     options.Analysis(1).MFR.Duration            = 5;
     
     % Set up MU Onset calcuation
-    options.Analysis(2).Trial.Function                    = {@(trial_Data,options)calculate_MU_Onset_FromTrial(trial_Data,options)};
     options.Analysis(2).Trial.OutputVariable(1)           = {'MU_Onset_Time'};
     options.Analysis(2).Trial.OutputVariable(2)           = {'MU_Onset_Force_N'};
     options.Analysis(2).BaseDirectory                     = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke';  

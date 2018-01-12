@@ -2,13 +2,21 @@
 
 function print_Subject_MU_Duration_vs_ThresholdForce(selection,subjData,options)
     
+    % Functions to calculate MU Duration and MU Threshold Force
+    calc_MU_ThresholdF_Fcn = @(trial_Data,options)calculate_MU_Onset_FromTrial(trial_Data,options);
+    calc_MU_Dur_Fcn = @(trial_Data,options)calculate_STA_AmplitudeAndDuration(trial_Data,options);
+
     % Calculate MU Onset
-    [MU_Onset, ~] = apply_To_Trials_In_DataTable(subjData,options.Analysis(1));
+    [MU_Onset, ~] = apply_To_Trials_In_DataTable(subjData, ...
+                                                 calc_MU_ThresholdF_Fcn, ...
+                                                 options.Analysis(1));
     MU_Onset.MU_Onset_Time    = cell2mat(MU_Onset.MU_Onset_Time);
     MU_Onset.MU_Onset_Force_N = cell2mat(MU_Onset.MU_Onset_Force_N);
     
     % Calculate MU Amplitude
-    [MU_PtP,~]          = apply_To_Trials_In_DataTable(subjData,options.Analysis(2));
+    [MU_PtP,~]          = apply_To_Trials_In_DataTable(subjData, ...
+                                                       calc_MU_Dur_Fcn, ...
+                                                       options.Analysis(2));
     MU_PtP.MU_Duration  = cell2mat(MU_PtP.MU_Duration);
     MU_PtP.MU_Duration  = 1000*MU_PtP.MU_Duration;
     
