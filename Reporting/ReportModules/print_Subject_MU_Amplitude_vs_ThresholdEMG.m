@@ -2,14 +2,22 @@
 
 function print_Subject_MU_Amplitude_vs_ThresholdEMG(selection,subjData,options)
     
+    % Functions to calculate MU Onset and MU Amplitude
+    calc_MU_Onset_Fcn = @(trial_Data,options)calculate_MU_Onset_FromTrial(trial_Data,options);
+    calc_MU_Amp_Fcn = @(trial_Data,options)calculate_STA_AmplitudeAndDuration(trial_Data,options);
+
     % Calculate MU Onset
-    [MU_Onset, ~] = apply_To_Trials_In_DataTable(subjData,options.Analysis(1));
+    [MU_Onset, ~] = apply_To_Trials_In_DataTable(subjData,...
+                                                 calc_MU_Onset_Fcn,...
+                                                 options.Analysis(1));
     MU_Onset.MU_Onset_Time    = cell2mat(MU_Onset.MU_Onset_Time);
     MU_Onset.MU_Onset_Force_N = cell2mat(MU_Onset.MU_Onset_Force_N);
     MU_Onset.MU_Onset_EMG     = cell2mat(MU_Onset.MU_Onset_EMG);
     
     % Calculate MU Amplitude
-    [MU_PtP, ~] = apply_To_Trials_In_DataTable(subjData,options.Analysis(2));
+    [MU_PtP, ~] = apply_To_Trials_In_DataTable(subjData,...
+                                               calc_MU_Amp_Fcn,...
+                                               options.Analysis(2));
     MU_PtP.MU_Amplitude  = cell2mat(MU_PtP.MU_Amplitude);
     MU_PtP.MU_Amplitude  = 1000*MU_PtP.MU_Amplitude;
     

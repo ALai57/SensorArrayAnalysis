@@ -57,8 +57,7 @@ function options = get_Options()
     options.ForceRange.Threshold                 = [0,30; 30,Inf];
     options.ForceRange.Names                     = {'Under_30N','Above_30N'};
     
-    
-    options.Analysis(1).Trial.Function          = {@(trial_Data,options)calculate_ForceTrace_FromTrial(trial_Data,options)};
+    % Get force traces
     options.Analysis(1).Trial.OutputVariable(1) = {'Time'};
     options.Analysis(1).Trial.OutputVariable(2) = {'Fx'};
     options.Analysis(1).Trial.OutputVariable(3) = {'Fz'};

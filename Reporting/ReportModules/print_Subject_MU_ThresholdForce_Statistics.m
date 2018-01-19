@@ -2,8 +2,13 @@
 
 function print_Subject_MU_ThresholdForce_Statistics(selection,allData,options)
       
+     % Function to calculate MU Onset
+    calc_MU_Onset_Fcn = @(trial_Data,options)calculate_MU_Onset_FromTrial(trial_Data,options);
+
     % Calculate MU Onset
-    [MU_Onset, ~] = apply_To_Trials_In_DataTable(allData,options.Analysis(1));
+    [MU_Onset, ~] = apply_To_Trials_In_DataTable(allData,...
+                                                 calc_MU_Onset_Fcn,...
+                                                 options.Analysis(1));
     MU_Onset.MU_Onset_Time    = cell2mat(MU_Onset.MU_Onset_Time);
     MU_Onset.MU_Onset_Force_N = cell2mat(MU_Onset.MU_Onset_Force_N);
      

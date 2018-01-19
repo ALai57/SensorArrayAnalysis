@@ -15,7 +15,7 @@ function generateReport_MVC_Statistics()
     print_OptionsAndAnalyses(selection, options, analyses);
     print_All_MVC_Statistics(selection, MU_Data, options);
 %     print_All_SEMG_Statistics_ByForceLevel(selection, MU_Data, options)
-    print_Analysis_LoopOverSubjects(selection, MU_Data, analyses.IndividualSubject,options);
+%     print_Analysis_LoopOverSubjects(selection, MU_Data, analyses.IndividualSubject,options);
     
     delete(serverHandle)
 end
@@ -57,8 +57,7 @@ function options = get_Options()
     options.ForceRange.Threshold                 = [0,30; 30,Inf];
     options.ForceRange.Names                     = {'Under_30N','Above_30N'};
     
-    
-    options.Analysis(1).Trial.Function          = {@(trial_Data,options)calculate_SensorArray_SEMG_FromTrial(trial_Data,options)};
+    % Calculate SEMG From Sensor Array
     options.Analysis(1).Trial.OutputVariable(1) = {'MedialArray_SEMG'};
     options.Analysis(1).Trial.OutputVariable(2) = {'LateralArray_SEMG'};
     options.Analysis(1).SEMG.Method             = 'RMS';
@@ -68,7 +67,7 @@ function options = get_Options()
     options.Analysis(1).SEMG.Start              = [];
     options.Analysis(1).SEMG.End                = [];
     
-    options.Analysis(2).Trial.Function          = {@(trial_Data,options)calculate_SingleDifferential_SEMG_FromTrial(trial_Data,options)};
+    % Calculate SEMG From Single Differential
     options.Analysis(2).Trial.OutputVariable(1) = {'BICM'};
     options.Analysis(2).Trial.OutputVariable(2) = {'BICL'};
     options.Analysis(2).Trial.OutputVariable(3) = {'TRI'};

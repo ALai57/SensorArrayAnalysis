@@ -5,9 +5,14 @@ function print_All_SingleDifferential_SEMG_Statistics_Normalized(selection,allDa
     baseDir  = options.SingleDifferential.BaseDirectory;
     varNames = options.Analysis(1).Trial.OutputVariable;
     
+    % Calculate Single Differential EMG signal
+    calc_SD_EMG_Fcn = @(trial_Data,options)calculate_SingleDifferential_SEMG_FromTrial(trial_Data,options);
+    
     % Get all trial information and calculate SEMG
     allData   = append_SingleDifferentialFullFile_2Array(allData,baseDir);
-    [SEMG, ~] = apply_To_Trials_In_DataTable(allData,options.Analysis(1)); 
+    [SEMG, ~] = apply_To_Trials_In_DataTable(allData,...
+                                             calc_SD_EMG_Fcn,...
+                                             options.Analysis(1)); 
     
     % Merge SEMG data with all trial information
     SEMG       = rename_StructFields(SEMG,varNames);

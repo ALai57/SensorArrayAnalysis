@@ -39,7 +39,11 @@ function SEMG = calculate_SensorArray_SEMG_FromTrial(trial_Data,options)
     
     switch options.SEMG.Statistic
         case 'Max'
-            ind_t = tMid <options.SEMG.MaxT;
+            if isfield(options.SEMG, 'MaxT')
+                ind_t = tMid <options.SEMG.MaxT;
+            else
+                ind_t = true(size(tMid));
+            end
             SEMG_stat = max(SEMG_value(ind_t,:));
     end
     

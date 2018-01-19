@@ -1,8 +1,13 @@
 
 function print_Subject_MU_Duration_Statistics(selection,MU_Data,options)
     
+    % Function to calculate MU Duration
+    calc_MU_Dur_Fcn = @(trial_Data,options)calculate_STA_AmplitudeAndDuration(trial_Data,options);
+
     % Calculate MU Amplitude
-    [MU_PtP, ~] = apply_To_Trials_In_DataTable(MU_Data,options.Analysis(1));
+    [MU_PtP, ~] = apply_To_Trials_In_DataTable(MU_Data,...
+                                               calc_MU_Dur_Fcn,...
+                                               options.Analysis(1));
     MU_PtP.MU_Duration  = cell2mat(MU_PtP.MU_Duration);
     MU_PtP.MU_Duration  = 1000*MU_PtP.MU_Duration;
     

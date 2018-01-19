@@ -73,7 +73,7 @@ function options = get_Options()
     options.ForceRange.Threshold                          = [0,30; 30,Inf];
     options.ForceRange.Names                              = {'Under_30N','Above_30N'};   
     % Set up MU Onset calcuation
-    options.Analysis(1).Trial.Function                    = {@(trial_Data,options)calculate_MU_Onset_FromTrial(trial_Data,options)};
+%     options.Analysis(1).Trial.Function                    = {@(trial_Data,options)calculate_MU_Onset_FromTrial(trial_Data,options)};
     options.Analysis(1).Trial.OutputVariable(1)           = {'MU_Onset_Time'};
     options.Analysis(1).Trial.OutputVariable(2)           = {'MU_Onset_Force_N'};
     options.Analysis(1).Trial.OutputVariable(3)           = {'MU_Onset_EMG'};
@@ -88,7 +88,7 @@ function options = get_Options()
     options.Analysis(1).MU_Onset.MAF.Length               = 0.15; 
    
     % Set up PtP Amplitude calculation
-    options.Analysis(2).Trial.Function                    = {@(trial_Data,options)calculate_STA_AmplitudeAndDuration(trial_Data,options)};
+%     options.Analysis(2).Trial.Function                    = {@(trial_Data,options)calculate_STA_AmplitudeAndDuration(trial_Data,options)};
     options.Analysis(2).Trial.OutputVariable(1)           = {'MU_Amplitude'};
     options.Analysis(2).BaseDirectory                     = 'C:\Users\Andrew\Lai_SMULab\Projects\BicepsSensorArray\Data\Stroke';
     options.Analysis(2).STA.ColumnName                    = {'STA_Template'};

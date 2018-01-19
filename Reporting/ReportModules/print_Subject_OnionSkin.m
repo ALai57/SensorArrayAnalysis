@@ -5,9 +5,14 @@ function print_Subject_OnionSkin(selection,subjData,options)
     baseDir  = options.BaseDirectory;
     varNames = options.Analysis(1).Trial.OutputVariable;
     
+    % Function to calculate Onion Skinning Parameters
+    calc_OnionSkin_Fcn = @(trial_Data,options)calculate_OnionSkin(trial_Data,options);
+    
     % Get all trial information 
     subjData   = append_SingleDifferentialFullFile_2Array(subjData,baseDir);
-    [MU_Onion, ~] = apply_To_Trials_In_DataTable(subjData,options.Analysis(1));
+    [MU_Onion, ~] = apply_To_Trials_In_DataTable(subjData,...
+                                                 calc_OnionSkin_Fcn,...
+                                                 options.Analysis(1));
     
     SID = subjData.SID(1); 
     

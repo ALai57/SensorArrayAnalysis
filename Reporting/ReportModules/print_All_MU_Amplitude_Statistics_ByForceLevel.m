@@ -2,11 +2,13 @@
 function print_All_MU_Amplitude_Statistics_ByForceLevel(selection,MU_Data,options)
 
     % Function to calculate MU Amplitude Amp and Duration
-    theFcn = @(trial_Data,options)calculate_STA_AmplitudeAndDuration(trial_Data,options);
+    calc_MU_Amp_Dur_Fcn = @(trial_Data,options)calculate_STA_AmplitudeAndDuration(trial_Data,options);
 
 
     % Calculate MU Amplitude
-    [MU_PtP_Amp, ~] = apply_To_Trials_In_DataTable(MU_Data, theFcn, options.Analysis(1));
+    [MU_PtP_Amp, ~] = apply_To_Trials_In_DataTable(MU_Data,...
+                                                   calc_MU_Amp_Dur_Fcn,...
+                                                   options.Analysis(1));
     MU_PtP_Amp.MU_Amplitude  = cell2mat(MU_PtP_Amp.MU_Amplitude);
     MU_PtP_Amp.MU_Amplitude  = 1000*MU_PtP_Amp.MU_Amplitude;
     

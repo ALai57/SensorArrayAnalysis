@@ -58,7 +58,7 @@ function options = get_Options()
     options.ForceRange.Names                     = {'Under_30N','Above_30N'};
     
     
-    options.Analysis(1).Trial.Function          = {@(trial_Data,options)calculate_SingleDifferential_SEMG_FromTrial(trial_Data,options)};
+    % Calculate Single Differential EMG
     options.Analysis(1).Trial.OutputVariable(1) = {'BICM'};
     options.Analysis(1).Trial.OutputVariable(2) = {'BICL'};
     options.Analysis(1).Trial.OutputVariable(3) = {'TRI'};

@@ -13,8 +13,7 @@ function generateReport_SensorArray_SEMG_Statistics_Normalized()
     [serverHandle, selection] = open_ConnectionToWord();
     print_ReportDescription(selection);
     print_OptionsAndAnalyses(selection, options, analyses);
-    print_All_SensorArra
-    y_SEMG_Statistics_Normalized(selection, MU_Data, options);
+    print_All_SensorArray_SEMG_Statistics_Normalized(selection, MU_Data, options);
 %     print_All_SEMG_Statistics_ByForceLevel(selection, MU_Data, options)
     print_Analysis_LoopOverSubjects(selection, MU_Data, analyses.IndividualSubject,options);
     
@@ -58,8 +57,7 @@ function options = get_Options()
     options.ForceRange.Threshold                 = [0,30; 30,Inf];
     options.ForceRange.Names                     = {'Under_30N','Above_30N'};
     
-    
-    options.Analysis(1).Trial.Function          = {@(trial_Data,options)calculate_SensorArray_SEMG_FromTrial(trial_Data,options)};
+    % Calculate Sensor Array SEMG
     options.Analysis(1).Trial.OutputVariable(1) = {'MedialArray_SEMG'};
     options.Analysis(1).Trial.OutputVariable(2) = {'LateralArray_SEMG'};
     options.Analysis(1).SEMG.Method             = 'RMS';

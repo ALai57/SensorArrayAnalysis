@@ -56,27 +56,7 @@ function options = get_Options()
     options.ForceRange.Threshold                 = [0,30; 30,Inf];
     options.ForceRange.Names                     = {'Under_30N','Above_30N'};
     
-    
-%     options.Analysis(1).Trial.Function          = {@(trial_Data,options)calculate_SingleDifferential_SNR_FromTrial(trial_Data,options)};
-%     options.Analysis(1).Trial.OutputVariable(1) = {'BICM_SNR'};
-%     options.Analysis(1).Trial.OutputVariable(2) = {'BICL_SNR'};
-%     options.Analysis(1).Trial.OutputVariable(3) = {'TRI_SNR'};
-%     options.Analysis(1).Trial.OutputVariable(4) = {'BRD_SNR'};
-%     options.Analysis(1).Trial.OutputVariable(5) = {'BRA_SNR'};
-%     options.Analysis(1).SEMG.Method             = 'RMS';
-%     options.Analysis(1).SEMG.Statistic          = 'Max';
-%     options.Analysis(1).SEMG.Window             = 2;
-%     options.Analysis(1).SEMG.SlideStep          = 0.1;
-%     options.Analysis(1).SEMG.Start              = [];
-%     options.Analysis(1).SEMG.End                = [];
-%     options.Analysis(1).Baseline.Method         = 'RMS';
-%     options.Analysis(1).Baseline.Statistic      = 'Raw';
-%     options.Analysis(1).Baseline.Window         = 2;
-%     options.Analysis(1).Baseline.SlideStep      = 0.1;
-%     options.Analysis(1).Baseline.Start          = 0.5;
-%     options.Analysis(1).Baseline.End            = 2.5;
-     
-    options.Analysis(1).Trial.Function          = {@(trial_Data,options)calculate_SingleDifferential_SNR_FromTrial(trial_Data,options)};
+    % Calculate single differential SNR
     options.Analysis(1).Trial.OutputVariable(1) = {'BICM_SNR'};
     options.Analysis(1).Trial.OutputVariable(2) = {'BICL_SNR'};
     options.Analysis(1).Trial.OutputVariable(3) = {'TRI_SNR'};

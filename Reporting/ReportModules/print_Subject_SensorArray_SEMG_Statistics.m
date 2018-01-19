@@ -4,8 +4,13 @@ function print_Subject_SensorArray_SEMG_Statistics(selection,allData,options)
     allData = append_SensorArrayFullFile_2Array(allData,options.SensorArray.BaseDirectory);
     allData = append_SingleDifferentialFullFile_2Array(allData,options.SingleDifferential.BaseDirectory);
     
-    % Calculate MU Mean firing rate
-    [SEMG, ~] = apply_To_Trials_In_DataTable(allData,options.Analysis(1)); 
+    % Function to calculate SEMG
+    calc_SEMG_Fcn = @(trial_Data,options)calculate_SensorArray_SEMG_FromTrial(trial_Data,options);
+      
+    % Calculate Surface EMG 
+    [SEMG, ~] = apply_To_Trials_In_DataTable(allData,...
+                                             calc_SEMG_Fcn,...
+                                             options.Analysis(1)); 
     for n=1:length(options.Analysis(1).Trial.OutputVariable) 
         name = options.Analysis(1).Trial.OutputVariable{n};
         SEMG.(name) = cell2mat(SEMG.(name));

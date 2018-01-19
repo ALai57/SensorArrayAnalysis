@@ -5,9 +5,14 @@ function print_Subject_SensorArray_SNR_Statistics(selection,allData,options)
     baseDir  = options.SingleDifferential.BaseDirectory;
     varNames = options.Analysis(1).Trial.OutputVariable;
     
+    % Function to calculate Sensor Array SNR
+    calc_SA_SNR_Fcn = @(trial_Data,options)calculate_SensorArray_SNR_FromTrial(trial_Data,options);
+    
     % Get all trial information and calculate SEMG
     allData   = append_SensorArrayFullFile_2Array(allData,baseDir);
-    [SNR, ~] = apply_To_Trials_In_DataTable(allData,options.Analysis(1)); 
+    [SNR, ~] = apply_To_Trials_In_DataTable(allData,...
+                                            calc_SA_SNR_Fcn,...
+                                            options.Analysis(1)); 
     
     % Merge SEMG data with all trial information
     SNR         = rename_StructFields(SNR,varNames);

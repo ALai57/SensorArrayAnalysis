@@ -5,9 +5,14 @@ function print_All_SensorArray_SEMG_Statistics_Normalized(selection,allData,opti
     baseDir  = options.SensorArray.BaseDirectory;
     varNames = options.Analysis(1).Trial.OutputVariable;
     
+    % Function to calculate SEMG
+    calc_SEMG_Fcn = @(trial_Data,options)calculate_SensorArray_SEMG_FromTrial(trial_Data,options);
+    
     % Get all trial information and calculate SEMG
     allData   = append_SensorArrayFullFile_2Array(allData,baseDir);
-    [SEMG, ~] = apply_To_Trials_In_DataTable(allData,options.Analysis(1)); 
+    [SEMG, ~] = apply_To_Trials_In_DataTable(allData,...
+                                             calc_SEMG_Fcn,...
+                                             options.Analysis(1)); 
     
     % Merge SEMG data with all trial information
     SEMG         = rename_StructFields(SEMG,varNames);

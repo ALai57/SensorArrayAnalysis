@@ -3,6 +3,11 @@ function print_All_MVC_Statistics(selection,allData,options)
    
     allData   = allData((allData.TargetForce=='100%MVC'),:);
 
+    %Functions to calculate surface EMG from sensor array and single
+    %differential sensors
+    calc_Array_EMG_Fcn = @(trial_Data,options)calculate_SensorArray_SEMG_FromTrial(trial_Data,options);
+    calc_SD_EMG_Fcn    = @(trial_Data,options)calculate_SingleDifferential_SEMG_FromTrial(trial_Data,options);
+    
     % For readability make temporary variables
     baseDir_SA  = options.SensorArray.BaseDirectory;
     baseDir_SD  = options.SingleDifferential.BaseDirectory;
@@ -12,10 +17,14 @@ function print_All_MVC_Statistics(selection,allData,options)
     
     % Get all trial information and calculate SEMG
     allData     = append_SensorArrayFullFile_2Array(allData,baseDir_SA);
-    [SA_EMG, ~] = apply_To_Trials_In_DataTable(allData,options.Analysis(1)); 
+    [SA_EMG, ~] = apply_To_Trials_In_DataTable(allData,...
+                                               calc_Array_EMG_Fcn,...
+                                               options.Analysis(1)); 
     
     allData     = append_SingleDifferentialFullFile_2Array(allData,baseDir_SD);
-    [SD_EMG, ~] = apply_To_Trials_In_DataTable(allData,options.Analysis(2)); 
+    [SD_EMG, ~] = apply_To_Trials_In_DataTable(allData,...
+                                               calc_SD_EMG_Fcn,...
+                                               options.Analysis(2)); 
     
     % Merge SEMG data with all trial information
     SA_EMG         = rename_StructFields(SA_EMG,varNames_SA);

@@ -52,7 +52,6 @@ function options = get_Options()
     options.ForceRange.Names                     = {'Under_30N','Above_30N'};
     
     % Set up PtP Amplitude calculation
-    options.Analysis(1).Trial.Function          = {@(trial_Data,options)calculate_STA_AmplitudeAndDuration(trial_Data,options)};
     options.Analysis(1).Trial.OutputVariable    = {'MU_Amplitude','MU_Duration'};
     options.Analysis(1).STA.ColumnName          = {'STA_Template'};
     options.Analysis(1).STA.Amplitude.Statistic = 'Max'; %Average, All

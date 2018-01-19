@@ -6,9 +6,14 @@ function print_Subject_ForceTraces(selection,allData,options)
     baseDir  = options.SingleDifferential.BaseDirectory;
     varNames = options.Analysis(1).Trial.OutputVariable;
     
+    % FUnction to get subject force trace
+    calc_ForceTrace_Fcn = @(trial_Data,options)calculate_ForceTrace_FromTrial(trial_Data,options);
+    
     % Get all trial information and calculate SEMG
     allData   = append_SingleDifferentialFullFile_2Array(allData,baseDir);
-    [F, ~]    = apply_To_Trials_In_DataTable(allData,options.Analysis(1)); 
+    [F, ~]    = apply_To_Trials_In_DataTable(allData,...
+                                             calc_ForceTrace_Fcn,...
+                                             options.Analysis(1)); 
     
     % Merge SEMG data with all trial information
     

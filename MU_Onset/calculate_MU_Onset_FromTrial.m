@@ -113,8 +113,8 @@ function Onset_Force  = calculate_MU_OnsetForce(onset_Time,EMG,options)
     
     dt = time(2)-time(1);
     
-    i_Prior = ind-options.MU_Onset.ForcePrior/dt;
-    i_Post  = ind+options.MU_Onset.ForcePost/dt;
+    i_Prior = ind-round(options.MU_Onset.ForcePrior/dt);
+    i_Post  = ind+round(options.MU_Onset.ForcePost/dt);
     
     F = calculate_ForceMagnitude_FromTable(EMG);
     
